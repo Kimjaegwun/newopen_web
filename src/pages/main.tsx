@@ -1,24 +1,32 @@
 import { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
-import { Button } from "antd";
+import { Button, Dropdown, Menu } from "antd";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import HorizontalCarousel from "./components/HorizontalCarousel";
 import styled from "styled-components";
 import "../index.css";
 
 const Main = () => {
   const category_list = ["전체", "카페", "밥집", "술집"];
   const [select_category, set_select_category] = useState("전체");
-  const [image_key, set_image_key] = useState(0);
 
-  const MenuItem = ({ text, selected }) => {
-    return <div className={`menu-item ${selected ? "active" : ""}`}>{text}</div>;
-  };
+  const menu = (
+    <Menu>
+      <Menu.Item disabled>
+          1st menu item
+      </Menu.Item>
+      <Menu.Item disabled>
+          3rd menu item
+      </Menu.Item>
+      <Menu.Item disabled>a danger item</Menu.Item>
+    </Menu>
+  );
 
   return (
     <>
       <Styled>
-        <div className="column" style={{marginBottom: "-45px"}}>
+        <div className="column" style={{ marginBottom: "-45px" }}>
           <div className="title-container">
             <div className="title">
               NewOpen
@@ -26,6 +34,7 @@ const Main = () => {
             </div>
           </div>
 
+          {/* 배너 캐러셀 */}
           <Carousel
             showStatus={false}
             axis={"horizontal"}
@@ -70,6 +79,145 @@ const Main = () => {
               );
             }
           })}
+        </div>
+
+        {/* 브랜드 컨테이너 */}
+        <div className="new-open-container">
+          <div className="column">
+            <div className="logo">로고</div>
+            <div className="remain-open">정식오픈</div>
+            <div
+              className="remain-open"
+              style={{
+                marginTop: "-1px",
+                fontSize: "24px",
+                fontFamily: "NanumMyeongjo",
+              }}
+            >
+              D-7
+            </div>
+          </div>
+          <div className="content-container">
+            <div className="category-container">
+              <div className="category-name">#카페</div>
+              <div className="like-numb">
+                👀
+                <span style={{ marginLeft: "10px" }}>
+                  123명이 혜택을 받았네요!
+                </span>
+              </div>
+            </div>
+
+            <div className="brand-container">
+              <div className="brand-contents">
+                <div className="brand-name-position">
+                  <div className="brand-name">선유기지</div>
+                  <div className="brand-position">
+                    서울 영등포구 선유로51길1
+                  </div>
+                </div>
+                <div className="brand-description">
+                  ‘도시 틈 속에서 낭만을 추구하는 우리만의 비밀기지’라는
+                  콘셉트로 꾸며진 카페 선유기지입니다.
+                </div>
+                <div className="brand-time-tel">
+                  <div className="brand-time">
+                    <div className="brand-time-name">
+                      <img
+                        className="time-image"
+                        src="../../asset/a-icon-time-normal.png"
+                        alt="time"
+                      />
+                      Time
+                    </div>
+                    <div className="operation-time">
+                      영업중 : 12:00 ~ 22:00
+                      <Dropdown overlay={menu} overlayStyle={{position: "absolute"}}>
+                      <a href='!#' onClick={e => e.preventDefault()}>
+                      <img
+                        className="time-image"
+                        style={{ marginLeft: "5px" }}
+                        src="../../asset/button_more_info_arrow.png"
+                        alt="time"
+                      />
+                      </a>
+                      </Dropdown>
+                    </div>
+                  </div>
+                  <div className="brand-tel">
+                    <div className="brand-time-name">
+                      <img
+                        className="time-image"
+                        src="../../asset/a-icon-phone-normal.png"
+                        alt="tel"
+                      />
+                      Tel
+                    </div>
+                    <div
+                      className="operation-time"
+                      style={{ textDecoration: "underline" }}
+                    >
+                      02-820-1258
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="brand-mall-image">
+                {/* 가게 안 이미지들 */}
+                <HorizontalCarousel />
+
+                <div className="row">
+                  <div className="menu-coupon">
+                    <div className="menu">메뉴 더보기</div>
+                    <div className="coupon">
+                      <img
+                        className="coupon-image"
+                        src="../../asset/a-icon-reply-normal.png"
+                        alt="main-menu"
+                      />
+                      방문 혜택 보기
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="main-menu">
+              <img
+                className="main-menu-image"
+                src="../../asset/rectangle.png"
+                alt="main-menu"
+              />
+              대표메뉴
+            </div>
+
+            <div className="row">
+              <div className="menu-container">
+                <img
+                  className="menu-image"
+                  src="../../asset/screen_shot.png"
+                  alt="menu"
+                />
+                <div className="menu-name">
+                  <div className="menu-name-detail">아메리카노</div>
+                  <div className="menu-price">3,500원</div>
+                </div>
+              </div>
+
+              <div className="menu-container">
+                <img
+                  className="menu-image"
+                  src="../../asset/screen_shot.png"
+                  alt="menu"
+                />
+                <div className="menu-name">
+                  <div className="menu-name-detail">아메리카노</div>
+                  <div className="menu-price">3,500원</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="new-open-container">
@@ -122,12 +270,16 @@ const Main = () => {
                     </div>
                     <div className="operation-time">
                       영업중 : 12:00 ~ 22:00
+                      <Dropdown overlay={menu} overlayStyle={{position: "absolute", backgroundColor: 'black'}}>
+                      <a href='!#' onClick={e => e.preventDefault()}>
                       <img
                         className="time-image"
                         style={{ marginLeft: "5px" }}
                         src="../../asset/button_more_info_arrow.png"
                         alt="time"
                       />
+                      </a>
+                      </Dropdown>
                     </div>
                   </div>
                   <div className="brand-tel">
@@ -150,6 +302,8 @@ const Main = () => {
               </div>
 
               <div className="brand-mall-image">
+                {/* 가게 안 이미지들 */}
+                <HorizontalCarousel />
 
                 <div className="row">
                   <div className="menu-coupon">
@@ -405,11 +559,13 @@ const Styled = styled.div`
   .brand-time-name {
     color: #6c757d;
     font-size: 14px;
+    display: flex;
+    align-items: center;
   }
 
   .time-image {
-    width: 19px;
-    height: 19px;
+    width: 22px;
+    height: 22px;
     margin-right: 5px;
   }
 
@@ -417,6 +573,9 @@ const Styled = styled.div`
     color: #6c757d;
     font-weight: bold;
     font-size: 14px;
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
   }
 
   .brand-mall-image {
