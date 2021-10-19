@@ -1,27 +1,31 @@
 import { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
-import { Button, Dropdown, Menu } from "antd";
+import { Button, Dropdown } from "antd";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import Modal from "react-modal";
 import HorizontalCarousel from "./components/HorizontalCarousel";
 import styled from "styled-components";
 import "../index.css";
 
+Modal.setAppElement();
+
 const Main = () => {
   const category_list = ["전체", "카페", "밥집", "술집"];
   const [select_category, set_select_category] = useState("전체");
+  const [operation_visible, set_operation_visible] = useState(false);
 
-  const menu = (
-    <Menu>
-      <Menu.Item disabled>
-          1st menu item
-      </Menu.Item>
-      <Menu.Item disabled>
-          3rd menu item
-      </Menu.Item>
-      <Menu.Item disabled>a danger item</Menu.Item>
-    </Menu>
-  );
+  // 메뉴 모달
+  const [menu_modal, set_menu_modal] = useState(false);
+  const close_menu_modal = () => {
+    set_menu_modal(false);
+  };
+
+  // 쿠폰 모달
+  const [coupon_modal, set_coupon_modal] = useState(false);
+  const close_coupon_modal = () => {
+    set_coupon_modal(false);
+  };
 
   return (
     <>
@@ -36,6 +40,7 @@ const Main = () => {
 
           {/* 배너 캐러셀 */}
           <Carousel
+            showThumbs={false}
             showStatus={false}
             axis={"horizontal"}
             interval={100000}
@@ -45,6 +50,7 @@ const Main = () => {
             showArrows={false}
             emulateTouch={true}
             infiniteLoop
+            showIndicators={!menu_modal && !coupon_modal ? true : false}
           >
             <div className="banner" />
             <div className="banner" style={{ backgroundColor: "lightgreen" }} />
@@ -132,15 +138,38 @@ const Main = () => {
                     </div>
                     <div className="operation-time">
                       영업중 : 12:00 ~ 22:00
-                      <Dropdown overlay={menu} overlayStyle={{position: "absolute"}}>
-                      <a href='!#' onClick={e => e.preventDefault()}>
-                      <img
-                        className="time-image"
-                        style={{ marginLeft: "5px" }}
-                        src="../../asset/button_more_info_arrow.png"
-                        alt="time"
-                      />
-                      </a>
+                      <Dropdown
+                        trigger={["hover"]}
+                        onVisibleChange={(e) => {
+                          set_operation_visible(e);
+                        }}
+                        visible={operation_visible}
+                        destroyPopupOnHide={true}
+                        arrow={false}
+                        overlay={
+                          <div>
+                            <div>월요일: 09:00 ~ 20:00</div>
+                            <div>화요일: 09:00 ~ 20:00</div>
+                            <div>일요일: 휴무</div>
+                          </div>
+                        }
+                        overlayStyle={{
+                          position: "absolute",
+                          backgroundColor: "rgba(0, 0, 0, 0.85)",
+                          padding: "14px",
+                          fontSize: "14px",
+                          lineHeight: "19px",
+                          color: "#FFFFFF",
+                          borderRadius: "5px",
+                          display: operation_visible ? "flex" : "none",
+                        }}
+                      >
+                        <img
+                          className="time-image"
+                          style={{ marginLeft: "5px" }}
+                          src="../../asset/button_more_info_arrow.png"
+                          alt="time"
+                        />
                       </Dropdown>
                     </div>
                   </div>
@@ -165,150 +194,21 @@ const Main = () => {
 
               <div className="brand-mall-image">
                 {/* 가게 안 이미지들 */}
-                <HorizontalCarousel />
+                <HorizontalCarousel menu_modal={menu_modal} coupon_modal={coupon_modal} />
 
                 <div className="row">
                   <div className="menu-coupon">
-                    <div className="menu">메뉴 더보기</div>
-                    <div className="coupon">
-                      <img
-                        className="coupon-image"
-                        src="../../asset/a-icon-reply-normal.png"
-                        alt="main-menu"
-                      />
-                      방문 혜택 보기
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="main-menu">
-              <img
-                className="main-menu-image"
-                src="../../asset/rectangle.png"
-                alt="main-menu"
-              />
-              대표메뉴
-            </div>
-
-            <div className="row">
-              <div className="menu-container">
-                <img
-                  className="menu-image"
-                  src="../../asset/screen_shot.png"
-                  alt="menu"
-                />
-                <div className="menu-name">
-                  <div className="menu-name-detail">아메리카노</div>
-                  <div className="menu-price">3,500원</div>
-                </div>
-              </div>
-
-              <div className="menu-container">
-                <img
-                  className="menu-image"
-                  src="../../asset/screen_shot.png"
-                  alt="menu"
-                />
-                <div className="menu-name">
-                  <div className="menu-name-detail">아메리카노</div>
-                  <div className="menu-price">3,500원</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="new-open-container">
-          <div className="column">
-            <div className="logo">로고</div>
-            <div className="remain-open">정식오픈</div>
-            <div
-              className="remain-open"
-              style={{
-                marginTop: "-1px",
-                fontSize: "24px",
-                fontFamily: "NanumMyeongjo",
-              }}
-            >
-              D-7
-            </div>
-          </div>
-          <div className="content-container">
-            <div className="category-container">
-              <div className="category-name">#카페</div>
-              <div className="like-numb">
-                👀
-                <span style={{ marginLeft: "10px" }}>
-                  123명이 혜택을 받았네요!
-                </span>
-              </div>
-            </div>
-
-            <div className="brand-container">
-              <div className="brand-contents">
-                <div className="brand-name-position">
-                  <div className="brand-name">선유기지</div>
-                  <div className="brand-position">
-                    서울 영등포구 선유로51길1
-                  </div>
-                </div>
-                <div className="brand-description">
-                  ‘도시 틈 속에서 낭만을 추구하는 우리만의 비밀기지’라는
-                  콘셉트로 꾸며진 카페 선유기지입니다.
-                </div>
-                <div className="brand-time-tel">
-                  <div className="brand-time">
-                    <div className="brand-time-name">
-                      <img
-                        className="time-image"
-                        src="../../asset/a-icon-time-normal.png"
-                        alt="time"
-                      />
-                      Time
-                    </div>
-                    <div className="operation-time">
-                      영업중 : 12:00 ~ 22:00
-                      <Dropdown overlay={menu} overlayStyle={{position: "absolute", backgroundColor: 'black'}}>
-                      <a href='!#' onClick={e => e.preventDefault()}>
-                      <img
-                        className="time-image"
-                        style={{ marginLeft: "5px" }}
-                        src="../../asset/button_more_info_arrow.png"
-                        alt="time"
-                      />
-                      </a>
-                      </Dropdown>
-                    </div>
-                  </div>
-                  <div className="brand-tel">
-                    <div className="brand-time-name">
-                      <img
-                        className="time-image"
-                        src="../../asset/a-icon-phone-normal.png"
-                        alt="tel"
-                      />
-                      Tel
-                    </div>
                     <div
-                      className="operation-time"
-                      style={{ textDecoration: "underline" }}
+                      className="menu"
+                      onClick={() => {
+                        set_menu_modal(true);
+                      }}
                     >
-                      02-820-1258
+                      메뉴 더보기
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="brand-mall-image">
-                {/* 가게 안 이미지들 */}
-                <HorizontalCarousel />
-
-                <div className="row">
-                  <div className="menu-coupon">
-                    <div className="menu">메뉴 더보기</div>
-                    <div className="coupon">
+                    <div className="coupon" onClick={() => {
+                      set_coupon_modal(true)
+                    }}>
                       <img
                         className="coupon-image"
                         src="../../asset/a-icon-reply-normal.png"
@@ -358,6 +258,145 @@ const Main = () => {
           </div>
         </div>
       </Styled>
+
+      <Modal
+        style={{
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+            borderRadius: "10px",
+            width: "550px",
+          },
+        }}
+        isOpen={menu_modal}
+        onRequestClose={close_menu_modal}
+        ariaHideApp={false}
+      >
+        <StyledModal>
+          <img
+            className="close"
+            src="../../asset/a-icon-cancle-normal.png"
+            alt="close"
+            onClick={() => {
+              set_menu_modal(false);
+            }}
+          />
+
+          <div className="brand-menu-detail">선유기지의 메뉴</div>
+          <div className="brand-menu-description">
+            어머, 이건 꼭 먹어봐야해!
+          </div>
+
+          <Carousel
+            showThumbs={false}
+            showStatus={false}
+            axis={"horizontal"}
+            interval={100000}
+            autoPlay={false}
+            autoFocus={false}
+            width={"500px"}
+            showArrows={true}
+            emulateTouch={true}
+            infiniteLoop
+            showIndicators={false}
+            onChange={(e) => {
+              console.log(e);
+            }}
+          >
+            <div className="banner" style={{ height: "500px" }} />
+            <div className="banner" style={{ backgroundColor: "lightgreen" }} />
+          </Carousel>
+
+          <div className="menu-name">ㅁㅊ크로플</div>
+
+          <div className="menu-detail">
+            <div style={{ flex: 1 }}>4,000원</div>
+            <div>1/3</div>
+          </div>
+
+          <div className="column" style={{ margin: "27px" }}>
+            <div className="menu-row">
+              <div className="menu-font">ㅁㅊ크로플</div>
+              <img
+                className="camera"
+                src="../../asset/button_photo_line.png"
+                alt="love"
+              />
+              <div className="bar"></div>
+              <div className="menu-font">4,000원</div>
+            </div>
+
+            <div className="menu-row">
+              <div className="menu-font">ㅁㅊ크로플</div>
+              <img
+                className="camera"
+                src="../../asset/button_photo_line.png"
+                alt="love"
+              />
+              <div className="bar"></div>
+              <div className="menu-font">4,000원</div>
+            </div>
+
+            <div className="menu-row">
+              <div className="menu-font">ㅁㅊ크로플</div>
+              <img
+                className="camera"
+                src="../../asset/button_photo_line.png"
+                alt="love"
+              />
+              <div className="bar"></div>
+              <div className="menu-font">4,000원</div>
+            </div>
+
+            <div className="menu-row">
+              <div className="menu-font">ㅁㅊ크로플</div>
+              <img
+                className="camera"
+                src="../../asset/button_photo_line.png"
+                alt="love"
+              />
+              <div className="bar"></div>
+              <div className="menu-font">4,000원</div>
+            </div>
+          </div>
+        </StyledModal>
+      </Modal>
+
+      <Modal
+        style={{
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+            borderRadius: "10px",
+            width: "550px",
+          },
+        }}
+        isOpen={coupon_modal}
+        onRequestClose={close_coupon_modal}
+        ariaHideApp={false}
+      >
+        <StyledModal>
+          <img
+            className="close"
+            src="../../asset/a-icon-cancle-normal.png"
+            alt="close"
+            onClick={() => {
+              set_menu_modal(false);
+            }}
+          />
+
+          <div className="brand-menu-detail">선유기지 방문 혜택</div>
+          
+        </StyledModal>
+      </Modal>
     </>
   );
 };
@@ -411,6 +450,7 @@ const Styled = styled.div`
   .category-list {
     display: flex;
     flex-direction: row;
+    margin-top: 60px;
   }
 
   .category-button {
@@ -608,6 +648,7 @@ const Styled = styled.div`
     margin-right: 12px;
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
 
   .coupon {
@@ -618,6 +659,7 @@ const Styled = styled.div`
     color: #ff2e4c;
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
 
   .main-menu {
@@ -672,5 +714,94 @@ const Styled = styled.div`
     width: 20px;
     height: 20px;
     margin-right: 3px;
+  }
+`;
+
+const StyledModal = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .brand-menu-detail {
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  .brand-menu-description {
+    font-size: 14px;
+    color: #6c757d;
+    line-height: 24px;
+    margin-bottom: 20px;
+  }
+
+  .banner {
+    width: 500px;
+    height: 500px;
+    background-color: #fff9c1;
+    border-radius: 5px;
+  }
+
+  .menu-row {
+    display: flex;
+    flex-direction: row;
+    width: 500px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .menu-font {
+    color: #6c757d;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .camera {
+    width: 25px;
+    height: 25px;
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
+  .bar {
+    background-color: #e2e2e2;
+    height: 1px;
+    margin-right: 8px;
+    flex: 1;
+  }
+
+  .menu-name {
+    z-index: 999;
+    color: black;
+    position: absolute;
+    top: 530px;
+    width: 450px;
+    padding-left: 10px;
+    font-size: 19px;
+    line-height: 24px;
+    font-weight: bold;
+  }
+
+  .menu-detail {
+    z-index: 999;
+    color: #ffffff;
+    position: absolute;
+    top: 560px;
+    width: 450px;
+    padding-left: 10px;
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .close {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    margin-left: 480px;
+    margin-top: 10px;
+    cursor: pointer;
   }
 `;

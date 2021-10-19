@@ -4,7 +4,12 @@ import "../../index.css";
 const Card = ({ card }) => {
   return (
     <Styled>
-      <div className="card">{card}</div>
+      <div className="card">
+        <img
+          src={card}
+          style={{ width: "154px", height: "154px", borderRadius: "10px" }}
+        />
+      </div>
     </Styled>
   );
 };
