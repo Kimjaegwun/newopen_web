@@ -4,7 +4,7 @@ import { getUserToken } from '../utils/utils';
 
 dotenv.config();
 
-const uri = 'http://172.30.1.42:5000/graphql';
+const uri = 'http://172.30.1.46:5000/graphql';
 // const uri = 'https://api.daadok.com:3000/graphql';
 
 const auth = getUserToken() || '';

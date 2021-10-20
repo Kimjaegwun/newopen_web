@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import $ from "jquery";
-import { Form, Input, Button, Checkbox } from 'antd';
 import styled from 'styled-components';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { deleteUserToken, getUserToken } from "../../utils/utils";
 
-import {NEW_OPEN_ID_CHECK, ADD_NEW_OPEN} from "./mutation.gql";
+import {GET_NEW_OPEN, NEW_OPEN_ID_CHECK, ADD_NEW_OPEN} from "./mutation.gql";
 
 import Header from '../components/Header'
 import DatePickerComponent from '../components/DatePickerComponent';
@@ -17,9 +16,6 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
 import "firebase/storage";
-import Item from 'antd/lib/list/Item';
-import { url } from 'inspector';
-import { formatTimeStr } from 'antd/lib/statistic/utils';
 
 const firebaseConfig = {
   apiKey: "AIzaSyD3RefxDfDrGzTSsLo4ImBctzq47cLCe-k",
@@ -37,6 +33,16 @@ const InputForm = () => {
 		logo: {image: null, url: null} as any,
 		photo_in_mall: [] as any,
 	});
+
+
+  // New Open 정보 가져오기
+  const { refetch } = useQuery(GET_NEW_OPEN, {
+    notifyOnNetworkStatusChange: true,
+    onCompleted: (data) => {
+		setNewOpen(data.GetNewOpen.newOpen);
+    },
+  });
+
 
 	const [uploadNewOpen, setUploadNewOpen] = useState({
 		logo: {image: null, url: null} as any,
@@ -385,7 +391,7 @@ const InputForm = () => {
 								}}
 								accept="image/png, image/jpeg"
 								/>
-								<img src={'../../assets/img/button_image_add.png'} style={{width:45, height:45}}></img>
+								<img src={'../asset/img/button_image_add.png'} style={{width:45, height:45}}></img>
 							</label>
 						): (
 							<div style={{
@@ -407,7 +413,7 @@ const InputForm = () => {
 									/>
 								</a>
 								<div>
-								<button className="image-delete-button" style={{marginLeft:-10, marginTop:-10, backgroundImage:"url('/assets/img/button_image_delete.png')"}}
+								<button className="image-delete-button" style={{marginLeft:-10, marginTop:-10, backgroundImage:"url('/asset/img/button_image_delete.png')"}}
 									onClick={() => {
 										setNewOpen(
 										  produce((draft: any) => {
@@ -586,7 +592,7 @@ const InputForm = () => {
 							accept="image/png, image/jpeg"
 							multiple
 							/>
-							<img src={'/assets/img/button_image_add.png'} style={{width:45, height:45}}></img>
+							<img src={'/asset/img/button_image_add.png'} style={{width:45, height:45}}></img>
 						</label>
 					):(
 						<div/>
@@ -613,7 +619,7 @@ const InputForm = () => {
 									/>
 								</a>
 								<div>
-								<button className="image-delete-button" style={{marginLeft:-30, marginTop:10, backgroundImage:"url('/assets/img/button_image_delete.png')"}}
+								<button className="image-delete-button" style={{marginLeft:-30, marginTop:10, backgroundImage:"url('/asset/img/button_image_delete.png')"}}
 									onClick={() => {
 										setNewOpen(
 										  produce((draft: any) => {
@@ -690,7 +696,7 @@ const InputForm = () => {
 											 accept="image/png, image/jpeg"
 											 multiple
 											 />
-											 <img src={'/assets/img/button_photo_add.png'} style={{width:45, height:25}}></img>
+											 <img src={'/asset/img/button_photo_add.png'} style={{width:45, height:25}}></img>
 										 </label>
 										<div>
 											{ item.temp_photo?.map((photoItem, photoIdx) => {
@@ -713,7 +719,7 @@ const InputForm = () => {
 																{photoItem.name}
 															</a>
 														<div>
-															<button className="image-delete-button" style={{backgroundImage:"url('/assets/img/button_image_delete.png')"}}
+															<button className="image-delete-button" style={{backgroundImage:"url('/asset/img/button_image_delete.png')"}}
 																onClick={() => {
 																	setMenuList(
 																	produce((draft: any) => {
@@ -774,7 +780,7 @@ const InputForm = () => {
 									accept="image/png, image/jpeg"
 									multiple
 									/>
-									<img src={'/assets/img/button_photo_add.png'} style={{width:45, height:25}}></img>
+									<img src={'/asset/img/button_photo_add.png'} style={{width:45, height:25}}></img>
 								</label>
 							<div>
 								{ newMenuPhoto?.map((item, idx) => {
@@ -796,7 +802,7 @@ const InputForm = () => {
 													{item.name}
 												</a>
 											<div>
-												<button className="image-delete-button" style={{backgroundImage:"url('/assets/img/button_image_delete.png')"}}
+												<button className="image-delete-button" style={{backgroundImage:"url('/asset/img/button_image_delete.png')"}}
 													onClick={() => {
 														setNewMenuPhoto(
 															produce((draft: any) => {
@@ -858,7 +864,7 @@ const InputForm = () => {
 									<span style={{marginTop:4}}>혜택에 기간이 있는 경우</span>
 								</div>
 								<div id={'event-calendar-'+idx} style={{display: "none", alignItems: "flex-start", marginTop:10, padding:10, backgroundColor:'#FFFFFF', border: '1px solid #D1D1D1', borderRadius:5}}>
-									<img src={'/assets/img/icon_calendar.png'} style={{width:20, height:20, marginRight:10}}></img>
+									<img src={'/asset/img/icon_calendar.png'} style={{width:20, height:20, marginRight:10}}></img>
 									<div style={{width:1, height:20, backgroundColor:'#D1D1D1', marginRight:10}}/>
 									<DatePickerComponent pStartDate={item.startDate} pEndDate={item.endDate}  setSearchDateString={(data) => setEventStartDate(data, idx)} setSelectedEndDateString={(data) => setEventEndDate(data, idx)} isRangeSearch={true}/>
 								</div>
@@ -901,7 +907,7 @@ const InputForm = () => {
 							<span style={{marginTop:4}}>혜택에 기간이 있는 경우</span>
 						</div>
 						<div id="new-event-calendar" style={{display: "none", alignItems: "flex-start", marginTop:10, padding:10, backgroundColor:'#FFFFFF', border: '1px solid #D1D1D1', borderRadius:5}}>
-							<img src={'/assets/img/icon_calendar.png'} style={{width:20, height:20, marginRight:10}}></img>
+							<img src={'/asset/img/icon_calendar.png'} style={{width:20, height:20, marginRight:10}}></img>
 							<div style={{width:1, height:20, backgroundColor:'#D1D1D1', marginRight:10}}/>
 							<DatePickerComponent pStartDate={startDate} pEndDate={endDate} setSearchDateString={(data) => setStartDate(data)} setSelectedEndDateString={(data) => setEndDate(data)} isRangeSearch={true}/>
 						</div>
@@ -911,7 +917,7 @@ const InputForm = () => {
 						11. 정식 오픈일(옵션)
 					</div>
 					<div style={{display: "flex", alignItems: "flex-start", marginTop:10, padding:10, backgroundColor:'#FFFFFF', border: '1px solid #D1D1D1', borderRadius:5, width:160}}>
-						<img src={'/assets/img/icon_calendar.png'} style={{width:20, height:20, marginRight:10}}></img>
+						<img src={'/asset/img/icon_calendar.png'} style={{width:20, height:20, marginRight:10}}></img>
 						<div style={{width:1, height:20, backgroundColor:'#D1D1D1', marginRight:10}}/>
 						<DatePickerComponent pStartDate={new Date()} pEndDate={new Date()}  setSearchDateString={(data) => setOpenDate(data)} setSelectedEndDateString={(data) => {}} isRangeSearch={false}/>
 					</div>
