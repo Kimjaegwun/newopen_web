@@ -22,8 +22,17 @@ code {
 @font-face {
   font-family: "apple";
   src: local("Apple SD Gothic Neo"),
-  local("나눔고딕");
+    local("나눔고딕");
 }
+
+@font-face {
+  font-family: 'Nanum Myeongjo';
+  font-style: normal;
+  font-weight: 400;
+  src: url("https://fonts.gstatic.com/s/nanummyeongjo/v15/9Btx3DZF0dXLMZlywRbVRNhxy1LueHI8j7a277xGHHfvDTP5cQDfPh1ShL-7.0.woff2") format('woff2');
+  unicode-range: "U+f9ca-fa0b", "U+ff03-ff05", "U+ff07", "U+ff0a-ff0b", "U+ff0d-ff19", "U+ff1b", "U+ff1d", "U+ff20-ff5b", "U+ff5d", "U+ffe0-ffe3", "U+ffe5-ffe6";
+}
+
 
 input {
   width: 335px;
