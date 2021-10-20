@@ -12,7 +12,7 @@ import Login from "./pages/Login/Login";
 import Join from "./pages/SignUp/SignUp";
 import InputForm from "./pages/InputForm/InputForm";
 
-import MainMobile from "./pages/MainMobile";
+import MainMobile from "./pages/MainMobile"
 
 function App() {
   // const [authToken, setAuthToken] = useState("");

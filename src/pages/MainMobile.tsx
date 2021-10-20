@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-// import { gql, useMutation } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { Dropdown, Tabs } from "antd";
 import { Carousel } from "react-responsive-carousel";
+import {GET_NEW_OPEN} from "./mutation.gql"
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Modal from "react-modal";
 import HorizontalCarousel from "./components_mobile/HorizontalCarousel";
@@ -52,6 +53,21 @@ const MainMobile = () => {
     set_menu_modal(false);
     flag_change();
   };
+
+  // 쿠폰 모달
+  const [coupon_modal, set_coupon_modal] = useState(false);
+  const close_coupon_modal = () => {
+    set_coupon_modal(false);
+    flag_change();
+  };
+
+  // 가게들 가져오기
+  const [stores, set_stores] = useState([])
+  useQuery(GET_NEW_OPEN, {
+    onCompleted: (data) => {
+      set_stores(data.GetNewOpen.newOpen)
+    }
+  })
 
   return (
     <>
@@ -227,6 +243,10 @@ const MainMobile = () => {
             <div
               className="menu-styles"
               style={{ padding: "10px 20px 10px 5px" }}
+              onClick={() => {
+                set_coupon_modal(true);
+                flag_change();
+              }}
             >
               <div className="coupon-font">
                 <img
@@ -341,6 +361,67 @@ const MainMobile = () => {
             <div className="menu-bar" />
             <div className="menu-price">4,000원</div>
           </div>
+        </StyledModal>
+      </Modal>
+
+      <Modal
+        style={{
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+            borderRadius: "10px",
+            width: windowDimensions.width - 100,
+          },
+        }}
+        isOpen={coupon_modal}
+        onRequestClose={close_coupon_modal}
+        ariaHideApp={false}
+      >
+        <StyledModal>
+          <img
+            className="close"
+            src="../../asset/a-icon-cancle-normal.png"
+            alt="close"
+            onClick={() => {
+              set_coupon_modal(false);
+              flag_change();
+            }}
+            style={{ marginLeft: windowDimensions.width - 130 }}
+          />
+
+          <div className="brand-menu-detail" style={{ marginBottom: "30px" }}>
+            선유기지 방문 혜택
+          </div>
+
+          <section
+            className="coupon-list"
+            style={{
+              backgroundImage: "url(../../asset/image_coupone_blue.png)",
+              width: "100%",
+              height: "auto",
+              backgroundSize: "cover",
+              borderRadius: "10px",
+            }}
+          >
+            <div className="column">
+              <div className="coupon-number">
+                <div className="coupon-content" style={{ flex: 1 }}>
+                  혜택1
+                </div>
+                <div className="coupon-content">선유기지</div>
+              </div>
+              <div className="coupon-detail">아메리카노 1,000원 할인</div>
+              <div className="coupon-date">2021.10.15 ~ 2021.10.31</div>
+
+              <div className="coupon-container">
+                <div className="coupon-button">쿠폰 발급받기</div>
+              </div>
+            </div>
+          </section>
         </StyledModal>
       </Modal>
     </>
@@ -554,6 +635,11 @@ const StyledModal = styled.div`
   align-items: center;
   height: 500px;
 
+  .column {
+    display: flex;
+    flex-direction: column;
+  }
+
   .brand-menu-detail {
     font-size: 22px;
     font-weight: bold;
@@ -613,5 +699,53 @@ const StyledModal = styled.div`
     height: 0.5px;
     flex: 1;
     margin: 0px 5px;
+  }
+
+  .coupon-number {
+    display: flex;
+    flex-direction: row;
+    padding: 25px 25px 13px 25px;
+  }
+
+  .coupon-content {
+    font-size: 17px;
+    font-weight: bold;
+    color: #ffffff;
+    z-index: 999;
+    margin-bottom: 24px;
+  }
+
+  .coupon-detail {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    z-index: 999;
+    padding: 0px 25px;
+    margin-bottom: 12px;
+  }
+
+  .coupon-date {
+    font-size: 16px;
+    color: #bababa;
+    z-index: 999;
+    padding: 0px 25px;
+    margin-bottom: 25px;
+  }
+
+  .coupon-container {
+    z-index: 999;
+    justify-content: center;
+    display: flex;
+  }
+
+  .coupon-button {
+    padding: 8px 25px;
+    border-radius: 5px;
+    background-color: #2d2d2d;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 20px;
   }
 `;

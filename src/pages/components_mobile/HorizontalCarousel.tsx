@@ -59,7 +59,14 @@ const HorizontalCarousel = ({ flag, flag_change }) => {
 
   return (
     <Styled>
-      <div className="view-port" style={{ width: windowDimensions.width }}>
+      <div
+        className="view-port"
+        style={{
+          width: windowDimensions.width,
+          height: "160px",
+          marginTop: "15px",
+        }}
+      >
         {/* <button
           className="previous-button"
           onClick={handle_previous}
@@ -129,6 +136,9 @@ const Styled = styled.div`
     width: 522px;
     overflow: scroll;
     display: flex;
+    ::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .card-container {

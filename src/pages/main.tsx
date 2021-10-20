@@ -1,8 +1,9 @@
 import { useState } from "react";
-// import { gql, useMutation } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { Button, Dropdown } from "antd";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { GET_NEW_OPEN } from "./mutation.gql";
 import Modal from "react-modal";
 import HorizontalCarousel from "./components/HorizontalCarousel";
 import styled from "styled-components";
@@ -24,15 +25,26 @@ const Main = () => {
   const [menu_modal, set_menu_modal] = useState(false);
   const close_menu_modal = () => {
     set_menu_modal(false);
-    flag_change()
+    flag_change();
   };
 
   // 쿠폰 모달
   const [coupon_modal, set_coupon_modal] = useState(false);
   const close_coupon_modal = () => {
     set_coupon_modal(false);
-    flag_change()
+    flag_change();
   };
+
+  // 가게들 가져오기
+  const [stores, set_stores] = useState([]);
+  useQuery(GET_NEW_OPEN, {
+    onCompleted: (data) => {
+      console.log(data, "start")
+      set_stores(data.GetNewOpen.newOpen);
+    },
+  });
+
+  console.log(stores)
 
   return (
     <>
@@ -95,183 +107,184 @@ const Main = () => {
         </div>
 
         {/* 브랜드 컨테이너 */}
-        <div className="new-open-container">
-          <div className="column">
-            <div className="logo">로고</div>
-            <div className="remain-open">정식오픈</div>
-            <div
-              className="remain-open"
-              style={{
-                marginTop: "-1px",
-                fontSize: "24px",
-                fontFamily: "NanumMyeongjo",
-              }}
-            >
-              D-7
-            </div>
-          </div>
-          <div className="content-container">
-            <div className="category-container">
-              <div className="category-name">#카페</div>
-              <div className="like-numb">
-                👀
-                <span style={{ marginLeft: "10px" }}>
-                  123명이 혜택을 받았네요!
-                </span>
-              </div>
-            </div>
-
-            <div className="brand-container">
-              <div className="brand-contents">
-                <div className="brand-name-position">
-                  <div className="brand-name">선유기지</div>
-                  <div className="brand-position">
-                    서울 영등포구 선유로51길1
-                  </div>
-                </div>
-                <div className="brand-description">
-                  ‘도시 틈 속에서 낭만을 추구하는 우리만의 비밀기지’라는
-                  콘셉트로 꾸며진 카페 선유기지입니다.
-                </div>
-                <div className="brand-time-tel">
-                  <div className="brand-time">
-                    <div className="brand-time-name">
-                      <img
-                        className="time-image"
-                        src="../../asset/a-icon-time-normal.png"
-                        alt="time"
-                      />
-                      Time
-                    </div>
-                    <div className="operation-time">
-                      영업중 : 12:00 ~ 22:00
-                      <Dropdown
-                        trigger={["hover"]}
-                        onVisibleChange={(e) => {
-                          set_operation_visible(e);
-                        }}
-                        visible={operation_visible}
-                        destroyPopupOnHide={true}
-                        arrow={false}
-                        overlay={
-                          <div>
-                            <div>월요일: 09:00 ~ 20:00</div>
-                            <div>화요일: 09:00 ~ 20:00</div>
-                            <div>일요일: 휴무</div>
-                          </div>
-                        }
-                        overlayStyle={{
-                          position: "absolute",
-                          backgroundColor: "rgba(0, 0, 0, 0.85)",
-                          padding: "14px",
-                          fontSize: "14px",
-                          lineHeight: "19px",
-                          color: "#FFFFFF",
-                          borderRadius: "5px",
-                          display: operation_visible ? "flex" : "none",
-                        }}
-                      >
-                        <img
-                          className="time-image"
-                          style={{ marginLeft: "5px" }}
-                          src="../../asset/button_more_info_arrow.png"
-                          alt="time"
-                        />
-                      </Dropdown>
-                    </div>
-                  </div>
-                  <div className="brand-tel">
-                    <div className="brand-time-name">
-                      <img
-                        className="time-image"
-                        src="../../asset/a-icon-phone-normal.png"
-                        alt="tel"
-                      />
-                      Tel
-                    </div>
-                    <div
-                      className="operation-time"
-                      style={{ textDecoration: "underline" }}
-                    >
-                      02-820-1258
-                    </div>
-                  </div>
+        {stores.map((store, str_idx) => {
+          return (
+            <div className="new-open-container">
+              <div className="column">
+                <div className="logo">로고</div>
+                <div className="remain-open">정식오픈</div>
+                <div
+                  className="remain-open"
+                  style={{
+                    marginTop: "-1px",
+                    fontSize: "24px",
+                    fontFamily: "NanumMyeongjo",
+                  }}
+                >
+                  D-7
                 </div>
               </div>
+              <div className="content-container">
+                <div className="category-container">
+                  <div className="category-name">#카페</div>
+                  <div className="like-numb">
+                    👀
+                    <span style={{ marginLeft: "10px" }}>
+                      123명이 혜택을 받았네요!
+                    </span>
+                  </div>
+                </div>
 
-              <div className="brand-mall-image">
-                {/* 가게 안 이미지들 */}
-                <HorizontalCarousel
-                  flag_change={flag_change}
-                  flag={flag}
-                />
+                <div className="brand-container">
+                  <div className="brand-contents">
+                    <div className="brand-name-position">
+                      <div className="brand-name">선유기지</div>
+                      <div className="brand-position">
+                        서울 영등포구 선유로51길1
+                      </div>
+                    </div>
+                    <div className="brand-description">
+                      ‘도시 틈 속에서 낭만을 추구하는 우리만의 비밀기지’라는
+                      콘셉트로 꾸며진 카페 선유기지입니다.
+                    </div>
+                    <div className="brand-time-tel">
+                      <div className="brand-time">
+                        <div className="brand-time-name">
+                          <img
+                            className="time-image"
+                            src="../../asset/a-icon-time-normal.png"
+                            alt="time"
+                          />
+                          Time
+                        </div>
+                        <div className="operation-time">
+                          영업중 : 12:00 ~ 22:00
+                          <Dropdown
+                            trigger={["hover"]}
+                            onVisibleChange={(e) => {
+                              set_operation_visible(e);
+                            }}
+                            visible={operation_visible}
+                            destroyPopupOnHide={true}
+                            arrow={false}
+                            overlay={
+                              <div>
+                                <div>월요일: 09:00 ~ 20:00</div>
+                                <div>화요일: 09:00 ~ 20:00</div>
+                                <div>일요일: 휴무</div>
+                              </div>
+                            }
+                            overlayStyle={{
+                              position: "absolute",
+                              backgroundColor: "rgba(0, 0, 0, 0.85)",
+                              padding: "14px",
+                              fontSize: "14px",
+                              lineHeight: "19px",
+                              color: "#FFFFFF",
+                              borderRadius: "5px",
+                              display: operation_visible ? "flex" : "none",
+                            }}
+                          >
+                            <img
+                              className="time-image"
+                              style={{ marginLeft: "5px" }}
+                              src="../../asset/button_more_info_arrow.png"
+                              alt="time"
+                            />
+                          </Dropdown>
+                        </div>
+                      </div>
+                      <div className="brand-tel">
+                        <div className="brand-time-name">
+                          <img
+                            className="time-image"
+                            src="../../asset/a-icon-phone-normal.png"
+                            alt="tel"
+                          />
+                          Tel
+                        </div>
+                        <div
+                          className="operation-time"
+                          style={{ textDecoration: "underline" }}
+                        >
+                          02-820-1258
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="brand-mall-image">
+                    {/* 가게 안 이미지들 */}
+                    <HorizontalCarousel flag_change={flag_change} flag={flag} />
+
+                    <div className="row">
+                      <div className="menu-coupon">
+                        <div
+                          className="menu"
+                          onClick={() => {
+                            set_menu_modal(true);
+                            flag_change();
+                          }}
+                        >
+                          메뉴 더보기
+                        </div>
+                        <div
+                          className="coupon"
+                          onClick={() => {
+                            set_coupon_modal(true);
+                            flag_change();
+                          }}
+                        >
+                          <img
+                            className="coupon-image"
+                            src="../../asset/a-icon-reply-normal.png"
+                            alt="main-menu"
+                          />
+                          방문 혜택 보기
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="main-menu">
+                  <img
+                    className="main-menu-image"
+                    src="../../asset/rectangle.png"
+                    alt="main-menu"
+                  />
+                  대표메뉴
+                </div>
 
                 <div className="row">
-                  <div className="menu-coupon">
-                    <div
-                      className="menu"
-                      onClick={() => {
-                        set_menu_modal(true);
-                        flag_change()
-                      }}
-                    >
-                      메뉴 더보기
+                  <div className="menu-container">
+                    <img
+                      className="menu-image"
+                      src="../../asset/screen_shot.png"
+                      alt="menu"
+                    />
+                    <div className="menu-name">
+                      <div className="menu-name-detail">아메리카노</div>
+                      <div className="menu-price">3,500원</div>
                     </div>
-                    <div
-                      className="coupon"
-                      onClick={() => {
-                        set_coupon_modal(true);
-                        flag_change()
-                      }}
-                    >
-                      <img
-                        className="coupon-image"
-                        src="../../asset/a-icon-reply-normal.png"
-                        alt="main-menu"
-                      />
-                      방문 혜택 보기
+                  </div>
+
+                  <div className="menu-container">
+                    <img
+                      className="menu-image"
+                      src="../../asset/screen_shot.png"
+                      alt="menu"
+                    />
+                    <div className="menu-name">
+                      <div className="menu-name-detail">아메리카노</div>
+                      <div className="menu-price">3,500원</div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
-            <div className="main-menu">
-              <img
-                className="main-menu-image"
-                src="../../asset/rectangle.png"
-                alt="main-menu"
-              />
-              대표메뉴
-            </div>
-
-            <div className="row">
-              <div className="menu-container">
-                <img
-                  className="menu-image"
-                  src="../../asset/screen_shot.png"
-                  alt="menu"
-                />
-                <div className="menu-name">
-                  <div className="menu-name-detail">아메리카노</div>
-                  <div className="menu-price">3,500원</div>
-                </div>
-              </div>
-
-              <div className="menu-container">
-                <img
-                  className="menu-image"
-                  src="../../asset/screen_shot.png"
-                  alt="menu"
-                />
-                <div className="menu-name">
-                  <div className="menu-name-detail">아메리카노</div>
-                  <div className="menu-price">3,500원</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+          );
+        })}
       </Styled>
 
       <Modal
@@ -298,7 +311,7 @@ const Main = () => {
             alt="close"
             onClick={() => {
               set_menu_modal(false);
-              flag_change()
+              flag_change();
             }}
           />
 
@@ -406,7 +419,7 @@ const Main = () => {
             alt="close"
             onClick={() => {
               set_coupon_modal(false);
-              flag_change()
+              flag_change();
             }}
           />
 
@@ -427,17 +440,13 @@ const Main = () => {
                 </div>
                 <div className="coupon-content">선유기지</div>
               </div>
-              <div className="coupon-detail">
-                아메리카노 1,000원 할인
-              </div>
+              <div className="coupon-detail">아메리카노 1,000원 할인</div>
               <div className="coupon-date">
                 2021년 10월 15일 ~ 2021년 10월 31일 까지
               </div>
 
               <div className="coupon-container">
-                <div className="coupon-button">
-                  쿠폰 발급받기
-                </div>
+                <div className="coupon-button">쿠폰 발급받기</div>
               </div>
             </div>
           </div>
@@ -899,14 +908,14 @@ const StyledModal = styled.div`
 
   .coupon-container {
     z-index: 999;
-    justify-content:center;
-    display: flex
+    justify-content: center;
+    display: flex;
   }
 
   .coupon-button {
     padding: 8px 25px;
     border-radius: 5px;
-    background-color: #2D2D2D;
+    background-color: #2d2d2d;
     color: #ffffff;
     font-size: 14px;
     font-weight: 700;
