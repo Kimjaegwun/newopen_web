@@ -1,8 +1,16 @@
-import { BrowserRouter as Router } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Redirect,
+  Switch,
+ } from "react-router-dom";
 import { isMobile } from "react-device-detect";
-
 import "./App.css";
-import Main from "./pages/Main";
+
+import Main from "./pages/main";
+import Login from "./pages/Login/Login";
+import Join from "./pages/SignUp/SignUp";
+
 import MainMobile from "./pages/MainMobile";
 
 function App() {
@@ -19,7 +27,12 @@ function App() {
   const main_page = () =>
     !isMobile ? (
       <>
-        <Main />
+        <Switch>
+          <Route exact path="/" component={Main}/>
+          <Route exact path="/StoreLogin" component={Login}/>
+          <Route exact path="/StoreSignUp" component={Join}/>
+          <Redirect from="*" to="/" />
+        </Switch>
       </>
     ) : (
       <>
