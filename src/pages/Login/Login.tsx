@@ -36,11 +36,13 @@ const Login = () => {
 			emptyInput('#login-pw');
 		}
 
-		if(loginId.val() == '' || loginPw.val() == ''){
+		const login_id = loginId.val();
+		const login_pw = loginPw.val() 
+
+		if(login_id == '' || login_pw== ''){
 			return;
 		}
-
-		const { data: NewOpenLogin } = await newOpenLogin({ variables: { loginId: loginId.val(), loginPw: loginPw.val() }});
+		const { data: NewOpenLogin } = await newOpenLogin({ variables: { login_id, login_pw}});
 
 		const result = NewOpenLogin.NewOpenLogin;
 
@@ -53,7 +55,7 @@ const Login = () => {
 
 		setUserToken(result.token);
 		
-		window.location.href = '/InputFormLogin';
+		window.location.href = '/InputForm';
 	};
 
 	const emptyInput = (id) => {

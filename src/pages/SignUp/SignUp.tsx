@@ -14,6 +14,7 @@ const SISGN_UP_NEW_OPEN = gql`
 		SignUpNewOpen(login_id: $login_id, login_pw: $login_pw) {
 			ok
 			error
+			token
 		}
 	}
 `;
@@ -36,12 +37,14 @@ const SignUp = () => {
 			emptyInput('#login-pw');
 		}
 
-		if(loginId.val() == '' || loginPw.val() == ''){
+		const login_id = loginId.val();
+		const login_pw = loginPw.val() 
+
+		if(login_id == '' || login_pw== ''){
 			return;
 		}
 
-		const { data: SignUpNewOpen } = await signUpNewOpen({ variables: { loginId: loginId.val(), loginPw: loginPw.val() }});
-
+		const { data: SignUpNewOpen } = await signUpNewOpen({ variables: { login_id, login_pw }});
 		const result = SignUpNewOpen.SignUpNewOpen;
 
 		if (!result.ok) {
@@ -53,7 +56,7 @@ const SignUp = () => {
 
 		setUserToken(result.token);
 		
-		window.location.href = '/InputFormLogin';
+		window.location.href = '/InputForm';
 	};
 
 	const emptyInput = (id) => {
@@ -104,7 +107,7 @@ const SignUp = () => {
 
 				<div style={{marginTop:20}}>
 					<span id='login-fail' style={{marginBottom:10, float:'left', fontSize:'12px', color:'#FF2E4C', display:'none'}}>
-						아이디 혹은 비밀번호가 잘못 입력되었습니다.
+						아이디가 중복 되었습니다.
 					</span>
 					<button className="grey-button" style={{width:335, cursor:'pointer'}} onClick={() => onFinish()}>가입하기</button>
 				</div>
