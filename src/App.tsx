@@ -3,6 +3,7 @@ import { isMobile } from "react-device-detect";
 
 import "./App.css";
 import Main from "./pages/Main";
+import MainMobile from "./pages/MainMobile";
 
 function App() {
   // const [authToken, setAuthToken] = useState("");
@@ -21,7 +22,9 @@ function App() {
         <Main />
       </>
     ) : (
-      <></>
+      <>
+        <MainMobile />
+      </>
     );
 
   return (

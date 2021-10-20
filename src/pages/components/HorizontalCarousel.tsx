@@ -4,7 +4,8 @@ import "../../index.css";
 
 import Card from "./Card";
 
-const HorizontalCarousel = ({ menu_modal, coupon_modal }) => {
+const HorizontalCarousel = ({ flag, flag_change }) => {
+
   const [current_card, set_current_card] = useState(0);
   const [card_container, set_card_container] = useState({
     transitionDuration: "0.5s",
@@ -42,7 +43,9 @@ const HorizontalCarousel = ({ menu_modal, coupon_modal }) => {
         <button
           className="previous-button"
           onClick={handle_previous}
-          style={{ display: !menu_modal && !coupon_modal ? "flex" : "none" }}
+          style={{
+            display: !flag ? "flex" : "none",
+          }}
         >
           {"〈"}
         </button>
@@ -56,28 +59,34 @@ const HorizontalCarousel = ({ menu_modal, coupon_modal }) => {
             card={
               "https://firebasestorage.googleapis.com/v0/b/new-open-35265.appspot.com/o/temp_image%2Fimage_1.png?alt=media&token=f374ac46-1bc5-4903-8f21-0cc10960d286"
             }
+            flag_change={flag_change}
           />
           <Card
             card={
               "https://firebasestorage.googleapis.com/v0/b/new-open-35265.appspot.com/o/temp_image%2Fimage_2.png?alt=media&token=508aea55-ce56-457e-9d9d-c1700f64c3b9"
             }
+            flag_change={flag_change}
           />
           <Card
             card={
               "https://firebasestorage.googleapis.com/v0/b/new-open-35265.appspot.com/o/temp_image%2Fimage_3.png?alt=media&token=7d6f9ac7-9563-4531-ae99-63a1f61a1d5d"
             }
+            flag_change={flag_change}
           />
           <Card
             card={
               "https://firebasestorage.googleapis.com/v0/b/new-open-35265.appspot.com/o/temp_image%2Fimage_4.png?alt=media&token=c4edfb8a-24a8-49f5-94b4-307164106d4e"
             }
+            flag_change={flag_change}
           />
         </div>
 
         <button
           className="next-button"
           onClick={handle_next}
-          style={{ display: !menu_modal && !coupon_modal ? "flex" : "none" }}
+          style={{
+            display: !flag ? "flex" : "none",
+          }}
         >
           {"〉"}
         </button>

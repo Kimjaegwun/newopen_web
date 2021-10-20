@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { gql, useMutation } from "@apollo/client";
+// import { gql, useMutation } from "@apollo/client";
 import { Button, Dropdown } from "antd";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -11,20 +11,27 @@ import "../index.css";
 Modal.setAppElement();
 
 const Main = () => {
+  const [flag, set_flag] = useState(false);
+  const flag_change = () => {
+    set_flag(!flag);
+  };
+
   const category_list = ["전체", "카페", "밥집", "술집"];
   const [select_category, set_select_category] = useState("전체");
   const [operation_visible, set_operation_visible] = useState(false);
 
-  // 메뉴 모달
+  // 메뉴 사진 모달
   const [menu_modal, set_menu_modal] = useState(false);
   const close_menu_modal = () => {
     set_menu_modal(false);
+    flag_change()
   };
 
   // 쿠폰 모달
   const [coupon_modal, set_coupon_modal] = useState(false);
   const close_coupon_modal = () => {
     set_coupon_modal(false);
+    flag_change()
   };
 
   return (
@@ -50,7 +57,7 @@ const Main = () => {
             showArrows={false}
             emulateTouch={true}
             infiniteLoop
-            showIndicators={!menu_modal && !coupon_modal ? true : false}
+            showIndicators={!flag}
           >
             <div className="banner" />
             <div className="banner" style={{ backgroundColor: "lightgreen" }} />
@@ -194,7 +201,10 @@ const Main = () => {
 
               <div className="brand-mall-image">
                 {/* 가게 안 이미지들 */}
-                <HorizontalCarousel menu_modal={menu_modal} coupon_modal={coupon_modal} />
+                <HorizontalCarousel
+                  flag_change={flag_change}
+                  flag={flag}
+                />
 
                 <div className="row">
                   <div className="menu-coupon">
@@ -202,13 +212,18 @@ const Main = () => {
                       className="menu"
                       onClick={() => {
                         set_menu_modal(true);
+                        flag_change()
                       }}
                     >
                       메뉴 더보기
                     </div>
-                    <div className="coupon" onClick={() => {
-                      set_coupon_modal(true)
-                    }}>
+                    <div
+                      className="coupon"
+                      onClick={() => {
+                        set_coupon_modal(true);
+                        flag_change()
+                      }}
+                    >
                       <img
                         className="coupon-image"
                         src="../../asset/a-icon-reply-normal.png"
@@ -283,6 +298,7 @@ const Main = () => {
             alt="close"
             onClick={() => {
               set_menu_modal(false);
+              flag_change()
             }}
           />
 
@@ -389,12 +405,50 @@ const Main = () => {
             src="../../asset/a-icon-cancle-normal.png"
             alt="close"
             onClick={() => {
-              set_menu_modal(false);
+              set_coupon_modal(false);
+              flag_change()
             }}
           />
 
-          <div className="brand-menu-detail">선유기지 방문 혜택</div>
-          
+          <div className="brand-menu-detail" style={{ marginBottom: "30px" }}>
+            선유기지 방문 혜택
+          </div>
+
+          <div className="coupon-list">
+            <img
+              src="../../asset/image_coupone_blue.png"
+              style={{ width: "444px", height: "212px", position: "absolute" }}
+              alt="coupon"
+            />
+            <div className="column">
+              <div className="coupon-number">
+                <div className="coupon-content" style={{ flex: 1 }}>
+                  혜택1
+                </div>
+                <div className="coupon-content">선유기지</div>
+              </div>
+              <div className="coupon-detail">
+                아메리카노 1,000원 할인
+              </div>
+              <div className="coupon-date">
+                2021년 10월 15일 ~ 2021년 10월 31일 까지
+              </div>
+
+              <div className="coupon-container">
+                <div className="coupon-button">
+                  쿠폰 발급받기
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="coupon-list">
+            <img
+              src="../../asset/image_coupone_blue.png"
+              style={{ width: "444px", height: "212px", position: "absolute" }}
+              alt="coupon"
+            />
+          </div>
         </StyledModal>
       </Modal>
     </>
@@ -803,5 +857,64 @@ const StyledModal = styled.div`
     margin-left: 480px;
     margin-top: 10px;
     cursor: pointer;
+  }
+
+  .coupon-list {
+    width: 444px;
+    height: 212px;
+    border-radius: 5px;
+    margin-bottom: 12px;
+  }
+
+  .coupon-number {
+    display: flex;
+    flex-direction: row;
+    padding: 25px 25px 13px 25px;
+  }
+
+  .coupon-content {
+    font-size: 17px;
+    font-weight: bold;
+    color: #ffffff;
+    z-index: 999;
+    margin-bottom: 24px;
+  }
+
+  .coupon-detail {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    z-index: 999;
+    padding: 0px 25px;
+    margin-bottom: 12px;
+  }
+
+  .coupon-date {
+    font-size: 16px;
+    color: #bababa;
+    z-index: 999;
+    padding: 0px 25px;
+    margin-bottom: 25px;
+  }
+
+  .coupon-container {
+    z-index: 999;
+    justify-content:center;
+    display: flex
+  }
+
+  .coupon-button {
+    padding: 8px 25px;
+    border-radius: 5px;
+    background-color: #2D2D2D;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
   }
 `;
