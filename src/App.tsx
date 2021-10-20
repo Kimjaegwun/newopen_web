@@ -32,7 +32,7 @@ function App() {
           <Route exact path="/" component={Main}/>
           <Route exact path="/StoreLogin" component={Login}/>
           <Route exact path="/StoreSignUp" component={Join}/>
-          <Route exact path="/InputForm" component={Join}/>
+          <Route exact path="/InputForm" component={InputForm}/>
           <Redirect from="*" to="/" />
         </Switch>
       </>

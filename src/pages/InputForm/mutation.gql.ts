@@ -2,6 +2,45 @@
 
 import { gql } from "@apollo/client";
 
+export const GET_NEW_OPEN = gql`
+  query {
+    GetNewOpen {
+      ok
+      error
+      newOpen {
+        id
+        login_id
+        login_pw
+        logo
+        business_type
+        brand_name
+        address
+        address_detail
+        description
+        store_number
+        business_hours
+        photo_in_mall
+        open_date
+        phone_number
+        menu {
+          id
+          name
+          price
+          photo
+        }
+        newOpenEvent{
+          id
+          content
+          date_check
+          start_date
+          end_date
+        }
+      }
+    }
+  }
+`;
+
+
 export const NEW_OPEN_ID_CHECK = gql`
 	mutation NewOpenIdCheck($login_id: String!) {
 		NewOpenIdCheck(login_id: $login_id) {
@@ -14,6 +53,16 @@ export const NEW_OPEN_ID_CHECK = gql`
 export const ADD_NEW_OPEN = gql`
   mutation AddNewOpen($newOpenData: NewOpenData!) {
     AddNewOpen(newOpenData: $newOpenData) {
+      ok
+      error
+    }
+  }
+`;
+
+
+export const UPDATE_NEW_OPEN = gql`
+  mutation UpdateNewOpen($updateNewOpenData: UpdateNewOpenData!) {
+    UpdateNewOpen(updateNewOpenData: $updateNewOpenData) {
       ok
       error
     }
