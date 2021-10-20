@@ -46,6 +46,13 @@ const MainMobile = () => {
     set_flag(!flag);
   };
 
+  // 메뉴 사진 모달
+  const [menu_modal, set_menu_modal] = useState(false);
+  const close_menu_modal = () => {
+    set_menu_modal(false);
+    flag_change();
+  };
+
   return (
     <>
       <Styled>
@@ -83,13 +90,10 @@ const MainMobile = () => {
           />
         </Carousel>
 
-        <Tabs
+        <div
+          className="category"
           style={{
-            marginTop: "10px",
             width: windowDimensions.width,
-            overflow: "hidden",
-            overflowX: "scroll",
-            marginBottom: "20px",
           }}
         >
           <div
@@ -126,7 +130,7 @@ const MainMobile = () => {
               }
             })}
           </div>
-        </Tabs>
+        </div>
 
         <div className="brand-container">
           <div
@@ -210,10 +214,135 @@ const MainMobile = () => {
           {/* 가게 안 이미지들 */}
           <HorizontalCarousel flag_change={flag_change} flag={flag} />
 
-          <div className="">
+          <div className="menu-coupon-container">
+            <div
+              className="menu-styles"
+              onClick={() => {
+                set_menu_modal(true);
+                flag_change();
+              }}
+            >
+              <div className="menu-font">메뉴 더보기</div>
+            </div>
+            <div
+              className="menu-styles"
+              style={{ padding: "10px 20px 10px 5px" }}
+            >
+              <div className="coupon-font">
+                <img
+                  src="../../asset/a-icon-reply-normal.png"
+                  style={{ width: "18px", height: "18px" }}
+                />
+                방문 혜택 보기
+              </div>
+            </div>
           </div>
+
+          <div style={{ height: "10px", backgroundColor: "#F6F6F6" }} />
         </div>
       </Styled>
+
+      <Modal
+        style={{
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+            borderRadius: "10px",
+            width: windowDimensions.width - 100,
+          },
+        }}
+        isOpen={menu_modal}
+        onRequestClose={close_menu_modal}
+        ariaHideApp={false}
+      >
+        <StyledModal>
+          <img
+            className="close"
+            src="../../asset/a-icon-cancle-normal.png"
+            alt="close"
+            onClick={() => {
+              set_menu_modal(false);
+              flag_change();
+            }}
+            style={{ marginLeft: windowDimensions.width - 130 }}
+          />
+
+          <div className="brand-menu-detail">선유기지의 메뉴</div>
+          <div className="brand-menu-description">
+            어머, 이건 꼭 먹어봐야해!
+          </div>
+
+          <Carousel
+            showThumbs={false}
+            showStatus={false}
+            axis={"horizontal"}
+            interval={100000}
+            autoPlay={false}
+            autoFocus={false}
+            width={windowDimensions.width - 100}
+            showArrows={true}
+            emulateTouch={true}
+            infiniteLoop
+            showIndicators={false}
+            onChange={(e) => {
+              console.log(e);
+            }}
+          >
+            <div
+              className="banner"
+              style={{
+                height: windowDimensions.width - 100,
+                width: windowDimensions.width - 100,
+              }}
+            />
+            <div
+              className="banner"
+              style={{
+                backgroundColor: "lightgreen",
+                height: windowDimensions.width - 100,
+                width: windowDimensions.width - 100,
+              }}
+            />
+          </Carousel>
+
+          {/* 사진 속 글 */}
+          <div
+            className="column"
+            style={{
+              width: windowDimensions.width - 100,
+              position: "absolute",
+              marginTop: windowDimensions.width - 70,
+              color: "#FFFFFF",
+            }}
+          >
+            <div className="menu-name">ㅁㅊ크로플</div>
+            <div className="menu-detail">
+              <div style={{ flex: 1 }}>4,000원</div>
+              <div>1/3</div>
+            </div>
+          </div>
+
+          {/* 메뉴 상세 */}
+          <div
+            className="brand-menu-container"
+            style={{ width: windowDimensions.width - 100, margin: "10px 0px" }}
+          >
+            <div className="menu-font" style={{ marginRight: "4px" }}>
+              ㅁㅊ크로플
+            </div>
+            <img
+              src="../../asset/button_photo_line.png"
+              style={{ width: "25px", height: "25px" }}
+            />
+            <div className="menu-bar" />
+            <div className="menu-price">4,000원</div>
+          </div>
+        </StyledModal>
+      </Modal>
     </>
   );
 };
@@ -244,6 +373,16 @@ const Styled = styled.div`
 
   .banner {
     background-color: #d8d2d2;
+  }
+
+  .category {
+    margin-top: 10px;
+    overflow: hidden;
+    overflow-x: scroll;
+    margin-bottom: 20px;
+    ::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .category-container {
@@ -375,5 +514,104 @@ const Styled = styled.div`
     flex-direction: row;
     margin: 5px 20px 10px;
     align-items: center;
+  }
+
+  .menu-coupon-container {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+    margin-bottom: 20px;
+  }
+
+  .menu-styles {
+    flex: 1;
+    padding: 10px 5px 10px 20px;
+  }
+
+  .menu-font {
+    border: 1px solid #e2e2e2;
+    color: #6c757d;
+    border-radius: 5px;
+    padding: 10px 0px;
+    font-size: 14px;
+  }
+
+  .coupon-font {
+    border: 1px solid #e2e2e2;
+    color: #ff2e4c;
+    border-radius: 5px;
+    padding: 10px 0px;
+    font-size: 14px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+`;
+
+const StyledModal = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 500px;
+
+  .brand-menu-detail {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  .brand-menu-description {
+    font-size: 14px;
+    color: #6c757d;
+    line-height: 24px;
+    margin-bottom: 20px;
+  }
+
+  .banner {
+    width: 500px;
+    height: 500px;
+    background-color: #fff9c1;
+    border-radius: 5px;
+  }
+
+  .close {
+    position: absolute;
+    width: 24px;
+  }
+
+  .menu-name {
+    font-size: 16px;
+    margin-left: 20px;
+    font-weight: bold;
+  }
+
+  .menu-detail {
+    display: flex;
+    flex-direction: row;
+    margin: 0px 20px;
+    font-size: 14px;
+  }
+
+  .brand-menu-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .menu-price {
+    color: #6c757d;
+    font-size: 14px;
+  }
+
+  .menu-font {
+    color: #6c757d;
+    font-size: 14px;
+  }
+
+  .menu-bar {
+    background-color: #6c757d;
+    height: 0.5px;
+    flex: 1;
+    margin: 0px 5px;
   }
 `;
