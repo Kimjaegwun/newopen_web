@@ -25,6 +25,7 @@ export const GET_NEW_OPEN = gql`
         menu {
           id
           name
+          main_menu
           price
           photo
         }

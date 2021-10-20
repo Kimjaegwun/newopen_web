@@ -564,6 +564,11 @@ const InputForm = () => {
 										<div style={{height:40, marginRight:6}}>
 											<input type="checkbox"  style={{width:20, height:20, borderRadius:5, marginTop:10}} checked={item.main_menu}
 												onChange={(e) => {
+													setMenuList(
+														produce((draft: any) => {
+															draft[idx].main_menu = e.target.checked;
+														})
+													);
 												}}/>
 										</div>
 										<div style={{ height:40}}>
