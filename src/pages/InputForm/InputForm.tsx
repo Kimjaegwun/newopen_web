@@ -95,13 +95,13 @@ const InputForm = () => {
 
 	// 영업 시간
 	const [businessHours, setBusinessHours] = useState([
-		{ day:'월', hour:'00:00 ~ 00:00', closed:true},
-		{ day:'화', hour:'00:00 ~ 00:00', closed:true},
-		{ day:'수', hour:'00:00 ~ 00:00', closed:true},
-		{ day:'목', hour:'00:00 ~ 00:00', closed:true},
-		{ day:'금', hour:'00:00 ~ 00:00', closed:true},
-		{ day:'토', hour:'00:00 ~ 00:00', closed:true},
-		{ day:'일', hour:'00:00 ~ 00:00', closed:true},
+		{ number:1, day:'월', start_hour:'00:00', end_hour:'00:00', closed:true},
+		{ number:2, day:'화', start_hour:'00:00', end_hour:'00:00', closed:true},
+		{ number:3, day:'수', start_hour:'00:00', end_hour:'00:00', closed:true},
+		{ number:4, day:'목', start_hour:'00:00', end_hour:'00:00', closed:true},
+		{ number:5, day:'금', start_hour:'00:00', end_hour:'00:00', closed:true},
+		{ number:6, day:'토', start_hour:'00:00', end_hour:'00:00', closed:true},
+		{ number:0, day:'일', start_hour:'00:00', end_hour:'00:00', closed:true},
 	]);
 
 	// 메뉴 정보
@@ -426,14 +426,21 @@ const InputForm = () => {
 						5. 가게 설명
 					</div>
 					<div>
-						<textarea id="description" placeholder="고객에 어필할 수 있는 짧은 홍보글을 입력하세요" style={{resize:'none', width:360, height:80, border:"1px solid #D1D1D1", borderRadius:5, padding:10}}
+						<textarea id="description" placeholder="고객에 어필할 수 있는 짧은 홍보글을 입력하세요" wrap="off" style={{resize:'none', width:360, height:80, border:"1px solid #D1D1D1", borderRadius:5, padding:10}}
+							rows={3}
 						 	value={ !newOpen?.description ? '' : newOpen?.description }
 							onChange={ (e) => {
-								setNewOpen(
-									produce((draft: any) => {
-										draft.description = e.target.value;
-									})
-								);
+								const rows = e.target.rows;
+								const numberOfLines = (e.target.value.match(/\n/g) || []).length + 1;
+								if(numberOfLines > rows){
+									return;
+								}else{
+									setNewOpen(
+										produce((draft: any) => {
+											draft.description = e.target.value;
+										})
+									);	
+								}
 							}}/>
 					</div>
 
@@ -445,8 +452,8 @@ const InputForm = () => {
 						<input id="store_number" type='text' placeholder="000-0000-0000" style={{width:180, marginTop:7}}
 							value={ !newOpen?.store_number ? '' : newOpen?.store_number}
 							onChange={ (e) => {
-								const storeNumber = e.target.value;
-								const regex = /^[0-9\b -]{0,13}$/;
+								let storeNumber = e.target.value;
+								const regex = /^[0-9\b-]{0,13}$/;
 								if (regex.test(storeNumber)) {
 									setNewOpen(
 										produce((draft: any) => {
@@ -482,20 +489,33 @@ const InputForm = () => {
 						{businessHours.map((item, idx) => {
 							if(item.closed == false){
 								return (
-									<div style={{position:'relative'}} key={idx}>
-										<input type='text' placeholder="00:00 ~ 00:00" style={{width:'100%', marginTop:7, paddingLeft:100}}
-											value={item.hour}
+									<div style={{position:'relative', display: "flex", alignItems: "flex-start", marginTop:10, padding:10, backgroundColor:'#FFFFFF', border: '1px solid #D1D1D1', borderRadius:5, width:360, height:20}}
+									key={idx}>
+										<div style={{position:'absolute', top:12, left:15, borderRightWidth:1, borderRightColor:'#D1D1D1', fontSize:'14px', color:'#3E3F41'}}>{item.day}요일</div>
+										<div style={{position:'absolute', width:1, height:20, top:12, left:70, backgroundColor:'#D1D1D1'}}/>
+										<input type='time' placeholder="00:00 ~ 00:00" style={{width:140, border:'none', height:20, marginLeft:60}}
+											value={item.start_hour}
 											onChange={ (e) => {
 												const hour = e.target.value;
 												setBusinessHours(
 														produce((draft: any) => {
-															draft[idx].hour = hour;
+															draft[idx].start_hour = hour;
 														})
 													);
 												}
 											}/>
-											<div style={{position:'absolute', top:18, left:15, borderRightWidth:1, borderRightColor:'#D1D1D1', fontSize:'14px', color:'#3E3F41'}}>{item.day}요일</div>
-											<div style={{position:'absolute', width:1, height:20, top:18, left:70, backgroundColor:'#D1D1D1'}}/>
+										<div>~</div>
+										<input type='time' placeholder="00:00 ~ 00:00" style={{width:140, border:'none', height:20}}
+											value={item.end_hour}
+											onChange={ (e) => {
+												const hour = e.target.value;
+												setBusinessHours(
+														produce((draft: any) => {
+															draft[idx].end_hour = hour;
+														})
+													);
+												}
+											}/>
 									</div>
 								)
 							}
