@@ -9,6 +9,7 @@ import Modal from "react-modal";
 import HorizontalCarousel from "./components/HorizontalCarousel";
 import styled from "styled-components";
 import Footer from "./components/Footer";
+import proj4 from "proj4";
 import "../index.css";
 
 Modal.setAppElement();
@@ -144,6 +145,7 @@ const Main = () => {
               business_hours,
               phone_number,
               menu,
+              location,
             } = store;
 
             // 오픈 날짜 계산
@@ -165,6 +167,9 @@ const Main = () => {
             const find_day = business_hours?.find((item: any) => {
               return Number(item?.number) === new Date().getDay();
             });
+
+            const first =
+              "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
 
             return (
               <div className="new-open-container" key={str_idx}>
@@ -197,9 +202,41 @@ const Main = () => {
 
                   <div className="brand-container">
                     <div className="brand-contents">
-                      <div className="brand-name-position">
-                        <div className="brand-name">{brand_name}</div>
-                        <div className="brand-position">{address}</div>
+                      <div
+                        className="brand-name-position"
+                        style={{
+                          alignItems: "center",
+                          justifyContent: "flex-start",
+                          textAlign: "left",
+                        }}
+                      >
+                        <div
+                          className="brand-name"
+                          style={{ textAlign: "left" }}
+                        >
+                          {brand_name.slice(0, 6)}
+                          {brand_name?.length > 6 ? "..." : null}
+                        </div>
+                        <a
+                          href={`https://map.naver.com/v5/search?c=${
+                            proj4(first, [
+                              Number(location.lat),
+                              Number(location.lon),
+                            ])[0]
+                          },${
+                            proj4(first, [
+                              Number(location.lat),
+                              Number(location.lon),
+                            ])[1]
+                          },1,0,0,0,dh`}
+                          target="_blank"
+                          title="지도"
+                        >
+                          <div className="brand-position">
+                            {address?.slice(0, 20)}
+                            {address?.length > 20 ? "..." : null}
+                          </div>
+                        </a>
                       </div>
 
                       <Input.TextArea
@@ -404,7 +441,7 @@ const Main = () => {
               fontSize: "17px",
               fontWeight: "bold",
               marginBottom: "51px",
-              borderRadius: "33px"
+              borderRadius: "33px",
             }}
           >
             무료로 홍보하기

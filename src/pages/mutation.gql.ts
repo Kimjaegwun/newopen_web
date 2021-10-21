@@ -18,6 +18,7 @@ export const GET_All_NEW_OPEN = gql`
         open_date
         photo_in_mall
         phone_number
+        location
         menu {
           id
           name
