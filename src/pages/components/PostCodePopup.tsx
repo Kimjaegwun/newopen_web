@@ -44,7 +44,6 @@ const PostCodePopup = ({postCodeSuccess, modalClose} : any) => {
 						fullAddress += (extraAddress !== '' ? ` (${extraAddress})` : '');
 						}
 
-						postCodeSuccess(fullAddress);
 						
 						Promise.resolve(data).then(o => {
 							const { address } = data;
@@ -64,8 +63,8 @@ const PostCodePopup = ({postCodeSuccess, modalClose} : any) => {
 									}
 								});
 							})
-						}).then(result => {
-							console.log(result)
+						}).then(location => {
+							postCodeSuccess(fullAddress, location);
 						});
 
 						
