@@ -1,8 +1,3 @@
-import React from 'react';
-import { Form, Input, Button } from 'antd';
-import styled from 'styled-components';
-import { gql, useMutation } from '@apollo/client';
-
 import DaumPostcode from 'react-daum-postcode';
 
 const PostCodePopup = ({postCodeSuccess, modalClose} : any) => {

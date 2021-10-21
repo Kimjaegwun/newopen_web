@@ -29,7 +29,7 @@ export const GET_NEW_OPEN = gql`
           price
           photo
         }
-        newOpenEvent{
+        new_open_event{
           id
           content
           date_check

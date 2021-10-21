@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import $ from "jquery";
-import styled from 'styled-components';
 import { useMutation, useQuery } from '@apollo/client';
-import { deleteUserToken, getUserToken } from "../../utils/utils";
 
 import {GET_NEW_OPEN, NEW_OPEN_ID_CHECK, UPDATE_NEW_OPEN, ADD_NEW_OPEN} from "./mutation.gql";
 
@@ -31,6 +29,27 @@ const firebaseConfig = {
 const InputForm = () => {
 	const [newOpen, setNewOpen] = useState({} as any);
 
+	const [flag, set_flag] = useState(false);
+	const flag_change = () => {
+	  set_flag(!flag);
+	};
+
+	//영업시간 드롭다운
+	const [operation_visible, set_operation_visible] = useState(false);
+
+	// 메뉴 사진 모달
+	const [menu_modal, set_menu_modal] = useState(false);
+	const close_menu_modal = () => {
+		set_menu_modal(false);
+		flag_change()
+	};
+
+	// 쿠폰 모달
+	const [coupon_modal, set_coupon_modal] = useState(false);
+	const close_coupon_modal = () => {
+		set_coupon_modal(false);
+		flag_change()
+	};
 
   // New Open 정보 가져오기
   const { refetch } = useQuery(GET_NEW_OPEN, {
@@ -50,7 +69,7 @@ const InputForm = () => {
 			setMenuList(menu);
 		}
 
-		const newOpenEvent = newOpenData.newOpenEvent;
+		const newOpenEvent = newOpenData.new_open_event;
 		if(newOpenEvent){
 			setEventList(newOpenEvent);
 		}
@@ -95,6 +114,7 @@ const InputForm = () => {
 	const [startDate, setStartDate] = useState(new Date());
 	const [endDate, setEndDate] = useState(new Date());
 
+	//DataPicker Callback 함수
 	const setEventStartDate = (data, idx) => {
 		setEventList(
 		  produce((draft: any) => {
@@ -252,7 +272,7 @@ const InputForm = () => {
 	return (
 		<div style={{backgroundColor:'#F6F6F6', paddingTop:70}}>
 			<Header/>
-			<div>미리보기</div>
+			<div style={{width:1024, marginLeft:'auto', marginRight:'auto', marginTop:30, marginBottom:5, fontWeight:'bold', fontSize:"16px", lineHeight:"24px", textAlign:'left'}}>미리보기</div>
 
 			{/* 입력폼 */}
 			<div style={{ width:1024, marginTop:30, marginLeft:'auto', marginRight:'auto', border:"1px solid #E2E2E2", boxSizing:'border-box', borderRadius:10, backgroundColor:'#FFFFFF',
@@ -888,13 +908,6 @@ const InputForm = () => {
 				최대한 빠르게 내부 검토 후 게시가 시작됩니다.<br/>만일 수정사항이 있는 경우 담당자 번호로 연락 드리겠습니다.
 				</div>
 			</div>
-
-			{/* <Button
-			onClick={(e) => {
-				e.preventDefault();
-				deleteUserToken();
-				window.location.href = "/";
-			}}>로그아웃</Button> */}
 		</div>
 	);
 };
