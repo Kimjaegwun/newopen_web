@@ -10,18 +10,21 @@ const PostCodePopup = ({postCodeSuccess, modalClose} : any) => {
 			width: '100%',
 			height: '100vh',
 			backgroundColor: 'rgba(0,0,0,0.4)',
-			zIndex: 1,
+			zIndex: 9999,
 			}}
 			onClick={() => {
 				modalClose();
 			}}
 			>
 			<div style={{
+				padding:20,
+				borderRadius:10,
+				border:"1px solid #D1D1D1",
 				width:'400px',
-				height: '80vh',
+				height: '70vh',
 				marginLeft:'auto',
 				marginRight:'auto',
-				marginTop:50,
+				marginTop:70,
 				backgroundColor:'#FFFFFF'
 			}}>
 				<DaumPostcode
