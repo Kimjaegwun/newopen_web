@@ -73,7 +73,7 @@ const SignUp = () => {
 	};
 
 	return (
-		<div style={{backgroundColor:'#F6F6F6', paddingTop:70}}>
+		<div style={{backgroundColor:'#F6F6F6', paddingTop:70, height:"100%"}}>
 			<Header/>
 			<div style={{width:335, marginLeft:'auto', marginRight:'auto'}}>
 				<div style={{marginTop:60, marginBottom:40, fontWeight:'bold', fontSize:"20px", lineHeight:"31px", letterSpacing:-1, color:'#042045', backgroundColor:'#F6F6F6'}}>

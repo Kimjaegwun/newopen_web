@@ -16,12 +16,14 @@ export const GET_NEW_OPEN = gql`
         brand_name
         address
         address_detail
+        location
         description
         store_number
         business_hours
         photo_in_mall
         open_date
         phone_number
+        coupon_touch
         menu {
           id
           name
