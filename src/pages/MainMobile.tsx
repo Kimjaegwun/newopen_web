@@ -71,6 +71,12 @@ const MainMobile = () => {
     flag_change();
   };
 
+  const [scan_modal, set_scan_modal] = useState(false);
+  const close_scan_modal = () => {
+    set_scan_modal(false);
+  };
+  const [select_coupon, set_select_coupon] = useState({} as any);
+
   // 선택한 가게
   const [select_store, set_select_store] = useState({} as any);
   const [select_menu, set_select_menu] = useState("");
@@ -284,15 +290,20 @@ const MainMobile = () => {
                     style={{ height: "18px", width: "18px" }}
                   />
                   <div className="text-gray-font">Tel</div>
-                  <div
-                    className="operation-detail"
-                    style={{
-                      marginLeft: "30px",
-                      textDecorationLine: "underline",
-                    }}
+                  <a
+                    href={`tel:${phone_number}`}
+                    style={{ WebkitTapHighlightColor: "transparent" }}
                   >
-                    {phone_number}
-                  </div>
+                    <div
+                      className="operation-detail"
+                      style={{
+                        marginLeft: "30px",
+                        textDecorationLine: "underline",
+                      }}
+                    >
+                      {phone_number}
+                    </div>
+                  </a>
                 </div>
 
                 {/* 가게 안 이미지들 */}
@@ -318,10 +329,9 @@ const MainMobile = () => {
                     className="menu-styles"
                     style={{ padding: "10px 20px 10px 5px" }}
                     onClick={() => {
-                      set_menu_modal(true);
+                      set_coupon_modal(true);
                       flag_change();
                       set_select_store(store);
-                      set_select_menu(store?.menu[0]?.name);
                     }}
                   >
                     <div className="coupon-font">
@@ -338,6 +348,61 @@ const MainMobile = () => {
               </div>
             );
           })}
+
+        <div
+          style={{
+            backgroundColor: "#EAFAFF",
+            width: windowDimensions.width,
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "30px",
+              fontFamily: "yg-jalnan",
+              marginTop: "78px",
+            }}
+          >
+            이제 막 오픈한 내 가게!
+          </div>
+          <div
+            style={{
+              fontSize: "30px",
+              fontFamily: "yg-jalnan",
+            }}
+          >
+            어디에 처음 홍보해야
+          </div>
+          <div
+            style={{
+              fontSize: "30px",
+              fontFamily: "yg-jalnan",
+              marginBottom: "30px",
+            }}
+          >
+            할 지 막막하신가요?
+          </div>
+
+          <div
+            style={{
+              width: "218px",
+              height: "52px",
+              backgroundColor: "#2F80ED",
+              alignItems: "center",
+              display: "flex",
+              justifyContent: "center",
+              color: "#FFFFFF",
+              fontSize: "17px",
+              fontWeight: "bold",
+              marginBottom: "51px",
+              borderRadius: "33px",
+            }}
+          >
+            무료로 홍보하기
+          </div>
+        </div>
       </Styled>
 
       <Modal
@@ -389,8 +454,9 @@ const MainMobile = () => {
             infiniteLoop
             showIndicators={false}
             onChange={(e) => {
-              console.log(e);
+              set_select_menu_photo(e);
             }}
+            ref={carousel_ref}
           >
             {select_store?.menu
               ?.find((menu) => {
@@ -513,34 +579,108 @@ const MainMobile = () => {
           />
 
           <div className="brand-menu-detail" style={{ marginBottom: "30px" }}>
-            선유기지 방문 혜택
+            {select_store?.brand_name} 방문 혜택
           </div>
 
-          <section
-            className="coupon-list"
+          {select_store?.new_open_event?.map((event, event_idx) => {
+            return (
+              <section
+                className="coupon-list"
+                style={{
+                  backgroundImage: "url(../../asset/image_coupone_blue.png)",
+                  width: "100%",
+                  height: "auto",
+                  backgroundSize: "cover",
+                  borderRadius: "10px",
+                  marginBottom: "10px",
+                }}
+                key={event_idx}
+              >
+                <div className="column">
+                  <div className="coupon-number">
+                    <div className="coupon-content" style={{ flex: 1 }}>
+                      혜택{event_idx + 1}
+                    </div>
+                    <div className="coupon-content">
+                      {select_store?.brand_name}
+                    </div>
+                  </div>
+                  <div className="coupon-detail">{event?.content}</div>
+                  <div className="coupon-date">
+                    {event?.start_date} ~ {event?.end_date}
+                  </div>
+
+                  <div
+                    className="coupon-container"
+                    onClick={() => {
+                      set_scan_modal(true);
+                      set_select_coupon(event);
+                    }}
+                  >
+                    <div className="coupon-button">쿠폰 발급받기</div>
+                  </div>
+                </div>
+              </section>
+            );
+          })}
+        </StyledModal>
+      </Modal>
+
+      <Modal
+        style={{
+          content: {
+            top: "-1%",
+            left: "-1%",
+            bottom: "0%",
+            marginRight: "0%",
+            transform: "translate(0%, 0%)",
+            borderRadius: "10px",
+            width: windowDimensions.width,
+            background: "rgb(0,0,0,0.9)",
+          },
+        }}
+        isOpen={scan_modal}
+        onRequestClose={close_scan_modal}
+        ariaHideApp={false}
+      >
+        <StyledModal>
+          <div
             style={{
-              backgroundImage: "url(../../asset/image_coupone_blue.png)",
-              width: "100%",
-              height: "auto",
-              backgroundSize: "cover",
-              borderRadius: "10px",
+              width: windowDimensions.width,
+              height: windowDimensions.height,
+              alignItems: "center",
+              display: "flex",
+            }}
+            onClick={() => {
+              set_scan_modal(false);
             }}
           >
-            <div className="column">
-              <div className="coupon-number">
-                <div className="coupon-content" style={{ flex: 1 }}>
-                  혜택1
+            <section
+              className="coupon-list"
+              style={{
+                backgroundImage: "url(../../asset/image_coupone_blue.png)",
+                width: windowDimensions.width - 50,
+                backgroundSize: "cover",
+                borderRadius: "10px",
+                marginLeft: "1%",
+              }}
+            >
+              <div className="column">
+                <div className="coupon-number" style={{ marginTop: "10px" }}>
+                  <div className="coupon-content" style={{ flex: 1 }}>
+                    혜택
+                  </div>
+                  <div className="coupon-content">
+                    {select_store?.brand_name}
+                  </div>
                 </div>
-                <div className="coupon-content">선유기지</div>
+                <div className="coupon-detail">{select_coupon?.content}</div>
+                <div className="coupon-date" style={{ marginBottom: "40px" }}>
+                  {select_coupon?.start_date} ~ {select_coupon?.end_date}
+                </div>
               </div>
-              <div className="coupon-detail">아메리카노 1,000원 할인</div>
-              <div className="coupon-date">2021.10.15 ~ 2021.10.31</div>
-
-              <div className="coupon-container">
-                <div className="coupon-button">쿠폰 발급받기</div>
-              </div>
-            </div>
-          </section>
+            </section>
+          </div>
         </StyledModal>
       </Modal>
     </>
