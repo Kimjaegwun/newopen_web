@@ -55,8 +55,7 @@ const InputForm = () => {
   const { refetch } = useQuery(GET_NEW_OPEN, {
     notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
-		console.log(data.GetNewOpen.newOpen);
-		const newOpenData = data.GetNewOpen.newOpen;
+		const newOpenData = data.GetNewOpen.new_open;
 		setNewOpen(newOpenData);
 
 		const business_hours = newOpenData.business_hours;
