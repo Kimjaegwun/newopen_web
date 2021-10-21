@@ -181,6 +181,7 @@ const MainMobile = () => {
               business_hours,
               menu,
               phone_number,
+              location,
             } = store;
 
             // 오픈 날짜 계산
@@ -207,9 +208,17 @@ const MainMobile = () => {
                   <img className="brand-logo" src={logo} />
                   <div className="column" style={{ alignItems: "flex-start" }}>
                     <div className="brand-name">{brand_name}</div>
-                    <div className="brand-location">
-                      {address} {">"}
-                    </div>
+                    <a
+                      href={`https://m.map.naver.com/search2/search.naver?query=${encodeURI(
+                        location
+                      )}&sm=hty&style=v5#/map`}
+                      target="_blank"
+                      title="지도"
+                    >
+                      <div className="brand-location">
+                        {address} {">"}
+                      </div>
+                    </a>
                   </div>
                 </div>
 
