@@ -13,7 +13,7 @@ const getWindowDimensions = () => {
   };
 };
 
-const Card = ({ card, flag_change }) => {
+const Card = ({all, card, flag_change }) => {
   // 매장 사진 모달
   const [mall_modal, set_mall_modal] = useState(false);
   const close_mall_modal = () => {
@@ -88,8 +88,13 @@ const Card = ({ card, flag_change }) => {
               console.log(e);
             }}
           >
-            <div className="banner" style={{ height: windowDimensions.width - 100}} />
-            <div className="banner" style={{ backgroundColor: "lightgreen", height: windowDimensions.width - 100 }} />
+            {
+              all?.map((item, idx) => {
+                return (
+                  <img src={item} key={idx} style={{height: windowDimensions.width - 100}} />
+                )
+              })
+            }
           </Carousel>
 
           <div

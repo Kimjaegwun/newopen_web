@@ -68,7 +68,7 @@ const Main = () => {
           </div>
 
           {/* 배너 캐러셀 */}
-          <Carousel
+          {/* <Carousel
             showThumbs={false}
             showStatus={false}
             axis={"horizontal"}
@@ -80,10 +80,15 @@ const Main = () => {
             emulateTouch={true}
             infiniteLoop
             showIndicators={!flag}
-          >
-            <div className="banner" />
-            <div className="banner" style={{ backgroundColor: "lightgreen" }} />
-          </Carousel>
+          > */}
+          <div
+            style={{
+              backgroundImage: "url(../../asset/image_mainbanner_1440.png)",
+              width: "1440px",
+              height: "500px",
+            }}
+          />
+          {/* </Carousel> */}
         </div>
 
         <div className="category-list">
@@ -117,224 +122,248 @@ const Main = () => {
         </div>
 
         {/* 브랜드 컨테이너 */}
-        {stores.map((store: any, str_idx) => {
-          const {
-            logo,
-            business_type,
-            open_date,
-            brand_name,
-            address,
-            description,
-            photo_in_mall,
-            coupon_touch,
-            menu
-          } = store;
+        {stores
+          ?.filter((item: any) => {
+            if (select_category === "전체") {
+              return item;
+            } else {
+              return item?.business_type === select_category;
+            }
+          })
+          .map((store: any, str_idx) => {
+            const {
+              logo,
+              business_type,
+              open_date,
+              brand_name,
+              address,
+              description,
+              photo_in_mall,
+              coupon_touch,
+              business_hours,
+              phone_number,
+              menu,
+            } = store;
 
-          // 오픈 날짜 계산
-          const now = new Date().getTime();
-          const date_split = String(open_date).split("-");
-          const diff_day = Math.floor(
-            (new Date(
-              Number(date_split[0]),
-              Number(date_split[1]) - 1,
-              Number(date_split[2]),
-              0,
-              0,
-              0
-            ).getTime() -
-              now) /
-              (1000 * 3600 * 24)
-          );
+            // 오픈 날짜 계산
+            const now = new Date().getTime();
+            const date_split = String(open_date).split("-");
+            const diff_day = Math.floor(
+              (new Date(
+                Number(date_split[0]),
+                Number(date_split[1]) - 1,
+                Number(date_split[2]),
+                0,
+                0,
+                0
+              ).getTime() -
+                now) /
+                (1000 * 3600 * 24)
+            );
 
-          return (
-            <div className="new-open-container" key={str_idx}>
-              <div className="column">
-                <img className="logo" src={logo} />
-                <div className="remain-open">정식오픈</div>
-                <div
-                  className="remain-open"
-                  style={{
-                    marginTop: "-1px",
-                    fontSize: "24px",
-                    fontFamily: "NanumMyeongjo",
-                    display: diff_day <= 0 ? "none" : "flex",
-                    justifyContent: "center",
-                  }}
-                >
-                  D-{diff_day}
-                </div>
-              </div>
-              <div className="content-container">
-                <div className="category-container">
-                  <div className="category-name">#{business_type}</div>
-                  <div className="like-numb">
-                    👀
-                    <span style={{ marginLeft: "10px" }}>
-                      {coupon_touch || 0}명이 혜택을 받았네요!
-                    </span>
+            const find_day = business_hours?.find((item: any) => {
+              return Number(item?.number) === new Date().getDay()
+            })
+
+            return (
+              <div className="new-open-container" key={str_idx}>
+                <div className="column">
+                  <img className="logo" src={logo} />
+                  <div className="remain-open">정식오픈</div>
+                  <div
+                    className="remain-open"
+                    style={{
+                      marginTop: "-1px",
+                      fontSize: "24px",
+                      fontFamily: "NanumMyeongjo",
+                      display: diff_day <= 0 ? "none" : "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    D-{diff_day}
                   </div>
                 </div>
+                <div className="content-container">
+                  <div className="category-container">
+                    <div className="category-name">#{business_type}</div>
+                    <div className="like-numb">
+                      👀
+                      <span style={{ marginLeft: "10px" }}>
+                        {coupon_touch || 0}명이 혜택을 받았네요!
+                      </span>
+                    </div>
+                  </div>
 
-                <div className="brand-container">
-                  <div className="brand-contents">
-                    <div className="brand-name-position">
-                      <div className="brand-name">{brand_name}</div>
-                      <div className="brand-position">{address}</div>
+                  <div className="brand-container">
+                    <div className="brand-contents">
+                      <div className="brand-name-position">
+                        <div className="brand-name">{brand_name}</div>
+                        <div className="brand-position">{address}</div>
+                      </div>
+
+                      <Input.TextArea
+                        autoSize={{ minRows: 2, maxRows: 5 }}
+                        className="brand-description"
+                        disabled
+                        defaultValue={description}
+                        style={{ width: "320px", height: "auto" }}
+                      />
+
+                      <div className="brand-time-tel">
+                        <div className="brand-time">
+                          <div className="brand-time-name">
+                            <img
+                              className="time-image"
+                              src="../../asset/a-icon-time-normal.png"
+                              alt="time"
+                            />
+                            Time
+                          </div>
+                          <div className="operation-time">
+                            {
+                              find_day?.closed ? 
+                              "휴일 : 00:00 ~ 00:00"
+                              :
+                              "영업중 : " + find_day?.hour
+                            }
+                            <Dropdown
+                              trigger={["hover"]}
+                              onVisibleChange={(e) => {
+                                set_operation_visible(e);
+                              }}
+                              visible={operation_visible}
+                              destroyPopupOnHide={true}
+                              arrow={false}
+                              overlay={
+                                <div>
+                                  {business_hours?.map((hour, hour_idx) => {
+                                    return (
+                                      <div key={hour_idx}>
+                                        {hour?.day}요일:{" "}
+                                        {hour?.closed ? "휴무" : hour?.hour}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              }
+                              overlayStyle={{
+                                position: "absolute",
+                                backgroundColor: "rgba(0, 0, 0, 0.85)",
+                                padding: "14px",
+                                fontSize: "14px",
+                                lineHeight: "19px",
+                                color: "#FFFFFF",
+                                borderRadius: "5px",
+                                display: operation_visible ? "flex" : "none",
+                              }}
+                            >
+                              <img
+                                className="time-image"
+                                style={{ marginLeft: "5px" }}
+                                src="../../asset/button_more_info_arrow.png"
+                                alt="time"
+                              />
+                            </Dropdown>
+                          </div>
+                        </div>
+                        <div className="brand-tel">
+                          <div className="brand-time-name">
+                            <img
+                              className="time-image"
+                              src="../../asset/a-icon-phone-normal.png"
+                              alt="tel"
+                            />
+                            Tel
+                          </div>
+                          <div
+                            className="operation-time"
+                            style={{ textDecoration: "underline" }}
+                          >
+                            {phone_number}
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
-                    <Input.TextArea
-                      autoSize={{ minRows: 2, maxRows: 5 }}
-                      className="brand-description"
-                      disabled
-                      defaultValue={description}
-                      style={{ width: "320px", height: "auto" }}
-                    />
+                    <div className="brand-mall-image">
+                      {/* 가게 안 이미지들 */}
+                      <HorizontalCarousel
+                        photo={photo_in_mall}
+                        flag_change={flag_change}
+                        flag={flag}
+                      />
 
-                    <div className="brand-time-tel">
-                      <div className="brand-time">
-                        <div className="brand-time-name">
-                          <img
-                            className="time-image"
-                            src="../../asset/a-icon-time-normal.png"
-                            alt="time"
-                          />
-                          Time
-                        </div>
-                        <div className="operation-time">
-                          영업중 : 12:00 ~ 22:00
-                          <Dropdown
-                            trigger={["hover"]}
-                            onVisibleChange={(e) => {
-                              set_operation_visible(e);
+                      <div className="row">
+                        <div className="menu-coupon">
+                          <div
+                            className="menu"
+                            onClick={() => {
+                              set_menu_modal(true);
+                              flag_change();
+                              set_select_store(store);
+                              set_select_menu(store?.menu[0]?.name);
                             }}
-                            visible={operation_visible}
-                            destroyPopupOnHide={true}
-                            arrow={false}
-                            overlay={
-                              <div>
-                                <div>월요일: 09:00 ~ 20:00</div>
-                                <div>화요일: 09:00 ~ 20:00</div>
-                                <div>일요일: 휴무</div>
-                              </div>
-                            }
-                            overlayStyle={{
-                              position: "absolute",
-                              backgroundColor: "rgba(0, 0, 0, 0.85)",
-                              padding: "14px",
-                              fontSize: "14px",
-                              lineHeight: "19px",
-                              color: "#FFFFFF",
-                              borderRadius: "5px",
-                              display: operation_visible ? "flex" : "none",
+                          >
+                            메뉴 더보기
+                          </div>
+                          <div
+                            className="coupon"
+                            onClick={() => {
+                              set_coupon_modal(true);
+                              flag_change();
+                              set_select_store(store);
                             }}
                           >
                             <img
-                              className="time-image"
-                              style={{ marginLeft: "5px" }}
-                              src="../../asset/button_more_info_arrow.png"
-                              alt="time"
+                              className="coupon-image"
+                              src="../../asset/a-icon-reply-normal.png"
+                              alt="main-menu"
                             />
-                          </Dropdown>
-                        </div>
-                      </div>
-                      <div className="brand-tel">
-                        <div className="brand-time-name">
-                          <img
-                            className="time-image"
-                            src="../../asset/a-icon-phone-normal.png"
-                            alt="tel"
-                          />
-                          Tel
-                        </div>
-                        <div
-                          className="operation-time"
-                          style={{ textDecoration: "underline" }}
-                        >
-                          02-820-1258
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="brand-mall-image">
-                    {/* 가게 안 이미지들 */}
-                    <HorizontalCarousel
-                      photo={photo_in_mall}
-                      flag_change={flag_change}
-                      flag={flag}
-                    />
-
-                    <div className="row">
-                      <div className="menu-coupon">
-                        <div
-                          className="menu"
-                          onClick={() => {
-                            set_menu_modal(true);
-                            flag_change();
-                            set_select_store(store);
-                            set_select_menu(store?.menu[0]?.name);
-                          }}
-                        >
-                          메뉴 더보기
-                        </div>
-                        <div
-                          className="coupon"
-                          onClick={() => {
-                            set_coupon_modal(true);
-                            flag_change();
-                            set_select_store(store);
-                          }}
-                        >
-                          <img
-                            className="coupon-image"
-                            src="../../asset/a-icon-reply-normal.png"
-                            alt="main-menu"
-                          />
-                          방문 혜택 보기
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="main-menu">
-                  <img
-                    className="main-menu-image"
-                    src="../../asset/rectangle.png"
-                    alt="main-menu"
-                  />
-                  대표메뉴
-                </div>
-
-                <div className="row">
-                  {
-                    menu?.map((menu_item, menu_idx) => {
-
-                      if(menu_item?.main_menu){
-                        return (
-                          <div className="menu-container" key={menu_idx}>
-                          <img
-                            className="menu-image"
-                            src={menu_item?.photo[0]?.url}
-                            alt="menu"
-                          />
-                          <div className="menu-name">
-                            <div className="menu-name-detail">{menu_item?.name}</div>
-                            <div className="menu-price">{numb(menu_item?.price)}원</div>
+                            방문 혜택 보기
                           </div>
                         </div>
-                        )
-                      } else {
-                        return ;
-                      }
-                    })
-                  }
+                      </div>
+                    </div>
+                  </div>
 
+                  <div className="main-menu">
+                    <img
+                      className="main-menu-image"
+                      src="../../asset/rectangle.png"
+                      alt="main-menu"
+                    />
+                    대표메뉴
+                  </div>
+
+                  <div className="row">
+                    {menu?.map((menu_item, menu_idx) => {
+                      if (menu_item?.main_menu) {
+                        return (
+                          <div className="menu-container" key={menu_idx}>
+                            <img
+                              className="menu-image"
+                              src={menu_item?.photo[0]?.url}
+                              alt="menu"
+                            />
+                            <div className="menu-name">
+                              <div className="menu-name-detail">
+                                {menu_item?.name}
+                              </div>
+                              <div className="menu-price">
+                                {numb(menu_item?.price)}원
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      } else {
+                        return;
+                      }
+                    })}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
       </Styled>
 
       <Modal
@@ -409,11 +438,22 @@ const Main = () => {
           </Carousel>
 
           <div className="menu-name" style={{ color: "#FFFFFF" }}>
-            ㅁㅊ크로플
+            {
+              select_store?.menu?.find((menu) => {
+                return menu?.name === select_menu;
+              })?.name
+            }
           </div>
 
           <div className="menu-detail">
-            <div style={{ flex: 1 }}>4,000원</div>
+            <div style={{ flex: 1 }}>
+              {numb(
+                select_store?.menu?.find((menu) => {
+                  return menu?.name === select_menu;
+                })?.price
+              )}
+              원
+            </div>
             <div>
               {select_menu_photo + 1}/
               {

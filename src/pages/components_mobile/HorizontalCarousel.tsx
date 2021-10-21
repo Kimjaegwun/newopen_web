@@ -11,7 +11,7 @@ const getWindowDimensions = () => {
   };
 };
 
-const HorizontalCarousel = ({flag, flag_change }) => {
+const HorizontalCarousel = ({flag, flag_change, photo }) => {
   // 모바일 크기 계산
   const [windowDimensions, setWindowDimensions] = useState(
     getWindowDimensions()
@@ -84,33 +84,11 @@ const HorizontalCarousel = ({flag, flag_change }) => {
           className="card-container"
           style={{ ...card_container }}
         >
-          {
-
-          }
-          <Card
-            card={
-              "https://firebasestorage.googleapis.com/v0/b/new-open-35265.appspot.com/o/temp_image%2Fimage_1.png?alt=media&token=f374ac46-1bc5-4903-8f21-0cc10960d286"
-            }
-            flag_change={flag_change}
-          />
-          <Card
-            card={
-              "https://firebasestorage.googleapis.com/v0/b/new-open-35265.appspot.com/o/temp_image%2Fimage_2.png?alt=media&token=508aea55-ce56-457e-9d9d-c1700f64c3b9"
-            }
-            flag_change={flag_change}
-          />
-          <Card
-            card={
-              "https://firebasestorage.googleapis.com/v0/b/new-open-35265.appspot.com/o/temp_image%2Fimage_3.png?alt=media&token=7d6f9ac7-9563-4531-ae99-63a1f61a1d5d"
-            }
-            flag_change={flag_change}
-          />
-          <Card
-            card={
-              "https://firebasestorage.googleapis.com/v0/b/new-open-35265.appspot.com/o/temp_image%2Fimage_4.png?alt=media&token=c4edfb8a-24a8-49f5-94b4-307164106d4e"
-            }
-            flag_change={flag_change}
-          />
+          {photo?.map((one_photo, photo_idx) => {
+            return (
+              <Card all={photo} card={one_photo} flag_change={flag_change} key={photo_idx} />
+            );
+          })}
         </div>
 
         {/* <button

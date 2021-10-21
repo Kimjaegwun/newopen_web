@@ -56,9 +56,9 @@ const HorizontalCarousel = ({ photo, flag, flag_change }) => {
           className="card-container"
           style={{ ...card_container }}
         >
-          {photo?.map((photo, photo_idx) => {
+          {photo?.map((one_photo, photo_idx) => {
             return (
-              <Card card={photo} flag_change={flag_change} key={photo_idx} />
+              <Card all={photo} card={one_photo} flag_change={flag_change} key={photo_idx} />
             );
           })}
         </div>

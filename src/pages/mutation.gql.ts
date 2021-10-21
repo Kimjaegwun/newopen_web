@@ -17,6 +17,7 @@ export const GET_All_NEW_OPEN = gql`
         business_hours
         open_date
         photo_in_mall
+        phone_number
         menu {
           id
           name

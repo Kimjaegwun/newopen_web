@@ -5,13 +5,15 @@ import styled from "styled-components";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "../../index.css";
 
-const Card = ({ card, flag_change }) => {
+const Card = ({ all, card, flag_change }) => {
   // 매장 사진 모달
   const [mall_modal, set_mall_modal] = useState(false);
   const close_mall_modal = () => {
     set_mall_modal(false);
     flag_change();
   };
+
+  const [carousel_index, set_carousel_index] = useState(0);
 
   return (
     <Styled>
@@ -63,11 +65,12 @@ const Card = ({ card, flag_change }) => {
             infiniteLoop
             showIndicators={true}
             onChange={(e) => {
-              console.log(e);
+              set_carousel_index(e);
             }}
           >
-            <div className="banner" style={{ height: "500px" }} />
-            <div className="banner" style={{ backgroundColor: "lightgreen" }} />
+            {all?.map((item, idx) => {
+              return <img src={item} key={idx} style={{ height: "500px" }} />;
+            })}
           </Carousel>
 
           <div
@@ -81,7 +84,9 @@ const Card = ({ card, flag_change }) => {
             }}
           >
             <div style={{ flex: 1 }}>선유기지 매장사진</div>
-            <div>1/3</div>
+            <div>
+              {carousel_index + 1}/{all?.length}
+            </div>
           </div>
         </StyledModal>
       </Modal>
