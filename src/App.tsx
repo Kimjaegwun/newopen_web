@@ -49,7 +49,7 @@ function App() {
 
   const LoggedIn = () => (
     <Switch>
-      <Route exact path="/" component={Main}/>
+      <Route exact path="/" component={ !isMobile ? Main : MainMobile}/>
       <Route exact path="/StoreLogin" component={Login}/>
       <Route exact path="/StoreSignUp" component={Join}/>
       <Route exact path="/InputForm" component={InputForm}/>
@@ -59,7 +59,7 @@ function App() {
 
   const LoggedOut = () => (
     <Switch>
-      <Route exact path="/" component={Main}/>
+      <Route exact path="/" component={ !isMobile ? Main : MainMobile}/>
       <Route exact path="/StoreLogin" component={Login}/>
       <Route exact path="/StoreSignUp" component={Join}/>
       <Redirect from="*" to="/" />
