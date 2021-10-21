@@ -319,7 +319,7 @@ const InputForm = () => {
 	
 	return (
 		<div style={{backgroundColor:'#F6F6F6', paddingTop:70}}>
-			<Header/>
+			<Header logout={true}/>
 
 			{/* 미리보기 */}
 			<div style={{width:1024, marginLeft:'auto', marginRight:'auto', marginTop:30, marginBottom:5, fontWeight:'bold', fontSize:"16px", lineHeight:"24px", textAlign:'left'}}>
