@@ -2,21 +2,34 @@
 
 import { gql } from "@apollo/client";
 
-export const GET_NEW_OPEN = gql`
+export const GET_All_NEW_OPEN = gql`
   query {
-    GetNewOpen {
+    GetAllNewOpen {
       ok
       error
-      newOpen {
+      new_open {
         id
-        loginId
-        loginPw
         logo
         brand_name
         business_type
         address
         description
         business_hours
+        open_date
+        photo_in_mall
+        menu {
+          id
+          name
+          price
+          photo
+          main_menu
+        }
+        new_open_event {
+          id
+          content
+          start_date
+          end_date
+        }
       }
     }
   }

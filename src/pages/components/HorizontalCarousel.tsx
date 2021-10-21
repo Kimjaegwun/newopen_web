@@ -4,8 +4,7 @@ import "../../index.css";
 
 import Card from "./Card";
 
-const HorizontalCarousel = ({ flag, flag_change }) => {
-
+const HorizontalCarousel = ({ photo, flag, flag_change }) => {
   const [current_card, set_current_card] = useState(0);
   const [card_container, set_card_container] = useState({
     transitionDuration: "0.5s",
@@ -26,7 +25,7 @@ const HorizontalCarousel = ({ flag, flag_change }) => {
   };
 
   const handle_next = () => {
-    if (current_card > 0) {
+    if (current_card > photo?.length - 4) {
       return;
     }
 
@@ -40,56 +39,41 @@ const HorizontalCarousel = ({ flag, flag_change }) => {
   return (
     <Styled>
       <div className="view-port">
-        <button
-          className="previous-button"
-          onClick={handle_previous}
-          style={{
-            display: !flag ? "flex" : "none",
-          }}
-        >
-          {"〈"}
-        </button>
+        {photo?.length < 4 || current_card === 0 ? null : (
+          <button
+            className="previous-button"
+            onClick={handle_previous}
+            style={{
+              display: !flag ? "flex" : "none",
+            }}
+          >
+            {"〈"}
+          </button>
+        )}
 
         <div
           ref={info}
           className="card-container"
           style={{ ...card_container }}
         >
-          <Card
-            card={
-              "https://firebasestorage.googleapis.com/v0/b/new-open-35265.appspot.com/o/temp_image%2Fimage_1.png?alt=media&token=f374ac46-1bc5-4903-8f21-0cc10960d286"
-            }
-            flag_change={flag_change}
-          />
-          <Card
-            card={
-              "https://firebasestorage.googleapis.com/v0/b/new-open-35265.appspot.com/o/temp_image%2Fimage_2.png?alt=media&token=508aea55-ce56-457e-9d9d-c1700f64c3b9"
-            }
-            flag_change={flag_change}
-          />
-          <Card
-            card={
-              "https://firebasestorage.googleapis.com/v0/b/new-open-35265.appspot.com/o/temp_image%2Fimage_3.png?alt=media&token=7d6f9ac7-9563-4531-ae99-63a1f61a1d5d"
-            }
-            flag_change={flag_change}
-          />
-          <Card
-            card={
-              "https://firebasestorage.googleapis.com/v0/b/new-open-35265.appspot.com/o/temp_image%2Fimage_4.png?alt=media&token=c4edfb8a-24a8-49f5-94b4-307164106d4e"
-            }
-            flag_change={flag_change}
-          />
+          {photo?.map((photo, photo_idx) => {
+            return (
+              <Card card={photo} flag_change={flag_change} key={photo_idx} />
+            );
+          })}
         </div>
 
-        <button
-          className="next-button"
-          onClick={handle_next}
-          style={{
-            display: !flag ? "flex" : "none",
-          }}
-        >
-          {"〉"}
-        </button>
+        {photo?.length < 4 || current_card === photo?.length - 3 ? null : (
+          <button
+            className="next-button"
+            onClick={handle_next}
+            style={{
+              display: !flag ? "flex" : "none",
+            }}
+          >
+            {"〉"}
+          </button>
+        )}
       </div>
     </Styled>
   );

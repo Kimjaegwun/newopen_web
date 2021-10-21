@@ -11,7 +11,7 @@ const getWindowDimensions = () => {
   };
 };
 
-const HorizontalCarousel = ({ flag, flag_change }) => {
+const HorizontalCarousel = ({flag, flag_change }) => {
   // 모바일 크기 계산
   const [windowDimensions, setWindowDimensions] = useState(
     getWindowDimensions()
@@ -84,6 +84,9 @@ const HorizontalCarousel = ({ flag, flag_change }) => {
           className="card-container"
           style={{ ...card_container }}
         >
+          {
+
+          }
           <Card
             card={
               "https://firebasestorage.googleapis.com/v0/b/new-open-35265.appspot.com/o/temp_image%2Fimage_1.png?alt=media&token=f374ac46-1bc5-4903-8f21-0cc10960d286"

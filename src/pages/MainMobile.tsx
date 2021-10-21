@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Dropdown, Tabs } from "antd";
 import { Carousel } from "react-responsive-carousel";
-import {GET_NEW_OPEN} from "./mutation.gql"
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Modal from "react-modal";
 import HorizontalCarousel from "./components_mobile/HorizontalCarousel";
@@ -63,11 +62,6 @@ const MainMobile = () => {
 
   // 가게들 가져오기
   const [stores, set_stores] = useState([])
-  useQuery(GET_NEW_OPEN, {
-    onCompleted: (data) => {
-      set_stores(data.GetNewOpen.newOpen)
-    }
-  })
 
   return (
     <>

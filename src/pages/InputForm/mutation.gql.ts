@@ -9,25 +9,24 @@ export const GET_NEW_OPEN = gql`
       error
       newOpen {
         id
-		loginId
-		loginPw
-		logo
-		brand_name
-		business_type
-		description
+        loginId
+        loginPw
+        logo
+        brand_name
+        business_type
+        description
       }
     }
   }
 `;
 
-
 export const NEW_OPEN_ID_CHECK = gql`
-	mutation NewOpenIdCheck($login_id: String!) {
-		NewOpenIdCheck(login_id: $login_id) {
-			ok
-			error
-		}
-	}
+  mutation NewOpenIdCheck($login_id: String!) {
+    NewOpenIdCheck(login_id: $login_id) {
+      ok
+      error
+    }
+  }
 `;
 
 export const ADD_NEW_OPEN = gql`

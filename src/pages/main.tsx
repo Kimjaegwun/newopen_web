@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery } from "@apollo/client";
-import { Button, Dropdown } from "antd";
+import { Button, Dropdown, Input } from "antd";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { GET_NEW_OPEN } from "./mutation.gql";
+import { GET_All_NEW_OPEN } from "./mutation.gql";
+import { numb } from "../utils/utils";
 import Modal from "react-modal";
 import HorizontalCarousel from "./components/HorizontalCarousel";
 import styled from "styled-components";
@@ -37,14 +38,23 @@ const Main = () => {
 
   // 가게들 가져오기
   const [stores, set_stores] = useState([]);
-  useQuery(GET_NEW_OPEN, {
+  useQuery(GET_All_NEW_OPEN, {
+    notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
-      console.log(data, "start")
-      set_stores(data.GetNewOpen.newOpen);
+      set_stores(data.GetAllNewOpen.new_open);
     },
   });
 
-  console.log(stores)
+  // 선택한 가게
+  const [select_store, set_select_store] = useState({} as any);
+  const [select_menu, set_select_menu] = useState("");
+  const [select_menu_photo, set_select_menu_photo] = useState(0);
+
+  // 캐러셀 ref
+  const carousel_ref = useRef<Carousel>(null);
+  const handle_previous = () => {
+    carousel_ref.current?.moveTo(0);
+  };
 
   return (
     <>
@@ -107,11 +117,39 @@ const Main = () => {
         </div>
 
         {/* 브랜드 컨테이너 */}
-        {stores.map((store, str_idx) => {
+        {stores.map((store: any, str_idx) => {
+          const {
+            logo,
+            business_type,
+            open_date,
+            brand_name,
+            address,
+            description,
+            photo_in_mall,
+            coupon_touch,
+            menu
+          } = store;
+
+          // 오픈 날짜 계산
+          const now = new Date().getTime();
+          const date_split = String(open_date).split("-");
+          const diff_day = Math.floor(
+            (new Date(
+              Number(date_split[0]),
+              Number(date_split[1]) - 1,
+              Number(date_split[2]),
+              0,
+              0,
+              0
+            ).getTime() -
+              now) /
+              (1000 * 3600 * 24)
+          );
+
           return (
-            <div className="new-open-container">
+            <div className="new-open-container" key={str_idx}>
               <div className="column">
-                <div className="logo">로고</div>
+                <img className="logo" src={logo} />
                 <div className="remain-open">정식오픈</div>
                 <div
                   className="remain-open"
@@ -119,18 +157,20 @@ const Main = () => {
                     marginTop: "-1px",
                     fontSize: "24px",
                     fontFamily: "NanumMyeongjo",
+                    display: diff_day <= 0 ? "none" : "flex",
+                    justifyContent: "center",
                   }}
                 >
-                  D-7
+                  D-{diff_day}
                 </div>
               </div>
               <div className="content-container">
                 <div className="category-container">
-                  <div className="category-name">#카페</div>
+                  <div className="category-name">#{business_type}</div>
                   <div className="like-numb">
                     👀
                     <span style={{ marginLeft: "10px" }}>
-                      123명이 혜택을 받았네요!
+                      {coupon_touch || 0}명이 혜택을 받았네요!
                     </span>
                   </div>
                 </div>
@@ -138,15 +178,18 @@ const Main = () => {
                 <div className="brand-container">
                   <div className="brand-contents">
                     <div className="brand-name-position">
-                      <div className="brand-name">선유기지</div>
-                      <div className="brand-position">
-                        서울 영등포구 선유로51길1
-                      </div>
+                      <div className="brand-name">{brand_name}</div>
+                      <div className="brand-position">{address}</div>
                     </div>
-                    <div className="brand-description">
-                      ‘도시 틈 속에서 낭만을 추구하는 우리만의 비밀기지’라는
-                      콘셉트로 꾸며진 카페 선유기지입니다.
-                    </div>
+
+                    <Input.TextArea
+                      autoSize={{ minRows: 2, maxRows: 5 }}
+                      className="brand-description"
+                      disabled
+                      defaultValue={description}
+                      style={{ width: "320px", height: "auto" }}
+                    />
+
                     <div className="brand-time-tel">
                       <div className="brand-time">
                         <div className="brand-time-name">
@@ -215,7 +258,11 @@ const Main = () => {
 
                   <div className="brand-mall-image">
                     {/* 가게 안 이미지들 */}
-                    <HorizontalCarousel flag_change={flag_change} flag={flag} />
+                    <HorizontalCarousel
+                      photo={photo_in_mall}
+                      flag_change={flag_change}
+                      flag={flag}
+                    />
 
                     <div className="row">
                       <div className="menu-coupon">
@@ -224,6 +271,8 @@ const Main = () => {
                           onClick={() => {
                             set_menu_modal(true);
                             flag_change();
+                            set_select_store(store);
+                            set_select_menu(store?.menu[0]?.name);
                           }}
                         >
                           메뉴 더보기
@@ -233,6 +282,7 @@ const Main = () => {
                           onClick={() => {
                             set_coupon_modal(true);
                             flag_change();
+                            set_select_store(store);
                           }}
                         >
                           <img
@@ -257,29 +307,29 @@ const Main = () => {
                 </div>
 
                 <div className="row">
-                  <div className="menu-container">
-                    <img
-                      className="menu-image"
-                      src="../../asset/screen_shot.png"
-                      alt="menu"
-                    />
-                    <div className="menu-name">
-                      <div className="menu-name-detail">아메리카노</div>
-                      <div className="menu-price">3,500원</div>
-                    </div>
-                  </div>
+                  {
+                    menu?.map((menu_item, menu_idx) => {
 
-                  <div className="menu-container">
-                    <img
-                      className="menu-image"
-                      src="../../asset/screen_shot.png"
-                      alt="menu"
-                    />
-                    <div className="menu-name">
-                      <div className="menu-name-detail">아메리카노</div>
-                      <div className="menu-price">3,500원</div>
-                    </div>
-                  </div>
+                      if(menu_item?.main_menu){
+                        return (
+                          <div className="menu-container" key={menu_idx}>
+                          <img
+                            className="menu-image"
+                            src={menu_item?.photo[0]?.url}
+                            alt="menu"
+                          />
+                          <div className="menu-name">
+                            <div className="menu-name-detail">{menu_item?.name}</div>
+                            <div className="menu-price">{numb(menu_item?.price)}원</div>
+                          </div>
+                        </div>
+                        )
+                      } else {
+                        return ;
+                      }
+                    })
+                  }
+
                 </div>
               </div>
             </div>
@@ -315,7 +365,9 @@ const Main = () => {
             }}
           />
 
-          <div className="brand-menu-detail">선유기지의 메뉴</div>
+          <div className="brand-menu-detail">
+            {select_store?.brand_name}의 메뉴
+          </div>
           <div className="brand-menu-description">
             어머, 이건 꼭 먹어봐야해!
           </div>
@@ -333,64 +385,65 @@ const Main = () => {
             infiniteLoop
             showIndicators={false}
             onChange={(e) => {
-              console.log(e);
+              set_select_menu_photo(e);
             }}
+            ref={carousel_ref}
           >
-            <div className="banner" style={{ height: "500px" }} />
-            <div className="banner" style={{ backgroundColor: "lightgreen" }} />
+            {select_store?.menu
+              ?.find((menu) => {
+                return menu?.name === select_menu;
+              })
+              ?.photo?.map((photo, photo_idx) => {
+                return (
+                  <img
+                    src={photo?.url}
+                    style={{
+                      width: "500px",
+                      height: "500px",
+                      borderRadius: "10px",
+                    }}
+                    key={photo_idx}
+                  />
+                );
+              })}
           </Carousel>
 
-          <div className="menu-name">ㅁㅊ크로플</div>
+          <div className="menu-name" style={{ color: "#FFFFFF" }}>
+            ㅁㅊ크로플
+          </div>
 
           <div className="menu-detail">
             <div style={{ flex: 1 }}>4,000원</div>
-            <div>1/3</div>
+            <div>
+              {select_menu_photo + 1}/
+              {
+                select_store?.menu?.find((menu) => {
+                  return menu?.name === select_menu;
+                })?.photo?.length
+              }
+            </div>
           </div>
 
           <div className="column" style={{ margin: "27px" }}>
-            <div className="menu-row">
-              <div className="menu-font">ㅁㅊ크로플</div>
-              <img
-                className="camera"
-                src="../../asset/button_photo_line.png"
-                alt="love"
-              />
-              <div className="bar"></div>
-              <div className="menu-font">4,000원</div>
-            </div>
-
-            <div className="menu-row">
-              <div className="menu-font">ㅁㅊ크로플</div>
-              <img
-                className="camera"
-                src="../../asset/button_photo_line.png"
-                alt="love"
-              />
-              <div className="bar"></div>
-              <div className="menu-font">4,000원</div>
-            </div>
-
-            <div className="menu-row">
-              <div className="menu-font">ㅁㅊ크로플</div>
-              <img
-                className="camera"
-                src="../../asset/button_photo_line.png"
-                alt="love"
-              />
-              <div className="bar"></div>
-              <div className="menu-font">4,000원</div>
-            </div>
-
-            <div className="menu-row">
-              <div className="menu-font">ㅁㅊ크로플</div>
-              <img
-                className="camera"
-                src="../../asset/button_photo_line.png"
-                alt="love"
-              />
-              <div className="bar"></div>
-              <div className="menu-font">4,000원</div>
-            </div>
+            {select_store?.menu?.map((menu, menu_idx) => {
+              return (
+                <div className="menu-row" key={menu_idx}>
+                  <div className="menu-font">{menu?.name}</div>
+                  <img
+                    className="camera"
+                    src="../../asset/button_photo_line.png"
+                    alt="camera"
+                    onClick={() => {
+                      set_select_menu(menu?.name);
+                      set_select_menu_photo(0);
+                      handle_previous();
+                    }}
+                  />
+                  <div className="bar"></div>
+                  <div className="menu-font">{numb(menu?.price)}원</div>
+                </div>
+              );
+            })}
           </div>
         </StyledModal>
       </Modal>
@@ -427,37 +480,32 @@ const Main = () => {
             선유기지 방문 혜택
           </div>
 
-          <div className="coupon-list">
-            <img
-              src="../../asset/image_coupone_blue.png"
-              style={{ width: "444px", height: "212px", position: "absolute" }}
-              alt="coupon"
-            />
-            <div className="column">
-              <div className="coupon-number">
-                <div className="coupon-content" style={{ flex: 1 }}>
-                  혜택1
+          {select_store?.new_open_event?.map((event, event_idx) => {
+            return (
+              <div className="coupon-list" key={event_idx}>
+                <img
+                  src="../../asset/image_coupone_blue.png"
+                  style={{
+                    width: "444px",
+                    position: "absolute",
+                  }}
+                  alt="coupon"
+                />
+                <div className="column">
+                  <div className="coupon-number">
+                    <div className="coupon-content" style={{ flex: 1 }}>
+                      혜택1
+                    </div>
+                    <div className="coupon-content">선유기지</div>
+                  </div>
+                  <div className="coupon-detail">{event?.content}</div>
+                  <div className="coupon-date">
+                    {event?.start_date} ~ {event?.end_date}
+                  </div>
                 </div>
-                <div className="coupon-content">선유기지</div>
               </div>
-              <div className="coupon-detail">아메리카노 1,000원 할인</div>
-              <div className="coupon-date">
-                2021년 10월 15일 ~ 2021년 10월 31일 까지
-              </div>
-
-              <div className="coupon-container">
-                <div className="coupon-button">쿠폰 발급받기</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="coupon-list">
-            <img
-              src="../../asset/image_coupone_blue.png"
-              style={{ width: "444px", height: "212px", position: "absolute" }}
-              alt="coupon"
-            />
-          </div>
+            );
+          })}
         </StyledModal>
       </Modal>
     </>
@@ -611,7 +659,6 @@ const Styled = styled.div`
     display: flex;
     flex-direction: column;
     max-width: 380px;
-    max-height: 153px;
   }
 
   .brand-name-position {
@@ -636,9 +683,11 @@ const Styled = styled.div`
   .brand-description {
     font-size: 16px;
     color: #6c757d;
-    display: flex;
     text-align: left;
     padding: 15px 0px;
+    background-color: #ffffff;
+    border-width: 0px;
+    resize: none;
   }
 
   .brand-time {
@@ -824,6 +873,7 @@ const StyledModal = styled.div`
     height: 25px;
     margin-left: 8px;
     margin-right: 8px;
+    cursor: pointer;
   }
 
   .bar {
