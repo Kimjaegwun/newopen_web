@@ -34,6 +34,8 @@ const DatePickerComponent = ({
     if (endDate) {
       setSelectedEndDateString(dateToString(endDate));
     }
+
+    // eslint-disable-next-line
   }, [startDate, endDate]);
 
   const CustomStartInput = ({ value, onClick }) => (
