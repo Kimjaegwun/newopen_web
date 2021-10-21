@@ -290,15 +290,20 @@ const MainMobile = () => {
                     style={{ height: "18px", width: "18px" }}
                   />
                   <div className="text-gray-font">Tel</div>
-                  <div
-                    className="operation-detail"
-                    style={{
-                      marginLeft: "30px",
-                      textDecorationLine: "underline",
-                    }}
+                  <a
+                    href={`tel:${phone_number}`}
+                    style={{ WebkitTapHighlightColor: "transparent" }}
                   >
-                    {phone_number}
-                  </div>
+                    <div
+                      className="operation-detail"
+                      style={{
+                        marginLeft: "30px",
+                        textDecorationLine: "underline",
+                      }}
+                    >
+                      {phone_number}
+                    </div>
+                  </a>
                 </div>
 
                 {/* 가게 안 이미지들 */}
@@ -343,6 +348,61 @@ const MainMobile = () => {
               </div>
             );
           })}
+
+        <div
+          style={{
+            backgroundColor: "#EAFAFF",
+            width: windowDimensions.width,
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "30px",
+              fontFamily: "yg-jalnan",
+              marginTop: "78px",
+            }}
+          >
+            이제 막 오픈한 내 가게!
+          </div>
+          <div
+            style={{
+              fontSize: "30px",
+              fontFamily: "yg-jalnan",
+            }}
+          >
+            어디에 처음 홍보해야
+          </div>
+          <div
+            style={{
+              fontSize: "30px",
+              fontFamily: "yg-jalnan",
+              marginBottom: "30px",
+            }}
+          >
+            할 지 막막하신가요?
+          </div>
+
+          <div
+            style={{
+              width: "218px",
+              height: "52px",
+              backgroundColor: "#2F80ED",
+              alignItems: "center",
+              display: "flex",
+              justifyContent: "center",
+              color: "#FFFFFF",
+              fontSize: "17px",
+              fontWeight: "bold",
+              marginBottom: "51px",
+              borderRadius: "33px",
+            }}
+          >
+            무료로 홍보하기
+          </div>
+        </div>
       </Styled>
 
       <Modal
@@ -584,41 +644,43 @@ const MainMobile = () => {
         ariaHideApp={false}
       >
         <StyledModal>
-        <div
-          style={{
-            width: windowDimensions.width,
-            height: windowDimensions.height,
-            alignItems: "center",
-            display: "flex"
-          }}
-          onClick={() => {
-            set_scan_modal(false);
-          }}
-        >
-          <section
-            className="coupon-list"
+          <div
             style={{
-              backgroundImage: "url(../../asset/image_coupone_blue.png)",
-              width: windowDimensions.width - 50,
-              backgroundSize: "cover",
-              borderRadius: "10px",
-              marginLeft: "1%",
+              width: windowDimensions.width,
+              height: windowDimensions.height,
+              alignItems: "center",
+              display: "flex",
+            }}
+            onClick={() => {
+              set_scan_modal(false);
             }}
           >
-            <div className="column">
-              <div className="coupon-number" style={{marginTop: "10px"}}>
-                <div className="coupon-content" style={{ flex: 1 }}>
-                  혜택
+            <section
+              className="coupon-list"
+              style={{
+                backgroundImage: "url(../../asset/image_coupone_blue.png)",
+                width: windowDimensions.width - 50,
+                backgroundSize: "cover",
+                borderRadius: "10px",
+                marginLeft: "1%",
+              }}
+            >
+              <div className="column">
+                <div className="coupon-number" style={{ marginTop: "10px" }}>
+                  <div className="coupon-content" style={{ flex: 1 }}>
+                    혜택
+                  </div>
+                  <div className="coupon-content">
+                    {select_store?.brand_name}
+                  </div>
                 </div>
-                <div className="coupon-content">{select_store?.brand_name}</div>
+                <div className="coupon-detail">{select_coupon?.content}</div>
+                <div className="coupon-date" style={{ marginBottom: "40px" }}>
+                  {select_coupon?.start_date} ~ {select_coupon?.end_date}
+                </div>
               </div>
-              <div className="coupon-detail">{select_coupon?.content}</div>
-              <div className="coupon-date" style={{marginBottom: "40px"}}>
-                {select_coupon?.start_date} ~ {select_coupon?.end_date}
-              </div>
-            </div>
-          </section>
-        </div>
+            </section>
+          </div>
         </StyledModal>
       </Modal>
     </>

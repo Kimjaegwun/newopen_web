@@ -8,6 +8,7 @@ import { numb } from "../utils/utils";
 import Modal from "react-modal";
 import HorizontalCarousel from "./components/HorizontalCarousel";
 import styled from "styled-components";
+import Footer from "./components/Footer";
 import "../index.css";
 
 Modal.setAppElement();
@@ -162,8 +163,8 @@ const Main = () => {
             );
 
             const find_day = business_hours?.find((item: any) => {
-              return Number(item?.number) === new Date().getDay()
-            })
+              return Number(item?.number) === new Date().getDay();
+            });
 
             return (
               <div className="new-open-container" key={str_idx}>
@@ -220,12 +221,9 @@ const Main = () => {
                             Time
                           </div>
                           <div className="operation-time">
-                            {
-                              find_day?.closed ? 
-                              "휴일 : 00:00 ~ 00:00"
-                              :
-                              "영업중 : " + find_day?.hour
-                            }
+                            {find_day?.closed
+                              ? "휴일 : 00:00 ~ 00:00"
+                              : "영업중 : " + find_day?.hour}
                             <Dropdown
                               trigger={["hover"]}
                               onVisibleChange={(e) => {
@@ -364,6 +362,55 @@ const Main = () => {
               </div>
             );
           })}
+
+        <div
+          style={{
+            backgroundColor: "#EAFAFF",
+            width: "1440px",
+            marginTop: "200px",
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "30px",
+              fontFamily: "yg-jalnan",
+              marginTop: "78px",
+            }}
+          >
+            이제 막 오픈한 내 가게!
+          </div>
+          <div
+            style={{
+              fontSize: "30px",
+              fontFamily: "yg-jalnan",
+              marginBottom: "30px",
+            }}
+          >
+            어디에 처음 홍보해야 할 지 막막하신가요?
+          </div>
+
+          <div
+            style={{
+              width: "218px",
+              height: "52px",
+              backgroundColor: "#2F80ED",
+              alignItems: "center",
+              display: "flex",
+              justifyContent: "center",
+              color: "#FFFFFF",
+              fontSize: "17px",
+              fontWeight: "bold",
+              marginBottom: "51px",
+              borderRadius: "33px"
+            }}
+          >
+            무료로 홍보하기
+          </div>
+        </div>
+        <Footer />
       </Styled>
 
       <Modal
@@ -377,7 +424,7 @@ const Main = () => {
             transform: "translate(-50%, -50%)",
             borderRadius: "10px",
             width: "550px",
-            height: "70%"
+            maxHeight: "700px",
           },
         }}
         isOpen={menu_modal}
@@ -537,7 +584,9 @@ const Main = () => {
                     <div className="coupon-content" style={{ flex: 1 }}>
                       혜택{event_idx + 1}
                     </div>
-                    <div className="coupon-content">{select_store?.brand_name}</div>
+                    <div className="coupon-content">
+                      {select_store?.brand_name}
+                    </div>
                   </div>
                   <div className="coupon-detail">{event?.content}</div>
                   <div className="coupon-date">
