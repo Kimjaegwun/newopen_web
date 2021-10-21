@@ -169,7 +169,7 @@ const Main = () => {
             });
 
             const first =
-              "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
+              "+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs"
 
             return (
               <div className="new-open-container" key={str_idx}>
@@ -218,7 +218,7 @@ const Main = () => {
                           {brand_name?.length > 6 ? "..." : null}
                         </div>
                         <a
-                          href={`https://map.naver.com/v5/search?c=${
+                          href={`https://map.naver.com/v5/search/${encodeURI(brand_name)}?c=${
                             proj4(first, [
                               Number(location.lat),
                               Number(location.lon),
@@ -228,7 +228,7 @@ const Main = () => {
                               Number(location.lat),
                               Number(location.lon),
                             ])[1]
-                          },1,0,0,0,dh`}
+                          },15,0,0,0,dh`}
                           target="_blank"
                           title="지도"
                         >
