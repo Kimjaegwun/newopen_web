@@ -13,7 +13,7 @@ const getWindowDimensions = () => {
   };
 };
 
-const Card = ({all, card, flag_change }) => {
+const Card = ({ all, card, flag_change }) => {
   // 매장 사진 모달
   const [mall_modal, set_mall_modal] = useState(false);
   const close_mall_modal = () => {
@@ -21,19 +21,22 @@ const Card = ({all, card, flag_change }) => {
     flag_change();
   };
 
-    // 모바일 크기 계산
-    const [windowDimensions, setWindowDimensions] = useState(
-      getWindowDimensions()
-    );
-  
-    useEffect(() => {
-      function handleResize() {
-        setWindowDimensions(getWindowDimensions());
-      }
-  
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }, []);
+  // 모바일 크기 계산
+  const [windowDimensions, setWindowDimensions] = useState(
+    getWindowDimensions()
+  );
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimensions(getWindowDimensions());
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+const [carousel_index, set_carousel_index] = useState(0);
+
 
   return (
     <Styled>
@@ -85,16 +88,18 @@ const Card = ({all, card, flag_change }) => {
             infiniteLoop
             showIndicators={true}
             onChange={(e) => {
-              console.log(e);
+              set_carousel_index(e);
             }}
           >
-            {
-              all?.map((item, idx) => {
-                return (
-                  <img src={item} key={idx} style={{height: windowDimensions.width - 100}} />
-                )
-              })
-            }
+            {all?.map((item, idx) => {
+              return (
+                <img
+                  src={item}
+                  key={idx}
+                  style={{ height: windowDimensions.width - 100 }}
+                />
+              );
+            })}
           </Carousel>
 
           <div
@@ -108,7 +113,9 @@ const Card = ({all, card, flag_change }) => {
             }}
           >
             <div style={{ flex: 1 }}>선유기지 매장사진</div>
-            <div>1/3</div>
+            <div>
+              {carousel_index + 1}/{all?.length}
+            </div>
           </div>
         </StyledModal>
       </Modal>

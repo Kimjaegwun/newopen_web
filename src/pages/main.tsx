@@ -377,6 +377,7 @@ const Main = () => {
             transform: "translate(-50%, -50%)",
             borderRadius: "10px",
             width: "550px",
+            height: "70%"
           },
         }}
         isOpen={menu_modal}
@@ -517,7 +518,7 @@ const Main = () => {
           />
 
           <div className="brand-menu-detail" style={{ marginBottom: "30px" }}>
-            선유기지 방문 혜택
+            {select_store?.brand_name} 방문 혜택
           </div>
 
           {select_store?.new_open_event?.map((event, event_idx) => {
@@ -534,9 +535,9 @@ const Main = () => {
                 <div className="column">
                   <div className="coupon-number">
                     <div className="coupon-content" style={{ flex: 1 }}>
-                      혜택1
+                      혜택{event_idx + 1}
                     </div>
-                    <div className="coupon-content">선유기지</div>
+                    <div className="coupon-content">{select_store?.brand_name}</div>
                   </div>
                   <div className="coupon-detail">{event?.content}</div>
                   <div className="coupon-date">
