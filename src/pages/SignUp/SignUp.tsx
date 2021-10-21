@@ -1,13 +1,7 @@
-import React from 'react';
 import $ from "jquery";
-
-import { Form, Input, Button } from 'antd';
-import styled from 'styled-components';
 import { gql, useMutation } from '@apollo/client';
 import { setUserToken } from '../../utils/utils';
-
 import Header from '../components/Header';
-import { Link } from 'react-router-dom';
 
 const SISGN_UP_NEW_OPEN = gql`
 	mutation SignUpNewOpen($login_id: String!, $login_pw: String!) {

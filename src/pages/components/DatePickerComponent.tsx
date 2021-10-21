@@ -4,10 +4,9 @@ import React, { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // css import
 
-const DatePickerComponent = ({pStartDate, pEndDate, setSearchDateString, setSelectedEndDateString, isRangeSearch}: any) => {
+const DatePickerComponent = ({pStartDate, pEndDate, setSearchDateString, setSelectedEndDateString, isRangeSearch, isClearable}: any) => {
   const [startDate, setStartDate] = useState(pStartDate);
   const [endDate, setEndDate] = useState(pEndDate)
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
   const dateToString = (date) => {
     return date.getFullYear() + '-' + (date.getMonth() + 1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0')
@@ -15,15 +14,23 @@ const DatePickerComponent = ({pStartDate, pEndDate, setSearchDateString, setSele
 
   useEffect(() => {
     if(startDate){
-      setSearchDateString(startDate)
+      setSearchDateString(dateToString(startDate))
+    }else{
+      setSearchDateString(null)
     }
     if(endDate){
-      setSelectedEndDateString(endDate)
+      setSelectedEndDateString(dateToString(endDate))
     }
   }, [startDate, endDate])
 
-  const CustomInput = ({ value, onClick }) => (
-    <div className="example-custom-input" onClick={onClick} style={{fontSize:"14px",}}>
+  const CustomStartInput = ({ value, onClick }) => (
+    <div className="example-custom-input" onClick={onClick} style={{fontSize:"14px", width: isClearable ? 140 : 110, height:20}}>
+      {value}
+    </div>
+  );
+
+  const CustomEndInput = ({ value, onClick }) => (
+    <div className="example-custom-input" onClick={onClick} style={{fontSize:"14px",  width:110, height:20}}>
       {value}
     </div>
   );
@@ -32,14 +39,16 @@ const DatePickerComponent = ({pStartDate, pEndDate, setSearchDateString, setSele
     <div style={{
       display: "flex",
       alignItems: "flex-start",
-      backgroundColor:'#FFFFFF'}}>
+      backgroundColor:'#FFFFFF',}}>
     <div>
       <DatePicker
         dateFormat="yyyy년 MM월 dd일"
         selected={startDate}
         onChange={ date => setStartDate(date)}
         selectsStart
-        customInput={<CustomInput value={undefined} onClick={undefined}/>}
+        isClearable={isClearable}
+        placeholderText="클릭해주세요."
+        customInput={<CustomStartInput value={startDate} onClick={null}/>}
       />
     </div>
     <div>
@@ -56,7 +65,8 @@ const DatePickerComponent = ({pStartDate, pEndDate, setSearchDateString, setSele
               startDate={startDate}
               onChange={ date => setEndDate(date)}
               minDate={startDate}
-              customInput={<CustomInput value={undefined} onClick={undefined}/>}
+              placeholderText="클릭해주세요."
+              customInput={<CustomEndInput value={endDate} onClick={undefined}/>}
             />
           </div>
         </React.Fragment>

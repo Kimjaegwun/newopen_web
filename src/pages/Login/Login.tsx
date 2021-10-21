@@ -1,13 +1,8 @@
-import React from 'react';
 import $ from "jquery";
-
-import { Form, Input, Button } from 'antd';
-import styled from 'styled-components';
 import { gql, useMutation } from '@apollo/client';
 import { setUserToken } from '../../utils/utils';
 
 import Header from '../components/Header';
-import { Link } from 'react-router-dom';
 
 const NEW_OPEN_LOGIN = gql`
 	mutation newOpenLogin($login_id: String!, $login_pw: String!) {
