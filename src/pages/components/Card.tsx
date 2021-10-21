@@ -69,7 +69,7 @@ const Card = ({ all, card, flag_change }) => {
             }}
           >
             {all?.map((item, idx) => {
-              return <img src={item} key={idx} style={{ height: "500px" }} />;
+              return <img src={item} key={idx} style={{ height: "500px" }} alt="item" />;
             })}
           </Carousel>
 

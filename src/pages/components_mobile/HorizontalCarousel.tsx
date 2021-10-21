@@ -11,7 +11,7 @@ const getWindowDimensions = () => {
   };
 };
 
-const HorizontalCarousel = ({flag, flag_change, photo }) => {
+const HorizontalCarousel = ({ flag, flag_change, photo }) => {
   // 모바일 크기 계산
   const [windowDimensions, setWindowDimensions] = useState(
     getWindowDimensions()
@@ -26,36 +26,11 @@ const HorizontalCarousel = ({flag, flag_change, photo }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const [current_card, set_current_card] = useState(0);
-  const [card_container, set_card_container] = useState({
+  const [card_container] = useState({
     transitionDuration: "0.5s",
     transform: `translate(0px)`,
   });
   const info = useRef(null);
-
-  const handle_previous = () => {
-    if (current_card - 1 < 0) {
-      return;
-    }
-
-    set_current_card(current_card - 1);
-    set_card_container({
-      transitionDuration: "0.7s",
-      transform: `translate(-${150 * (current_card - 1)}px)`,
-    });
-  };
-
-  const handle_next = () => {
-    if (current_card > 1) {
-      return;
-    }
-
-    set_current_card(current_card + 1);
-    set_card_container({
-      transitionDuration: "0.7s",
-      transform: `translate(-${150 * (current_card + 1)}px)`,
-    });
-  };
 
   return (
     <Styled>
@@ -86,7 +61,12 @@ const HorizontalCarousel = ({flag, flag_change, photo }) => {
         >
           {photo?.map((one_photo, photo_idx) => {
             return (
-              <Card all={photo} card={one_photo} flag_change={flag_change} key={photo_idx} />
+              <Card
+                all={photo}
+                card={one_photo}
+                flag_change={flag_change}
+                key={photo_idx}
+              />
             );
           })}
         </div>

@@ -14,7 +14,10 @@ import "../index.css";
 
 Modal.setAppElement();
 
-proj4.defs('WGS84', "+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees");
+proj4.defs(
+  "WGS84",
+  "+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees"
+);
 
 const Main = () => {
   const [flag, set_flag] = useState(false);
@@ -170,13 +173,10 @@ const Main = () => {
               return Number(item?.number) === new Date().getDay();
             });
 
-            const first =
-              "+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs"
-
             return (
               <div className="new-open-container" key={str_idx}>
                 <div className="column">
-                  <img className="logo" src={logo} />
+                  <img className="logo" src={logo} alt="logo" />
                   <div className="remain-open">정식오픈</div>
                   <div
                     className="remain-open"
@@ -220,8 +220,10 @@ const Main = () => {
                           {brand_name?.length > 6 ? "..." : null}
                         </div>
                         <a
-                          href={`https://map.naver.com/v5/search/${encodeURI(location)}`}
-                          target="_blank"
+                          href={`https://map.naver.com/v5/search/${encodeURI(
+                            location
+                          )}`}
+                          target="blank"
                           title="지도"
                         >
                           <div className="brand-position">
@@ -383,7 +385,7 @@ const Main = () => {
                           </div>
                         );
                       } else {
-                        return;
+                        return null;
                       }
                     })}
                   </div>
@@ -421,23 +423,25 @@ const Main = () => {
             어디에 처음 홍보해야 할 지 막막하신가요?
           </div>
 
-          <div
-            style={{
-              width: "218px",
-              height: "52px",
-              backgroundColor: "#2F80ED",
-              alignItems: "center",
-              display: "flex",
-              justifyContent: "center",
-              color: "#FFFFFF",
-              fontSize: "17px",
-              fontWeight: "bold",
-              marginBottom: "51px",
-              borderRadius: "33px",
-            }}
-          >
-            무료로 홍보하기
-          </div>
+          <a href="/StoreLogin" title="login">
+            <div
+              style={{
+                width: "218px",
+                height: "52px",
+                backgroundColor: "#2F80ED",
+                alignItems: "center",
+                display: "flex",
+                justifyContent: "center",
+                color: "#FFFFFF",
+                fontSize: "17px",
+                fontWeight: "bold",
+                marginBottom: "51px",
+                borderRadius: "33px",
+              }}
+            >
+              무료로 홍보하기
+            </div>
+          </a>
         </div>
         <Footer />
       </Styled>
@@ -502,6 +506,7 @@ const Main = () => {
               ?.photo?.map((photo, photo_idx) => {
                 return (
                   <img
+                    alt="photo_url"
                     src={photo?.url}
                     style={{
                       width: "500px",

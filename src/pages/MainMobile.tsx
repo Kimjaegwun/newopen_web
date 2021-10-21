@@ -92,7 +92,7 @@ const MainMobile = () => {
     <>
       <Styled>
         <div className="title">
-          <img src="../../asset/logo_newopen_white.png" className="logo" />
+          <img alt="logo" src="../../asset/logo_newopen_white.png" className="logo" />
         </div>
 
         {/* 배너 캐러셀 */}
@@ -110,6 +110,7 @@ const MainMobile = () => {
           showIndicators={!flag}
         > */}
         <img
+          alt="banner"
           style={{
             height: windowDimensions.width * 0.83,
             width: windowDimensions.width,
@@ -172,20 +173,15 @@ const MainMobile = () => {
             const {
               logo,
               business_type,
-              open_date,
               brand_name,
               address,
               description,
               photo_in_mall,
               coupon_touch,
               business_hours,
-              menu,
               phone_number,
               location,
             } = store;
-
-            // 오픈 날짜 계산
-            const now = new Date().getTime();
 
             const find_day = business_hours?.find((item: any) => {
               return Number(item?.number) === new Date().getDay();
@@ -205,14 +201,14 @@ const MainMobile = () => {
                 </div>
 
                 <div className="brand-category">
-                  <img className="brand-logo" src={logo} />
+                  <img alt="logo" className="brand-logo" src={logo} />
                   <div className="column" style={{ alignItems: "flex-start" }}>
                     <div className="brand-name">{brand_name}</div>
                     <a
                       href={`https://m.map.naver.com/search2/search.naver?query=${encodeURI(
                         location
                       )}&sm=hty&style=v5#/map`}
-                      target="_blank"
+                      target="blank"
                       title="지도"
                     >
                       <div className="brand-location">
@@ -240,6 +236,7 @@ const MainMobile = () => {
 
                 <div className="operation-time-container">
                   <img
+                  alt="icon-time"
                     src="../../asset/a-icon-time-normal.png"
                     style={{ height: "18px", width: "18px" }}
                   />
@@ -295,6 +292,7 @@ const MainMobile = () => {
 
                 <div className="operation-tel-container">
                   <img
+                    alt="phone"
                     src="../../asset/a-icon-phone-normal.png"
                     style={{ height: "18px", width: "18px" }}
                   />
@@ -345,6 +343,7 @@ const MainMobile = () => {
                   >
                     <div className="coupon-font">
                       <img
+                        alt="reply"
                         src="../../asset/a-icon-reply-normal.png"
                         style={{ width: "18px", height: "18px" }}
                       />
@@ -474,6 +473,7 @@ const MainMobile = () => {
               ?.photo?.map((photo, photo_idx) => {
                 return (
                   <img
+                    alt="photo_url"
                     src={photo?.url}
                     style={{
                       width: windowDimensions.width - 100,
@@ -541,6 +541,7 @@ const MainMobile = () => {
                     {menu?.name}
                   </div>
                   <img
+                    alt="photo_button"
                     src="../../asset/button_photo_line.png"
                     style={{ width: "25px", height: "25px" }}
                     onClick={() => {

@@ -16,23 +16,25 @@ const Footer = () => {
       >
         <a
           href="https://www.kibo.or.kr/main/work/work030203.do"
-          target="_blank"
+          target="blank"
           title="기보벤처스"
           style={{ marginRight: "20px" }}
         >
           <img
             src="../../asset/a-icon-footer-kibo.png"
             style={{ width: "86px" }}
+            alt="kibo"
           />
         </a>
 
         <a
           href="https://www.fnnews.com/"
-          target="_blank"
+          target="blank"
           title="파이낸셜 뉴스"
           style={{ marginRight: "20px" }}
         >
           <img
+            alt="fn"
             src="../../asset/a-icon-footer-fn.png"
             style={{ width: "132px" }}
           />
@@ -40,10 +42,11 @@ const Footer = () => {
 
         <a
           href="https://www.instagram.com/newopen_official/"
-          target="_blank"
+          target="blank"
           title="인스타그램"
         >
           <img
+            alt="insta"
             src="../../asset/a-icon-footer-instagram.png"
             style={{ width: "20px" }}
           />

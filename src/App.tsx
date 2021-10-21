@@ -1,10 +1,10 @@
-import { Component, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
   Redirect,
   Switch,
- } from "react-router-dom";
+} from "react-router-dom";
 import { isMobile } from "react-device-detect";
 import "./App.css";
 
@@ -13,8 +13,8 @@ import Login from "./pages/Login/Login";
 import Join from "./pages/SignUp/SignUp";
 import InputForm from "./pages/InputForm/InputForm";
 
-import MainMobile from "./pages/MainMobile"
-import { deleteUserToken, getUserToken } from "./utils/utils";
+import MainMobile from "./pages/MainMobile";
+import { getUserToken } from "./utils/utils";
 
 function App() {
   const [authToken, setAuthToken] = useState(getUserToken());
@@ -27,49 +27,29 @@ function App() {
     }
   }, []);
 
-  const main_page = () =>
-  !isMobile ? (
-    <div>
-      <Switch>
-        <Route exact path="/" component={Main}/>
-        <Route exact path="/StoreLogin" component={Login}/>
-        <Route exact path="/StoreSignUp" component={Join}/>
-        <Route exact path="/InputForm" render={props => (
-             authToken ? <InputForm />  : <Redirect to="/StoreLogin" />
-          )}/>
-        <Redirect from="*" to="/" />
-      </Switch>
-      a{authToken ? "true" : "false"}b
-    </div>
-  ) : (
-    <>
-      <MainMobile />
-    </>
-  );
-
   const LoggedIn = () => (
     <Switch>
-      <Route exact path="/" component={ !isMobile ? Main : MainMobile}/>
-      <Route exact path="/StoreLogin" component={Login}/>
-      <Route exact path="/StoreSignUp" component={Join}/>
-      <Route exact path="/InputForm" component={InputForm}/>
+      <Route exact path="/" component={!isMobile ? Main : MainMobile} />
+      <Route exact path="/StoreLogin" component={Login} />
+      <Route exact path="/StoreSignUp" component={Join} />
+      <Route exact path="/InputForm" component={InputForm} />
       <Redirect from="*" to="/" />
     </Switch>
   );
 
   const LoggedOut = () => (
     <Switch>
-      <Route exact path="/" component={ !isMobile ? Main : MainMobile}/>
-      <Route exact path="/StoreLogin" component={Login}/>
-      <Route exact path="/StoreSignUp" component={Join}/>
+      <Route exact path="/" component={!isMobile ? Main : MainMobile} />
+      <Route exact path="/StoreLogin" component={Login} />
+      <Route exact path="/StoreSignUp" component={Join} />
       <Redirect from="*" to="/" />
     </Switch>
   );
 
-    return (
-      <div className="App">
-        <Router>{authToken ? <LoggedIn /> : <LoggedOut />}</Router>
-      </div>
+  return (
+    <div className="App">
+      <Router>{authToken ? <LoggedIn /> : <LoggedOut />}</Router>
+    </div>
   );
 }
 

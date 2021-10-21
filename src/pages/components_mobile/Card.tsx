@@ -94,6 +94,7 @@ const [carousel_index, set_carousel_index] = useState(0);
             {all?.map((item, idx) => {
               return (
                 <img
+                  alt="item"
                   src={item}
                   key={idx}
                   style={{ height: windowDimensions.width - 100 }}
