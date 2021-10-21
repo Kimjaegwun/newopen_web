@@ -14,6 +14,8 @@ import "../index.css";
 
 Modal.setAppElement();
 
+proj4.defs('WGS84', "+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees");
+
 const Main = () => {
   const [flag, set_flag] = useState(false);
   const flag_change = () => {
