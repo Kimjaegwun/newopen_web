@@ -220,17 +220,7 @@ const Main = () => {
                           {brand_name?.length > 6 ? "..." : null}
                         </div>
                         <a
-                          href={`https://map.naver.com/v5/search/${encodeURI(brand_name)}?c=${
-                            proj4(first, [
-                              Number(location.lat),
-                              Number(location.lon),
-                            ])[0]
-                          },${
-                            proj4(first, [
-                              Number(location.lat),
-                              Number(location.lon),
-                            ])[1]
-                          },15,0,0,0,dh`}
+                          href={`https://map.naver.com/v5/search/${encodeURI(location)}`}
                           target="_blank"
                           title="지도"
                         >
