@@ -1,3 +1,4 @@
+import { Component, useEffect, useRef, useState } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -13,39 +14,62 @@ import Join from "./pages/SignUp/SignUp";
 import InputForm from "./pages/InputForm/InputForm";
 
 import MainMobile from "./pages/MainMobile"
+import { deleteUserToken, getUserToken } from "./utils/utils";
 
 function App() {
-  // const [authToken, setAuthToken] = useState("");
+  const [authToken, setAuthToken] = useState(getUserToken());
 
-  // 비회원 이용 가능
-  // useEffect(() => {
-  //   const token: any = getUserToken();
-  //   if (token) {
-  //     setAuthToken(token);
-  //   }
-  // }, []);
+  //비회원 이용 가능
+  useEffect(() => {
+    const token: any = getUserToken();
+    if (token) {
+      setAuthToken(token);
+    }
+  }, []);
 
   const main_page = () =>
-    !isMobile ? (
-      <>
-        <Switch>
-          <Route exact path="/" component={Main}/>
-          <Route exact path="/StoreLogin" component={Login}/>
-          <Route exact path="/StoreSignUp" component={Join}/>
-          <Route exact path="/InputForm" component={InputForm}/>
-          <Redirect from="*" to="/" />
-        </Switch>
-      </>
-    ) : (
-      <>
-        <MainMobile />
-      </>
-    );
-
-  return (
-    <div className="App">
-      <Router>{main_page()}</Router>
+  !isMobile ? (
+    <div>
+      <Switch>
+        <Route exact path="/" component={Main}/>
+        <Route exact path="/StoreLogin" component={Login}/>
+        <Route exact path="/StoreSignUp" component={Join}/>
+        <Route exact path="/InputForm" render={props => (
+             authToken ? <InputForm />  : <Redirect to="/StoreLogin" />
+          )}/>
+        <Redirect from="*" to="/" />
+      </Switch>
+      a{authToken ? "true" : "false"}b
     </div>
+  ) : (
+    <>
+      <MainMobile />
+    </>
+  );
+
+  const LoggedIn = () => (
+    <Switch>
+      <Route exact path="/" component={Main}/>
+      <Route exact path="/StoreLogin" component={Login}/>
+      <Route exact path="/StoreSignUp" component={Join}/>
+      <Route exact path="/InputForm" component={InputForm}/>
+      <Redirect from="*" to="/" />
+    </Switch>
+  );
+
+  const LoggedOut = () => (
+    <Switch>
+      <Route exact path="/" component={Main}/>
+      <Route exact path="/StoreLogin" component={Login}/>
+      <Route exact path="/StoreSignUp" component={Join}/>
+      <Redirect from="*" to="/" />
+    </Switch>
+  );
+
+    return (
+      <div className="App">
+        <Router>{authToken ? <LoggedIn /> : <LoggedOut />}</Router>
+      </div>
   );
 }
 
