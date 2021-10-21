@@ -44,29 +44,7 @@ const PostCodePopup = ({postCodeSuccess, modalClose} : any) => {
 						fullAddress += (extraAddress !== '' ? ` (${extraAddress})` : '');
 						}
 
-						
-						Promise.resolve(data).then(o => {
-							const { address } = data;
-			
-							return new Promise((resolve, reject) => {
-								// @ts-ignore
-								var geocoder = new kakao.maps.services.Geocoder();
-			
-								geocoder.addressSearch(address, (result, status) =>{
-									// @ts-ignore
-									if(status === kakao.maps.services.Status.OK){
-										const { x, y } = result[0];
-			
-										resolve({ lat: y, lon: x })
-									}else{
-										reject();
-									}
-								});
-							})
-						}).then(location => {
-							postCodeSuccess(fullAddress, location);
-						});
-
+						postCodeSuccess(fullAddress, data.address);
 						
 					}}
 				>
