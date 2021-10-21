@@ -14,6 +14,8 @@ import "../index.css";
 
 Modal.setAppElement();
 
+proj4.defs('WGS84', "+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees");
+
 const Main = () => {
   const [flag, set_flag] = useState(false);
   const flag_change = () => {
@@ -170,6 +172,11 @@ const Main = () => {
 
             const first =
               "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
+            console.log(proj4(first,[
+              Number(location.lat),
+              Number(location.lon)
+            ]))
+       
 
             return (
               <div className="new-open-container" key={str_idx}>
@@ -228,7 +235,7 @@ const Main = () => {
                               Number(location.lat),
                               Number(location.lon),
                             ])[1]
-                          },1,0,0,0,dh`}
+                          },20,0,0,0,dh`}
                           target="_blank"
                           title="지도"
                         >
