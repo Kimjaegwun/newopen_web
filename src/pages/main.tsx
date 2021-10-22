@@ -149,7 +149,7 @@ const Main = () => {
               photo_in_mall,
               coupon_touch,
               business_hours,
-              phone_number,
+              store_number,
               menu,
               location,
             } = store;
@@ -298,7 +298,7 @@ const Main = () => {
                             className="operation-time"
                             style={{ textDecoration: "underline" }}
                           >
-                            {phone_number}
+                            {store_number}
                           </div>
                         </div>
                       </div>

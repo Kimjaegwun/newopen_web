@@ -541,7 +541,7 @@ const InputForm = () => {
                       className="operation-time"
                       style={{ textDecoration: "underline" }}
                     >
-                      {newOpen?.phone_number}
+                      {newOpen?.store_number ? newOpen?.store_number : '00-0000-0000'}
                     </div>
                   </div>
                 </div>
