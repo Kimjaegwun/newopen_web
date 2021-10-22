@@ -428,10 +428,23 @@ const InputForm = () => {
 
             <div className="brand-container">
               <div className="brand-contents">
-                <div className="brand-name-position">
-                  <div className="brand-name">{newOpen?.brand_name}</div>
-                  <div className="brand-position">{newOpen?.address}</div>
-                </div>
+								<div
+									className="brand-name"
+									style={{ textAlign: "left" }}
+								>
+									{newOpen?.brand_name}
+								</div>
+								<a
+									href={`https://map.naver.com/v5/search/${encodeURI(
+									newOpen?.location
+									)}`}
+									target="blank"
+									title="지도"
+								>
+									<div className="brand-position">
+										{newOpen?.address}
+									</div>
+								</a>
                 <div
                   className="brand-description"
                   style={{ width: "320px", height: "auto" }}
@@ -2073,15 +2086,11 @@ const Styled = styled.div`
     max-width: 380px;
   }
 
-  .brand-name-position {
-    flex-direction: row;
-    display: flex;
-  }
-
   .brand-name {
     font-size: 21px;
     font-weight: bold;
     margin-right: 21px;
+		margin-bottom: 5px;
   }
 
   .brand-position {

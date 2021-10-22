@@ -205,33 +205,23 @@ const Main = () => {
                   <div className="brand-container">
                     <div className="brand-contents">
                       <div
-                        className="brand-name-position"
-                        style={{
-                          alignItems: "center",
-                          justifyContent: "flex-start",
-                          textAlign: "left",
-                        }}
+                        className="brand-name"
+                        style={{ textAlign: "left" }}
                       >
-                        <div
-                          className="brand-name"
-                          style={{ textAlign: "left" }}
-                        >
-                          {brand_name.slice(0, 6)}
-                          {brand_name?.length > 6 ? "..." : null}
-                        </div>
-                        <a
-                          href={`https://map.naver.com/v5/search/${encodeURI(
-                            location
-                          )}`}
-                          target="blank"
-                          title="지도"
-                        >
-                          <div className="brand-position">
-                            {address?.slice(0, 20)}
-                            {address?.length > 20 ? "..." : null}
-                          </div>
-                        </a>
+                        {brand_name.slice(0, 6)}
+                        {brand_name?.length > 6 ? "..." : null}
                       </div>
+                      <a
+                        href={`https://map.naver.com/v5/search/${encodeURI(
+                          location
+                        )}`}
+                        target="blank"
+                        title="지도"
+                      >
+                        <div className="brand-position">
+                          {address}
+                        </div>
+                      </a>
 
                       <Input.TextArea
                         autoSize={{ minRows: 2, maxRows: 5 }}
@@ -785,15 +775,11 @@ const Styled = styled.div`
     max-width: 380px;
   }
 
-  .brand-name-position {
-    flex-direction: row;
-    display: flex;
-  }
-
   .brand-name {
     font-size: 21px;
     font-weight: bold;
     margin-right: 21px;
+    margin-bottom: 5px;
   }
 
   .brand-position {
