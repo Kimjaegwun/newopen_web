@@ -72,6 +72,19 @@ const Login = () => {
     const needSpan = $(id + "-need");
     input.css("border", "1px solid #D1D1D1");
     needSpan.css("display", "none");
+
+		
+    const loginId = $("#login-id").val();
+    const loginPw = $("#login-pw").val();
+
+		if( loginId != '' && loginPw!= ''){
+			$("#login-button").css('background-color','#2F80ED');
+			$("#login-button").css('color','#FFFFFF');
+		}else{
+			$("#login-button").css('background-color','#D1D1D1');
+			$("#login-button").css('color','#3E3F41');
+		}
+		
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -178,6 +191,7 @@ const Login = () => {
             아이디 혹은 비밀번호가 잘못 입력되었습니다.
           </span>
           <button
+						id="login-button"
             className="grey-button"
             style={{ width: 335, cursor: "pointer" }}
             onClick={() => onFinish()}
@@ -185,10 +199,11 @@ const Login = () => {
             로그인 하기
           </button>
         </div>
-        <div style={{ marginTop: 20 }}>
+        <div className="row" style={{ marginTop: 20, justifyContent:'center' }}>
           <a
             href="/StoreSignUp"
             style={{
+						  marginTop:2,
               textDecoration: "none",
               fontSize: "13px",
               lineHeight: "15px",
@@ -201,6 +216,7 @@ const Login = () => {
           <div
             onClick={() => setFindModal(true)}
             style={{
+			  marginTop:2,
               textDecoration: "none",
               fontSize: "13px",
               lineHeight: "15px",
