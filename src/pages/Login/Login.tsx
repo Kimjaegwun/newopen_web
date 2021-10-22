@@ -273,6 +273,13 @@ const Login = () => {
             해당 이메일 & 번호로 아이디를 문의 주시면 비밀번호를 최대한
             빠른시간내에 찾아드리겠습니다.
           </div>
+					<div style={{marginTop:20,}}>
+						<div style={{width:175, marginLeft:'auto', marginRight:'auto', paddingTop:15, paddingBottom:15, backgroundColor:"#2F80ED", borderRadius:5, cursor:'pointer',
+							font:'Spoqa Han Sans Neo', fontWeight:'bold', fontSize:"14px", color:'#FFFFFF' }}
+							onClick={() => setFindModal(false)}>
+								확인
+						</div>
+					</div>
         </div>
       </Modal>
     </div>
