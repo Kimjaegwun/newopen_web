@@ -442,7 +442,7 @@ const InputForm = () => {
 									title="지도"
 								>
 									<div className="brand-position">
-										{newOpen?.address}
+										{newOpen?.address} {newOpen?.address_detail}
 									</div>
 								</a>
                 <div
@@ -859,7 +859,7 @@ const InputForm = () => {
                     height: 65,
                     borderRadius: 65,
                     overflow: "hidden",
-                    border: "1px solid black",
+                    border: "1px solid #c4c4c4",
                   }}
                 >
                   <img

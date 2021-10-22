@@ -144,6 +144,7 @@ const Main = () => {
               open_date,
               brand_name,
               address,
+              address_detail,
               description,
               photo_in_mall,
               coupon_touch,
@@ -208,8 +209,7 @@ const Main = () => {
                         className="brand-name"
                         style={{ textAlign: "left" }}
                       >
-                        {brand_name.slice(0, 6)}
-                        {brand_name?.length > 6 ? "..." : null}
+                        {brand_name}
                       </div>
                       <a
                         href={`https://map.naver.com/v5/search/${encodeURI(
@@ -219,7 +219,7 @@ const Main = () => {
                         title="지도"
                       >
                         <div className="brand-position">
-                          {address}
+                          {address} {address_detail}
                         </div>
                       </a>
 

@@ -13,6 +13,7 @@ export const GET_All_NEW_OPEN = gql`
         brand_name
         business_type
         address
+        address_detail
         description
         business_hours
         open_date
