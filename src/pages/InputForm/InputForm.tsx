@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import $ from "jquery";
 import { useMutation, useQuery } from "@apollo/client";
 import { Dropdown } from "antd";
@@ -84,53 +84,8 @@ const InputForm = () => {
       if (newOpenEvent) {
         setEventList(newOpenEvent);
       }
-
-      // 오픈 날짜 계산
-      const openDate = newOpenData.open_date;
-      if (openDate) {
-        const now = new Date().getTime();
-        const date_split = String(openDate).split("-");
-        setDiffDay(
-          Math.floor(
-            (new Date(
-              Number(date_split[0]),
-              Number(date_split[1]) - 1,
-              Number(date_split[2]),
-              0,
-              0,
-              0
-            ).getTime() -
-              now) /
-              (1000 * 3600 * 24)
-          )
-        );
-      }
-
-      //오픈 시간 계산
-      const businessHours = newOpenData.business_hours;
-
-      setFindDay(
-        businessHours?.find((item: any) => {
-          return Number(item?.number) === new Date().getDay();
-        })
-      );
     },
   });
-
-  // 주소 팝업창
-  const [postCodePopup, setPostCodePopup] = useState(false);
-  const modalClose = () => {
-    setPostCodePopup(false);
-  };
-  const postCodeSuccess = (data, location) => {
-    setNewOpen(
-      produce((draft: any) => {
-        draft.address = data;
-        draft.location = location;
-      })
-    );
-    setPostCodePopup(false);
-  };
 
   // 영업 시간
   const [businessHours, setBusinessHours] = useState([
@@ -184,6 +139,52 @@ const InputForm = () => {
       closed: true,
     },
   ]);
+
+  //오픈일 계산
+  useEffect(() => {
+		if(newOpen.open_date){
+			const now = new Date().getTime();
+			const date_split = String(newOpen.open_date).split("-");
+			setDiffDay(
+				Math.floor(
+					(new Date(
+						Number(date_split[0]),
+						Number(date_split[1]) - 1,
+						Number(date_split[2]),
+						0,
+						0,
+						0
+					).getTime() -
+						now) /
+						(1000 * 3600 * 24)
+				)
+			);
+		}
+  }, [newOpen.open_date]);
+
+  //오프시간 계산
+  useEffect(() => {
+		setFindDay(
+			businessHours?.find((item: any) => {
+				return Number(item?.number) === new Date().getDay();
+			})
+		);
+  }, [businessHours]);
+
+  // 주소 팝업창
+  const [postCodePopup, setPostCodePopup] = useState(false);
+  const modalClose = () => {
+    setPostCodePopup(false);
+  };
+  const postCodeSuccess = (data, location) => {
+    setNewOpen(
+      produce((draft: any) => {
+        draft.address = data;
+        draft.location = location;
+      })
+    );
+    setPostCodePopup(false);
+  };
 
   // 메뉴 정보
   const [menuList, setMenuList] = useState([] as any);
@@ -404,7 +405,11 @@ const InputForm = () => {
         {/* 브랜드 컨테이너 */}
         <div className="new-open-container">
           <div className="column">
-            <img className="logo" src={newOpen?.logo} alt="logo" />
+						{newOpen?.logo ? (
+							<img className="logo" src={newOpen?.logo} alt="logo" />
+						) : (
+							<div className="logo"></div>
+						)}
             <div className="remain-open">정식오픈</div>
             <div
               className="remain-open"
@@ -421,7 +426,7 @@ const InputForm = () => {
           </div>
           <div className="content-container">
             <div className="category-container">
-              <div className="category-name">#{newOpen?.business_type}</div>
+              <div className="category-name">#{newOpen?.business_type ? newOpen?.business_type : "업종"}</div>
               <div className="like-numb">
                 👀
                 <span style={{ marginLeft: "10px" }}>
@@ -436,7 +441,7 @@ const InputForm = () => {
 									className="brand-name"
 									style={{ textAlign: "left" }}
 								>
-									{newOpen?.brand_name}
+									{newOpen?.brand_name ? newOpen?.brand_name : "가게명"}
 								</div>
 								<a
 									href={`https://map.naver.com/v5/search/${encodeURI(
@@ -446,16 +451,16 @@ const InputForm = () => {
 									title="지도"
 								>
 									<div className="brand-position">
-										{newOpen?.address} {newOpen?.address_detail}
+										{newOpen?.address ? newOpen?.address+newOpen?.address_detail : "가게주소"}
 									</div>
 								</a>
                 <div
                   className="brand-description"
                   style={{ width: "320px", height: "auto" }}
                 >
-                  {newOpen?.description?.split("\n").map((line, idx) => {
+                  {newOpen?.description ? newOpen?.description?.split("\n").map((line, idx) => {
                     return <div key={idx}>{line}</div>;
-                  })}
+                  }) : "가게 설명"}
                 </div>
 
                 <div className="brand-time-tel">
@@ -469,12 +474,18 @@ const InputForm = () => {
                       Time
                     </div>
                     <div className="operation-time">
-                      {findDay?.closed
-                        ? "휴일 : 00:00 ~ 00:00"
-                        : "영업중 : " +
-                          findDay?.start_hour +
-                          "~" +
-                          findDay?.end_hour}
+											{findDay ? (
+												<div>
+													{findDay?.closed
+														? "휴일 : 00:00 ~ 00:00"
+														: "영업중 : " +
+															findDay?.start_hour +
+															"~" +
+															findDay?.end_hour}
+													</div>
+											) : (
+												"휴일 or 영업중 : 00:00 ~ 00:00"
+											)}
                       <Dropdown
                         trigger={["hover"]}
                         onVisibleChange={(e) => {
@@ -1075,8 +1086,11 @@ const InputForm = () => {
             />
           </div>
 
-          {/* 영업시간 */}
-          <div className={"input-title"}>7. 영업시간 (필수)</div>
+				{/* 영업시간 */}
+				<div className={"input-title"}>7. 영업시간 (필수)</div>
+					<span className="span-info">
+						요일별 영업시간을 입력해주세요, 입력하지 않은 요일은 ‘휴무'로 노출됩니다
+					</span>
           <div
             style={{ marginTop: 7, display: "flex", alignItems: "flex-start" }}
           >

@@ -246,9 +246,17 @@ const Login = () => {
         onRequestClose={() => setFindModal(false)}
         ariaHideApp={false}
       >
-        <div style={{ textAlign: "center", padding: 20 }}>
+        <div style={{ textAlign: "center"}}>
+					<div style={{position:'absolute', top:10, right:10,}}>
+						<div style={{width:22, height:22, marginLeft:'auto', marginRight:'auto', borderRadius:5, cursor:'pointer',
+							font:'Spoqa Han Sans Neo', fontWeight:'bold', fontSize:"20px", color:'#2D2D2D' }}
+							onClick={() => setFindModal(false)}>
+								X
+						</div>
+					</div>
           <div
             style={{
+							marginTop:30,
               fontSize: "20px",
               color: "#ff2e4c",
               fontWeight: "bold",
@@ -257,7 +265,7 @@ const Login = () => {
           >
             - NewOpen 매니저 -
           </div>
-          <div style={{ fontSize: "18px", fontWeight: "bold" }}>
+          <div style={{ fontSize: "18px", fontWeight: "bold", marginTop:50 }}>
             이준(Jun.lee@tierjay.com 010-5755-2801)
           </div>
           <div
@@ -269,15 +277,15 @@ const Login = () => {
           >
             최석현(SukHyun.choi@tierjay.com 010-2258-1675)
           </div>
-          <div style={{ fontSize: "20px" }}>
-            해당 이메일 & 번호로 아이디를 문의 주시면 비밀번호를 최대한
-            빠른시간내에 찾아드리겠습니다.
+          <div style={{ fontSize: "18px", marginTop:50 }}>
+            해당 이메일 & 번호로 아이디를 문의 주시면<br/>
+						비밀번호를 최대한빠른시간내에 찾아드리겠습니다.
           </div>
 					<div style={{marginTop:20,}}>
 						<div style={{width:175, marginLeft:'auto', marginRight:'auto', paddingTop:15, paddingBottom:15, backgroundColor:"#2F80ED", borderRadius:5, cursor:'pointer',
 							font:'Spoqa Han Sans Neo', fontWeight:'bold', fontSize:"14px", color:'#FFFFFF' }}
 							onClick={() => setFindModal(false)}>
-								확인
+								닫기
 						</div>
 					</div>
         </div>
