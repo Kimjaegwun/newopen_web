@@ -60,6 +60,9 @@ const InputForm = () => {
     flag_change();
   };
 
+  // 저장 모달
+  const [saveModal, setSaveModal] = useState(false);
+
   // New Open 정보 가져오기
   const { data } = useQuery(GET_NEW_OPEN, {
     notifyOnNetworkStatusChange: true,
@@ -120,7 +123,6 @@ const InputForm = () => {
     setPostCodePopup(false);
   };
   const postCodeSuccess = (data, location) => {
-    console.log(data, location);
     setNewOpen(
       produce((draft: any) => {
         draft.address = data;
@@ -362,7 +364,9 @@ const InputForm = () => {
     if (!result.ok) {
       console.log(result);
       return;
-    }
+    }else{
+			setSaveModal(true);
+		}
   };
 
   // 캐러셀 ref
@@ -1917,7 +1921,7 @@ const InputForm = () => {
           }}
           onClick={() => submitUpdateNewOpen()}
         >
-          입점 신청하기
+          {newOpen?.approved ? "수정하기" : "입점 신청하기"}
         </button>
         <div
           style={{
@@ -1932,6 +1936,51 @@ const InputForm = () => {
           <br />
           만일 수정사항이 있는 경우 담당자 번호로 연락 드리겠습니다.
         </div>
+				<Modal
+        style={{
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+            borderRadius: "10px",
+          },
+        }}
+					isOpen={saveModal}
+					onRequestClose={() => setSaveModal(false)}
+					ariaHideApp={false}
+				>
+					<div style={{ textAlign: "center", padding: 20, justifyContent:'center' }}>
+						<img
+							style={{width:185, height:185}}
+							src="../../asset/image_save_success.png"
+							alt="success"
+						/>
+						<div style={{font:"Roboto", fontWeight:'bold', fontSize:"25px", color:"#3E3F41", marginTop:40}}>
+							{newOpen?.approved ? "저장이 완료되었습니다." : "입점신청이 완료되었습니다!"} 
+						</div>
+						{newOpen?.approved ? (
+							<div style={{font:"Spoqa Han Sans Neo", fontSize:"17px", color:"#3E3F41", marginTop:25}}>
+								만일 수정사항이 있는 경우 담당자 번호로 연락 드리겠습니다.
+							</div>	
+						): (
+							<div style={{font:"Spoqa Han Sans Neo", fontSize:"17px", color:"#3E3F41", marginTop:25}}>
+								최대한 빠르게 내부 검토 후 게시가 시작됩니다.<br/>
+								만일 수정사항이 있는 경우 담당자 번호로 연락 드리겠습니다.
+							</div>	
+						)}
+						<div style={{marginTop:45,}}>
+							<div style={{width:175, marginLeft:'auto', marginRight:'auto', paddingTop:15, paddingBottom:15, backgroundColor:"#2F80ED", borderRadius:5, cursor:'pointer',
+						font:'Spoqa Han Sans Neo', fontWeight:'bold', fontSize:"14px", color:'#FFFFFF' }}
+							onClick={() => setSaveModal(false)}>
+								확인
+							</div>
+						</div>
+
+					</div>
+				</Modal>
       </div>
     </div>
   );

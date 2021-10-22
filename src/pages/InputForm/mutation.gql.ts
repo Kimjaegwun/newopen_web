@@ -24,6 +24,7 @@ export const GET_NEW_OPEN = gql`
         open_date
         phone_number
         coupon_touch
+        approved
         menu {
           id
           name
