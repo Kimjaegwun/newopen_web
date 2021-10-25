@@ -2193,9 +2193,6 @@ const Styled = styled.div`
   justify-content: center;
   align-items: center;
   min-width: 1440px;
-	.card{
-		border: none
-	}
   .row {
     display: flex;
     flex-direction: row;
