@@ -87,7 +87,6 @@ const Main = () => {
       if(window.pageYOffset > 550 && window.pageYOffset < document.body.offsetHeight - 1450){
         $("#right-banner").css("top", window.pageYOffset + 120);
       }
-      console.log(window.pageYOffset );
     }
   }, []);
   
@@ -722,9 +721,6 @@ const Main = () => {
           <div className="brand-menu-detail">
             {select_store?.brand_name} 방문 혜택
           </div>
-          <span className="span-info"  style={{ fontSize:"14px", lineHeight:"25px", color:'#6C757D',}}>
-          사용 방법 : [쿠폰 캡쳐하기] 버튼 클릭 &gt; 화면을 캡쳐
-          </span>
           {select_store?.new_open_event?.map((event, event_idx) => {
             return (
               <div id={"coupon-div-" + event_idx} className="coupon-list"

@@ -437,7 +437,6 @@ const InputForm = () => {
     const result = UpdateNewOpen.UpdateNewOpen;
 
     if (!result.ok) {
-      console.log(result);
       return;
     }else{
 			setSaveModal(true);
