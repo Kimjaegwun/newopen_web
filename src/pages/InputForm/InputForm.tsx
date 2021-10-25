@@ -291,16 +291,23 @@ const InputForm = () => {
 
   const [updateNewOpen] = useMutation(UPDATE_NEW_OPEN);
 
-  const checkValue = (id) => {
-    const component = $("#" + id);
+  const checkValue = (item) => {
+    const component = $("#" + item.id);
     const componentVal = component.val();
-    if (id === "business-type") {
+    if (item.id === "business-type") {
       const detail = $("#business-type-detail");
       if (componentVal === "기타" && !detail.val()) {
+				alert(item.name +"은 필수입력 항목입니다.")
         detail.focus();
       }
+      if (componentVal === "선택" && !detail.val()) {
+				alert(item.name +"은 필수입력 항목입니다.")
+				component.focus();
+				return false;
+			}
     }
     if (!component.val()) {
+			alert(item.name +"은 필수입력 항목입니다.")
       component.focus();
       return false;
     }
@@ -309,16 +316,17 @@ const InputForm = () => {
 
   const submitUpdateNewOpen = async () => {
     if (!newOpen?.logo) {
-      $("html, body").animate({ scrollTop: 100 }, 100);
+			alert("로고는 필수 입력 항목입니다.");
+      $("html, body").animate({ scrollTop: 300 }, 100);
       return;
     }
 
     const idList = [
-      "business-type",
-      "brand-name",
-      "address",
-      "address-detail",
-      "phone-number",
+      {id:"business-type", name:"업종"},
+      {id:"brand-name", name:"상호명"},
+      {id:"address", name:"사업장 주소"},
+      {id:"address-detail", name:"사업장 주소 상세"},
+      {id:"phone-number", name:"담당자 전화번호"},
     ];
     for (let i = 0; i < idList.length; i++) {
       if (!checkValue(idList[i])) {
@@ -328,8 +336,82 @@ const InputForm = () => {
 
     if (!newOpen.photo_in_mall || newOpen.photo_in_mall.length === 0) {
       $("html, body").animate({ scrollTop: 300 }, 100);
+			alert("매장사진은 필수 입력 항목입니다.");
       return;
     }
+
+		const uploadMenuList = [] as any;
+		for(let i=0; i< menuList.length; i++){
+			const menu = menuList[i];
+			if(i == menuList.length -1) {
+
+				if(menu.name || menu.price || menu.photo || menu.main_menu){
+					if(!menu.name){
+						alert((i+1) + "번째 메뉴이름를 입력해주세요.");
+						return;
+					}
+					if(!menu.price){
+						alert((i+1) + "번째 메뉴 가격를 입력해주세요.");
+						return;
+					}
+				}
+
+				if(menuList.length == 1 && !menu.name && !menu.price){
+					alert("메뉴를 1개이상 입력해주세요.");
+					return;
+				}
+
+				uploadMenuList.push(menu);
+			}else{
+				if(!menu.name){
+					alert((i+1) + "번째 메뉴이름를 입력해주세요.");
+					return;
+				}
+				if(!menu.price){
+					alert((i+1) + "번째 메뉴 가격를 입력해주세요.");
+					return;
+				}
+				uploadMenuList.push(menu);
+			}
+		}
+
+		const uploadEventList = [] as any
+		for(let i=0; i< evnetList.length; i++){
+			const event = evnetList[i];
+			if(i == evnetList.length -1){
+				if(!event.content && event.date_check){
+					alert((i+1) + "번째 혜택의 내용를 입력해주세요.");
+					return;
+				}
+				if(event.date_check){
+					if(!event.start_date){
+						alert((i+1) + "번째 혜택의 시작날짜를 입력해주세요.");
+						return;	
+					}
+					if(!event.end_date){
+						alert((i+1) + "번째 혜택의 종료날짜를 입력해주세요.");
+						return;	
+					}
+				}
+				uploadEventList.push(event);
+			}else{
+				if(!event.content){
+					alert((i+1) + "번째 혜택의 내용를 입력해주세요.");
+					return;
+				}
+				if(event.date_check){
+					if(!event.start_date){
+						alert((i+1) + "번째 혜택의 시작날짜를 입력해주세요.");
+						return;	
+					}
+					if(!event.end_date){
+						alert((i+1) + "번째 혜택의 종료날짜를 입력해주세요.");
+						return;	
+					}
+				}
+				uploadEventList.push(event);
+			}
+		}
 
     const { data: UpdateNewOpen } = await updateNewOpen({
       variables: {
@@ -345,8 +427,8 @@ const InputForm = () => {
           store_number: newOpen.store_number,
           business_hours: businessHours,
           photo_in_mall: newOpen.photo_in_mall,
-          menu: menuList,
-          newOpenEvent: evnetList,
+          menu: uploadMenuList,
+          newOpenEvent: uploadEventList,
           open_date: newOpen.open_date,
           phone_number: newOpen.phone_number,
         },
@@ -373,7 +455,7 @@ const InputForm = () => {
   const [select_menu_photo, set_select_menu_photo] = useState(0);
 
 
- const couponColor =  ["#1E61BA", "#908376", "#1D5046", "#412F60", "#6F1515"];
+ const couponSrc =  ["../../asset/image_coupone_blue.png", "../../asset/image_coupone_brown.png", "../../asset/image_coupone_green.png", "../../asset/image_coupone_purple.png", "../../asset/image_coupone_blue.png"];
 
   return (
     <div style={{ backgroundColor: "#F6F6F6", paddingTop: 70 }}>
@@ -472,7 +554,7 @@ const InputForm = () => {
 											<div>
 											{findDay?.closed
 												? "휴일 : 00:00 ~ 00:00"
-												: "영업시간 : " +
+												: "영업중 : " +
 													findDay?.start_hour +
 													"~" +
 													findDay?.end_hour}
@@ -541,7 +623,7 @@ const InputForm = () => {
               <div className="brand-mall-image">
 								{/* 가게 안 이미지들 */}
 								<HorizontalCarousel
-									photo={newOpen?.photo_in_mall ? newOpen?.photo_in_mall : ["../../asset/image_default_mall.png", "../../asset/image_default_mall.png", "../../asset/image_default_mall.png", "../../asset/image_default_mall.png"]}
+									photo={newOpen?.photo_in_mall?.length > 0 ? newOpen?.photo_in_mall : ["../../asset/image_default_mall.png", "../../asset/image_default_mall.png", "../../asset/image_default_mall.png", "../../asset/image_default_mall.png"]}
 									flag_change={flag_change}
 									flag={flag}
 								/>
@@ -714,23 +796,45 @@ const InputForm = () => {
 
           <div className="column" style={{ margin: "27px" }}>
             {menuList?.map((menu, menu_idx) => {
-              return (
-                <div className="menu-row" key={menu_idx}>
-                  <div className="menu-font">{menu?.name}</div>
-                  <img
-                    className="camera"
-                    src="../../asset/button_photo_line.png"
-                    alt="camera"
-                    onClick={() => {
-                      set_select_menu(menu?.name);
-                      set_select_menu_photo(0);
-                      handle_previous();
-                    }}
-                  />
-                  <div className="bar"></div>
-                  <div className="menu-font">{numb(menu?.price)}원</div>
-                </div>
-              );
+							if(menu_idx != menuList.length -1){
+								return (
+									<div className="menu-row" key={menu_idx}>
+										<div className="menu-font">{menu?.name}</div>
+										<img
+											className="camera"
+											src="../../asset/button_photo_line.png"
+											alt="camera"
+											onClick={() => {
+												set_select_menu(menu?.name);
+												set_select_menu_photo(0);
+												handle_previous();
+											}}
+										/>
+										<div className="bar"></div>
+										<div className="menu-font">{numb(menu?.price)}원</div>
+									</div>
+								);	
+							}else{
+								if(menu.name || menu.price){
+									return (
+										<div className="menu-row" key={menu_idx}>
+											<div className="menu-font">{menu?.name}</div>
+											<img
+												className="camera"
+												src="../../asset/button_photo_line.png"
+												alt="camera"
+												onClick={() => {
+													set_select_menu(menu?.name);
+													set_select_menu_photo(0);
+													handle_previous();
+												}}
+											/>
+											<div className="bar"></div>
+											<div className="menu-font">{numb(menu?.price)}원</div>
+										</div>
+									);	
+								}
+							}
             })}
           </div>
         </StyledModal>
@@ -747,6 +851,7 @@ const InputForm = () => {
             transform: "translate(-50%, -50%)",
             borderRadius: "10px",
             width: "550px",
+						maxHeight:"600px"
           },
         }}
         isOpen={coupon_modal}
@@ -769,30 +874,63 @@ const InputForm = () => {
           </div>
 
           {evnetList.map((event, event_idx) => {
-            return (
-              <div className="coupon-list" key={event_idx}>
-                <img
-                  src="../../asset/image_coupone_blue.png"
-                  style={{
-                    width: "444px",
-                    position: "absolute",
-                  }}
-                  alt="coupon"
-                />
-                <div className="column">
-                  <div className="coupon-number">
-                    <div className="coupon-content" style={{ flex: 1 }}>
-                      혜택1
-                    </div>
-                    <div className="coupon-content">선유기지</div>
-                  </div>
-                  <div className="coupon-detail">{event?.content}</div>
-                  <div className="coupon-date">
-                    {event?.start_date} ~ {event?.end_date}
-                  </div>
-                </div>
-              </div>
-            );
+						if(event_idx != evnetList.length - 1){
+							return (
+								<div className="coupon-list" key={event_idx}>
+									<img
+										src={couponSrc[event_idx]}
+										style={{
+											width: "444px",
+											position: "absolute",
+										}}
+										alt="coupon"
+									/>
+									<div className="column">
+										<div className="coupon-number">
+											<div className="coupon-content" style={{ flex: 1 }}>
+												혜택1
+											</div>
+											<div className="coupon-content">
+												{newOpen?.brand_name ? newOpen?.brand_name : "가게명"}
+											</div>
+										</div>
+										<div className="coupon-detail">{event?.content}</div>
+										<div className="coupon-date">
+											{event.date_check ? event?.start_date + '~'  + event?.end_date : '기한 제한 없음'}
+										</div>
+									</div>
+								</div>
+							);	
+						}else{
+							if(event.content || event.date_check){
+								return (
+									<div className="coupon-list" key={event_idx}>
+										<img
+											src={couponSrc[event_idx]}
+											style={{
+												width: "444px",
+												position: "absolute",
+											}}
+											alt="coupon"
+										/>
+										<div className="column">
+											<div className="coupon-number">
+												<div className="coupon-content" style={{ flex: 1 }}>
+													혜택1
+												</div>
+												<div className="coupon-content">
+													{newOpen?.brand_name ? newOpen?.brand_name : "가게명"}
+												</div>
+											</div>
+											<div className="coupon-detail">{event?.content}</div>
+											<div className="coupon-date">
+												{event.date_check ? event?.start_date + '~'  + event?.end_date : '기한 제한 없음'}
+											</div>
+										</div>
+									</div>
+								);
+							}
+						}
           })}
         </StyledModal>
       </Modal>
