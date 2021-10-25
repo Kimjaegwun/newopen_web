@@ -623,6 +623,7 @@ const InputForm = () => {
               <div className="brand-mall-image">
 								{/* 가게 안 이미지들 */}
 								<HorizontalCarousel
+									brand_name={newOpen?.brand_name}
 									photo={newOpen?.photo_in_mall?.length > 0 ? newOpen?.photo_in_mall : ["../../asset/image_default_mall.png", "../../asset/image_default_mall.png", "../../asset/image_default_mall.png", "../../asset/image_default_mall.png"]}
 									flag_change={flag_change}
 									flag={flag}

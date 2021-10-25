@@ -113,7 +113,7 @@ const [carousel_index, set_carousel_index] = useState(0);
               fontWeight: "bold",
             }}
           >
-            <div style={{ flex: 1 }}>선유기지 매장사진</div>
+            <div style={{ flex: 1 }}> 매장사진</div>
             <div>
               {carousel_index + 1}/{all?.length}
             </div>

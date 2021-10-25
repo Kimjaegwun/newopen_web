@@ -39,3 +39,13 @@ export const GET_All_NEW_OPEN = gql`
     }
   }
 `;
+
+
+export const UPDATE_COUPON_TOUCH = gql`
+  mutation UpdateCouponTouch($id: Int!) {
+    UpdateCouponTouch(id: $id) {
+      ok
+      error
+    }
+  }
+`;

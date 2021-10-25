@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from "react";
-import { useQuery } from "@apollo/client";
+import { useState, useRef } from "react";
+import $ from "jquery";
+import { useMutation, useQuery } from "@apollo/client";
 import { Button, Dropdown, Input } from "antd";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { GET_All_NEW_OPEN } from "./mutation.gql";
+import { GET_All_NEW_OPEN, UPDATE_COUPON_TOUCH } from "./mutation.gql";
 import { numb } from "../utils/utils";
 import Modal from "react-modal";
 import HorizontalCarousel from "./components/HorizontalCarousel";
@@ -12,6 +13,7 @@ import Footer from "./components/Footer";
 import proj4 from "proj4";
 import "../index.css";
 import Header from "./components/Header";
+import domtoimage from 'dom-to-image';
 
 Modal.setAppElement();
 
@@ -44,7 +46,7 @@ const Main = () => {
 
 
   //전국 리스트
-  const loaction_list = ["전국", "강남", "강북", "문래"];
+  const location_list = ["전국", "동대문", "강남", "강북", "문래"];
   const [select_loaction, set_select_location] = useState("전국");
   const [open_location, set_open_location] = useState(false);
 
@@ -64,6 +66,7 @@ const Main = () => {
     set_coupon_modal(false);
     flag_change();
   };
+  const [updateCouponTouch] = useMutation(UPDATE_COUPON_TOUCH);
 
 
   // 선택한 가게
@@ -76,6 +79,8 @@ const Main = () => {
   const handle_previous = () => {
     carousel_ref.current?.moveTo(0);
   };
+
+  const couponSrc =  ["../../asset/image_coupone_blue.png", "../../asset/image_coupone_brown.png", "../../asset/image_coupone_green.png", "../../asset/image_coupone_purple.png", "../../asset/image_coupone_blue.png"];
 
   return (
     <>
@@ -121,12 +126,12 @@ const Main = () => {
                 alt="time"
                 />
             </div>
-            {loaction_list.map((cate, cate_index) => {
+            {location_list.map((cate, cate_index) => {
               return(
                 <div
                   className="center-div"
                   style={{display: open_location ? 'block' : 'none', width:230, paddingTop:10, paddingBottom:10, backgroundColor:"#FFFFFF", borderLeft:'0.5px solid grey', borderRight:'0.5px solid grey',
-                    cursor:'pointer', borderBottom: cate_index == loaction_list.length-1 ? '0.5px solid grey' : 'none'}}
+                    cursor:'pointer', borderBottom: cate_index == location_list.length-1 ? '0.5px solid grey' : 'none'}}
                   onClick= {() => {
                     set_select_location(cate);
                     set_open_location(false);
@@ -196,6 +201,12 @@ const Main = () => {
               return item;
             } else {
               return item?.business_type === select_category;
+            }
+          })?.filter((item:any) => {
+            if(select_loaction ==="전국"){
+              return item;
+            }else{
+              return item.address.includes(select_loaction);
             }
           })
           .map((store: any, str_idx) => {
@@ -306,16 +317,55 @@ const Main = () => {
                             {find_day?.closed
                               ? "휴일 : 00:00 ~ 00:00"
                               : "영업중 : " + find_day?.hour}
-                            <Dropdown
+                            <div style={{position:'relative'}}>
+                              <img
+                                  className="time-image"
+                                  style={{ marginLeft: "5px" }}
+                                  src="../../asset/button_more_info_arrow.png"
+                                  alt="time"
+                                  onMouseEnter={() => {
+                                    $("#business-hours-dropdown-" + str_idx).css("display", "flex");
+                                  }}
+                                  onMouseOut={() => {
+                                    $("#business-hours-dropdown-" + str_idx).css("display", "none");
+                                  }}
+                                />     
+                                <div id={"business-hours-dropdown-"+str_idx}
+                                 style={{
+                                  textAlign:'center',
+                                  fontWeight:'normal',
+                                  position: "absolute",
+                                  width : business_hours.filter(x => x.closed == false).length > 0 ? 150 : 80,
+                                  backgroundColor: "rgba(0, 0, 0, 0.85)",
+                                  padding: "14px",
+                                  fontSize: "14px",
+                                  lineHeight: "19px",
+                                  color: "#FFFFFF",
+                                  borderRadius: "5px",
+                                  display:'none'}}>
+                                  <div style={{width:"100%", textAlign:'center'}}>
+                                    {business_hours?.map((hour, hour_idx) => {
+                                      return (
+                                        <div key={hour_idx}>
+                                          {hour?.day}요일:{" "}
+                                          {hour?.closed ? "휴무" : hour?.hour}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>                         
+                            </div>
+                            {/* <Dropdown
                               trigger={["hover"]}
                               onVisibleChange={(e) => {
+                                console.log("A");
                                 set_operation_visible(e);
                               }}
                               visible={operation_visible}
                               destroyPopupOnHide={true}
                               arrow={false}
                               overlay={
-                                <div>
+                                <div id={"business-hours-dropdown-"+str_idx}>
                                   {business_hours?.map((hour, hour_idx) => {
                                     return (
                                       <div key={hour_idx}>
@@ -337,13 +387,7 @@ const Main = () => {
                                 display: operation_visible ? "flex" : "none",
                               }}
                             >
-                              <img
-                                className="time-image"
-                                style={{ marginLeft: "5px" }}
-                                src="../../asset/button_more_info_arrow.png"
-                                alt="time"
-                              />
-                            </Dropdown>
+                            </Dropdown> */}
                           </div>
                         </div>
                         <div className="brand-tel">
@@ -368,6 +412,7 @@ const Main = () => {
                     <div className="brand-mall-image">
                       {/* 가게 안 이미지들 */}
                       <HorizontalCarousel
+                        brand_name={brand_name}
                         photo={photo_in_mall}
                         flag_change={flag_change}
                         flag={flag}
@@ -412,14 +457,21 @@ const Main = () => {
                       src="../../asset/rectangle.png"
                       alt="main-menu"
                     />
-                    대표메뉴
+                    대표메뉴 
                   </div>
 
                   <div className="row">
                     {menu?.map((menu_item, menu_idx) => {
                       if (menu_item?.main_menu) {
                         return (
-                          <div className="menu-container" key={menu_idx}>
+                          <div className="menu-container"
+                            onClick={() => {
+                              set_menu_modal(true);
+                              flag_change();
+                              set_select_store(store);
+                              set_select_menu(menu_item?.name);
+                            }}
+                          key={menu_idx}>
                             <img
                               className="menu-image"
                               src={menu_item?.photo[0]?.url}
@@ -508,7 +560,7 @@ const Main = () => {
             transform: "translate(-50%, -50%)",
             borderRadius: "10px",
             width: "550px",
-            maxHeight: "700px",
+            maxHeight: "600px",
           },
         }}
         isOpen={menu_modal}
@@ -602,7 +654,8 @@ const Main = () => {
               return (
                 <div className="menu-row" key={menu_idx}>
                   <div className="menu-font">{menu?.name}</div>
-                  <img
+                  {menu.photo?.length > 0 ? (
+                    <img
                     className="camera"
                     src="../../asset/button_photo_line.png"
                     alt="camera"
@@ -611,7 +664,8 @@ const Main = () => {
                       set_select_menu_photo(0);
                       handle_previous();
                     }}
-                  />
+                    />
+                  ) :null}
                   <div className="bar"></div>
                   <div className="menu-font">{numb(menu?.price)}원</div>
                 </div>
@@ -632,6 +686,7 @@ const Main = () => {
             transform: "translate(-50%, -50%)",
             borderRadius: "10px",
             width: "550px",
+            maxHeight: "600px",
           },
         }}
         isOpen={coupon_modal}
@@ -649,21 +704,17 @@ const Main = () => {
             }}
           />
 
-          <div className="brand-menu-detail" style={{ marginBottom: "30px" }}>
+          <div className="brand-menu-detail">
             {select_store?.brand_name} 방문 혜택
           </div>
-
+          <span className="span-info"  style={{ fontSize:"14px", lineHeight:"25px", color:'#6C757D',}}>
+          사용 방법 : [쿠폰 캡쳐하기] 버튼 클릭 &gt; 화면을 캡쳐
+          </span>
           {select_store?.new_open_event?.map((event, event_idx) => {
             return (
-              <div className="coupon-list" key={event_idx}>
-                <img
-                  src="../../asset/image_coupone_blue.png"
-                  style={{
-                    width: "444px",
-                    position: "absolute",
-                  }}
-                  alt="coupon"
-                />
+              <div id={"coupon-div-" + event_idx} className="coupon-list"
+                style={{backgroundImage:`url(${couponSrc[event_idx]})`, backgroundRepeat:'no-repeat', backgroundSize:'contain'}}
+                key={event_idx}>
                 <div className="column">
                   <div className="coupon-number">
                     <div className="coupon-content" style={{ flex: 1 }}>
@@ -675,7 +726,26 @@ const Main = () => {
                   </div>
                   <div className="coupon-detail">{event?.content}</div>
                   <div className="coupon-date">
-                    {event?.start_date} ~ {event?.end_date}
+                    {event?.start_date}일 ~ {event?.end_date}일 까지
+                  </div>
+                  <div className="center-div coupon-down"
+                  onClick={() => {
+                    updateCouponTouch({variables:{id: select_store.id}});
+
+                    const couponDiv = $("#coupon-div-" + event_idx);
+                    domtoimage.toPng(couponDiv[0])
+                    .then(function (dataUrl) {
+                      const link = document.createElement("a");
+                      link.download = select_store.brand_name + "_coupon_" + event_idx + ".png";
+                      link.href = dataUrl;
+                      document.body.appendChild(link);
+                      link.click();
+                    })
+                    .catch(function (error) {
+                        console.error('oops, something went wrong!', error);
+                    });
+                  }}>
+                    쿠폰 다운로드
                   </div>
                 </div>
               </div>
@@ -1121,7 +1191,7 @@ const StyledModal = styled.div`
     font-weight: bold;
     color: #ffffff;
     z-index: 999;
-    margin-bottom: 24px;
+    margin-bottom: 10px;
   }
 
   .coupon-detail {
@@ -1139,6 +1209,20 @@ const StyledModal = styled.div`
     z-index: 999;
     padding: 0px 25px;
     margin-bottom: 25px;
+  }
+
+  .coupon-down{
+    z-index: 999;
+    width: 170px;
+    background-color: #2D2D2D;
+    color: #ffffff;
+    font-family: "Spoqa Han Sans Neo";
+    font-size:"14px";
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
   }
 
   .coupon-container {

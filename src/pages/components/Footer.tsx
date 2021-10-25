@@ -15,6 +15,19 @@ const Footer = () => {
         style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
       >
         <a
+          href="https://www.kict.re.kr/"
+          target="blank"
+          title="kict"
+          style={{ marginRight: "20px" }}
+        >
+          <img
+            src="../../asset/a-icon-footer-kict.png"
+            style={{ width: "150px" }}
+            alt="kict"
+          />
+        </a>
+        
+        <a
           href="https://www.kibo.or.kr/main/work/work030203.do"
           target="blank"
           title="기보벤처스"

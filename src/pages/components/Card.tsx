@@ -5,7 +5,7 @@ import styled from "styled-components";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "../../index.css";
 
-const Card = ({ all, card, flag_change }) => {
+const Card = ({ brand_name, all, card, flag_change }) => {
   // 매장 사진 모달
   const [mall_modal, set_mall_modal] = useState(false);
   const close_mall_modal = () => {
@@ -83,7 +83,7 @@ const Card = ({ all, card, flag_change }) => {
               fontWeight: "bold",
             }}
           >
-            <div style={{ flex: 1 }}>선유기지 매장사진</div>
+            <div style={{ flex: 1 }}>{brand_name} 매장사진</div>
             <div>
               {carousel_index + 1}/{all?.length}
             </div>

@@ -4,7 +4,7 @@ import "../../index.css";
 
 import Card from "./Card";
 
-const HorizontalCarousel = ({ photo, flag, flag_change }) => {
+const HorizontalCarousel = ({ brand_name, photo, flag, flag_change }) => {
   const [current_card, set_current_card] = useState(0);
   const [card_container, set_card_container] = useState({
     transitionDuration: "0.5s",
@@ -58,7 +58,7 @@ const HorizontalCarousel = ({ photo, flag, flag_change }) => {
         >
           {photo?.map((one_photo, photo_idx) => {
             return (
-              <Card all={photo} card={one_photo} flag_change={flag_change} key={photo_idx} />
+              <Card brand_name={brand_name} all={photo} card={one_photo} flag_change={flag_change} key={photo_idx} />
             );
           })}
         </div>
