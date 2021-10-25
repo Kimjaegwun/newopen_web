@@ -299,7 +299,7 @@ const MainMobile = () => {
                     background: "#FFFFFF",
                     color: "#6C757D",
                     fontSize: "14px",
-                    paddingLeft: "20px",
+                    padding: "20px",
                     borderWidth: "0px",
                     marginBottom: "10px",
                   }}
@@ -386,11 +386,13 @@ const MainMobile = () => {
                 </div>
 
                 {/* 가게 안 이미지들 */}
+                <div style={{}}>
                 <HorizontalCarousel
                   photo={photo_in_mall}
                   flag_change={flag_change}
                   flag={flag}
                 />
+                </div>
 
                 <div className="menu-coupon-container">
                   <div
@@ -433,7 +435,7 @@ const MainMobile = () => {
                       />
                       대표메뉴 
                     </div>
-                    <div className="row main-menu-container" style={{width:"100%", overflowX:'scroll', marginTop:10, paddingLeft:8}}>
+                    <div className="row main-menu-container" style={{}}>
                       {store.menu?.filter(x => x.main_menu == true).map((menu_item, menu_idx) => {
                           return (
                             <div className="menu-container"
@@ -592,6 +594,7 @@ const MainMobile = () => {
                     src={photo?.url}
                     style={{
                       width: windowDimensions.width - 100,
+                      height: windowDimensions.width - 100,
                       borderRadius: "10px",
                     }}
                     key={photo_idx}
@@ -1046,6 +1049,10 @@ const Styled = styled.div`
   }
 
   .main-menu-container {
+    width:100%;
+    overflow: hidden;
+    overflow-x: scroll;
+    margin-top: 10px;
     margin-bottom: 20px;
     ::-webkit-scrollbar {
       display: none;
@@ -1063,7 +1070,7 @@ const Styled = styled.div`
 
   .menu-image {
     width: 50px;
-    height: 45px;
+    height: 47px;
     background-size: cover;
     border-bottom-left-radius: 5px;
     border-top-left-radius: 5px;
@@ -1083,10 +1090,9 @@ const Styled = styled.div`
   }
 
   .menu-price {
-    padding: 11px;
-    color: #6c757d;
-    padding-right: 20px;
     font-size: 14px;
+    width: 70px;
+    color: #6c757d;
   }
 `;
 
@@ -1095,6 +1101,7 @@ const StyledModal = styled.div`
   flex-direction: column;
   align-items: center;
   max-height: 90%;
+  padding-bottom: 40px;
 
   .column {
     display: flex;
