@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { Button, Dropdown, Input } from "antd";
 import { Carousel } from "react-responsive-carousel";
@@ -11,6 +11,7 @@ import styled from "styled-components";
 import Footer from "./components/Footer";
 import proj4 from "proj4";
 import "../index.css";
+import Header from "./components/Header";
 
 Modal.setAppElement();
 
@@ -25,9 +26,30 @@ const Main = () => {
     set_flag(!flag);
   };
 
-  const category_list = ["전체", "카페", "밥집", "술집"];
+  // 가게들 가져오기
+  const [stores, set_stores] = useState([] as any);
+  useQuery(GET_All_NEW_OPEN, {
+    notifyOnNetworkStatusChange: true,
+    onCompleted: (data) => {
+      const sortStore = data.GetAllNewOpen.new_open?.slice().sort(function (a, b) {
+        return b.coupon_touch - a.coupon_touch;
+      });
+      set_stores(sortStore);
+    },
+  });
+
+  const category_list = ["전체", "밥집", "술집", "카페", "네일&속눈썹", "헤어샵", "기타"];
   const [select_category, set_select_category] = useState("전체");
   const [operation_visible, set_operation_visible] = useState(false);
+
+
+  //전국 리스트
+  const loaction_list = ["전국", "강남", "강북", "문래"];
+  const [select_loaction, set_select_location] = useState("전국");
+  const [open_location, set_open_location] = useState(false);
+
+  //브랜드 정렬
+  const [select_sort, set_select_sort] = useState("인기순");
 
   // 메뉴 사진 모달
   const [menu_modal, set_menu_modal] = useState(false);
@@ -43,14 +65,6 @@ const Main = () => {
     flag_change();
   };
 
-  // 가게들 가져오기
-  const [stores, set_stores] = useState([]);
-  useQuery(GET_All_NEW_OPEN, {
-    notifyOnNetworkStatusChange: true,
-    onCompleted: (data) => {
-      set_stores(data.GetAllNewOpen.new_open);
-    },
-  });
 
   // 선택한 가게
   const [select_store, set_select_store] = useState({} as any);
@@ -66,14 +80,8 @@ const Main = () => {
   return (
     <>
       <Styled>
-        <div className="column" style={{ marginBottom: "-45px" }}>
-          <div className="title-container">
-            <div className="title">
-              NewOpen
-              <img className="love" src="../../asset/love.png" alt="love" />
-            </div>
-          </div>
-
+        <Header logout={false}/>
+        <div className="column" style={{ marginTop:69, marginBottom: "-45px" }}>
           {/* 배너 캐러셀 */}
           {/* <Carousel
             showThumbs={false}
@@ -90,12 +98,45 @@ const Main = () => {
           > */}
           <div
             style={{
-              backgroundImage: "url(../../asset/image_mainbanner_1440.png)",
+              backgroundImage: "url(../../asset/image_mainbanner_pc.png)",
+              backgroundSize:'contain',
               width: "1440px",
               height: "500px",
+              textAlign:'center',
+              zIndex:2,
             }}
-          />
-          {/* </Carousel> */}
+          >
+            <div className="center-div"
+             style={{position:'relative', width:230, paddingTop:15, paddingBottom:15, marginTop:340, textAlign:'center', backgroundColor:'#FFFFFF',  border:'3px solid #2F80ED', borderRadius:5,
+                    fontFamily:"Apple SD Gothic Neo", fontWeight:'bold', fontSize:"28px", cursor:'pointer'}}
+              onClick={() => {
+                set_open_location(!open_location);
+              }}             
+            >
+              {select_loaction}
+              <img
+                className="arrow-image"
+                style={{top:22}}
+                src= {open_location ? "../../asset/arrow-up.png" : "../../asset/arrow-down.png"}
+                alt="time"
+                />
+            </div>
+            {loaction_list.map((cate, cate_index) => {
+              return(
+                <div
+                  className="center-div"
+                  style={{display: open_location ? 'block' : 'none', width:230, paddingTop:10, paddingBottom:10, backgroundColor:"#FFFFFF", borderLeft:'0.5px solid grey', borderRight:'0.5px solid grey',
+                    cursor:'pointer', borderBottom: cate_index == loaction_list.length-1 ? '0.5px solid grey' : 'none'}}
+                  onClick= {() => {
+                    set_select_location(cate);
+                    set_open_location(false);
+                  }}
+                  key={cate}>
+                    {cate}
+                </div>
+              )
+            })}
+          </div>
         </div>
 
         <div className="category-list">
@@ -128,6 +169,26 @@ const Main = () => {
           })}
         </div>
 
+        <div className="sort-list">
+          <div className="right"  style={select_sort=="최신순" ? {fontWeight:'bold', color:"#2D2D2D", cursor:'pointer'} : {fontWeight:'normal', color:'#BABABA', cursor:'pointer'}}
+            onClick={() => {
+              const sortStores = stores.slice().sort(function (a, b) {
+                return b.createdAt - a.createdAt;
+              });
+              set_stores(sortStores);
+              set_select_sort("최신순")}}>
+            최신순
+          </div>
+          <div className="right" style={select_sort=="인기순" ? {fontWeight:'bold', color:"#2D2D2D", marginRight:10, cursor:'pointer'} : {fontWeight:'normal', color:'#BABABA', marginRight:10, cursor:'pointer'}}
+            onClick={() => {
+                const sortStores = stores.slice().sort(function (a, b) {
+                  return b.coupon_touch - a.coupon_touch;
+                });
+                set_stores(sortStores);
+                set_select_sort("인기순")}}>
+            인기순
+          </div>
+        </div>
         {/* 브랜드 컨테이너 */}
         {stores
           ?.filter((item: any) => {
@@ -185,7 +246,7 @@ const Main = () => {
                       marginTop: "-1px",
                       fontSize: "24px",
                       fontFamily: "NanumMyeongjo",
-                      display: diff_day <= 0 ? "none" : "flex",
+                      display: diff_day <= 0 || !diff_day ? "none" : "flex",
                       justifyContent: "center",
                     }}
                   >
@@ -410,7 +471,7 @@ const Main = () => {
               marginBottom: "30px",
             }}
           >
-            어디에 처음 홍보해야 할 지 막막하신가요?
+            어디에 처음 홍보해야 할지 막막하신가요?
           </div>
 
           <a href="/StoreLogin" title="login">
@@ -679,7 +740,7 @@ const Styled = styled.div`
   }
 
   .category-button {
-    width: 96px;
+    width: 110px;
     height: 45px;
     border: 0px solid black;
     align-items: center;
@@ -693,7 +754,7 @@ const Styled = styled.div`
   }
 
   .category-select-button {
-    width: 96px;
+    width: 110px;
     height: 45px;
     border: 0px solid black;
     align-items: center;
@@ -706,6 +767,15 @@ const Styled = styled.div`
     cursor: pointer;
     color: #ffffff;
     border-radius: 47px;
+  }
+
+  .sort-list{
+    margin-top: 10px;
+    width: 1024px;
+    height: 20px;
+    font-family: 'Apple SD Gothic Neo';
+    font-size: 16px;
+    line-height: 20px;
   }
 
   .new-open-container {
@@ -936,6 +1006,11 @@ const Styled = styled.div`
     width: 20px;
     height: 20px;
     margin-right: 3px;
+  }
+
+  .card{
+    width: 156px;
+    height: 156px;
   }
 `;
 

@@ -54,7 +54,7 @@ const HorizontalCarousel = ({ photo, flag, flag_change }) => {
         <div
           ref={info}
           className="card-container"
-          style={{ ...card_container }}
+          style={{ ...card_container}}
         >
           {photo?.map((one_photo, photo_idx) => {
             return (
@@ -88,6 +88,12 @@ const Styled = styled.div`
     width: 522px;
     overflow: scroll;
     display: flex;
+    --ms-overflow-style:none;
+    scrollbar-width: none;
+  }
+
+  .view-port::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera*/
   }
 
   .card-container {

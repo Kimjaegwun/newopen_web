@@ -20,6 +20,8 @@ export const GET_All_NEW_OPEN = gql`
         photo_in_mall
         store_number
         location
+        coupon_touch
+        createdAt
         menu {
           id
           name
