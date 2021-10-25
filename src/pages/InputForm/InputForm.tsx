@@ -68,6 +68,7 @@ const InputForm = () => {
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {
       const newOpenData = data.GetNewOpen.new_open;
+
       setNewOpen(newOpenData);
 
       const business_hours = newOpenData.business_hours;
@@ -76,15 +77,29 @@ const InputForm = () => {
       }
 
       const menu = newOpenData.menu;
-      if (menu) {
+      if (menu.length != 0) {
         setMenuList(menu);
-      }
+      }else{
+				setMenuList([{
+					name: '',
+					price: '',
+					photo: [],
+					main_menu: false,
+				}]);
+			}
 
       const newOpenEvent = newOpenData.new_open_event;
-      if (newOpenEvent) {
+      if (newOpenEvent.length != 0) {
         setEventList(newOpenEvent);
-      }
-    },
+      }else{
+				setEventList([{
+					content: '',
+					date_check: false,
+					start_date: new Date(),
+					end_date: new Date()
+			}])
+    	}
+		}
   });
 
   // 영업 시간
@@ -250,19 +265,11 @@ const InputForm = () => {
     } else if (place === "photo_in_mall") {
       uploadTask.on("state_changed", console.log, console.error, () => {
         uploadTask.snapshot.ref.getDownloadURL().then((url: any) => {
-          if (!newOpen.photo_in_mall) {
-            setNewOpen(
-              produce((draft: any) => {
-                draft.photo_in_mall = [url];
-              })
-            );
-          } else {
-            setNewOpen(
-              produce((draft: any) => {
-                draft.photo_in_mall.push(url);
-              })
-            );
-          }
+					setNewOpen(
+						produce((draft: any) => {
+							draft.photo_in_mall.push(url);
+						})
+					);
         });
       });
     } else if (place === "menu_photo") {
@@ -275,21 +282,6 @@ const InputForm = () => {
           setMenuList(
             produce((draft: any) => {
               draft[index].photo.push(newMenuPhoto);
-            })
-          );
-        });
-      });
-    } else if (place === "newMenu_photo") {
-      uploadTask.on("state_changed", console.log, console.error, () => {
-        uploadTask.snapshot.ref.getDownloadURL().then((url: any) => {
-          const newMenuPhoto = {
-            image: image,
-            url: url,
-            fileName: filesName.replace("MenuPhoto/", ""),
-          };
-          setNewMenuPhoto(
-            produce((draft: any) => {
-              draft.push(newMenuPhoto);
             })
           );
         });
@@ -380,6 +372,9 @@ const InputForm = () => {
   const [select_menu, set_select_menu] = useState("");
   const [select_menu_photo, set_select_menu_photo] = useState(0);
 
+
+ const couponColor =  ["#1E61BA", "#908376", "#1D5046", "#412F60", "#6F1515"];
+
   return (
     <div style={{ backgroundColor: "#F6F6F6", paddingTop: 70 }}>
       <Header logout={true} />
@@ -408,7 +403,7 @@ const InputForm = () => {
 						{newOpen?.logo ? (
 							<img className="logo" src={newOpen?.logo} alt="logo" />
 						) : (
-							<div className="logo"></div>
+							<img className="logo" src="../../asset/image_default_logo.png" alt="logo" />
 						)}
             <div className="remain-open">정식오픈</div>
             <div
@@ -474,18 +469,14 @@ const InputForm = () => {
                       Time
                     </div>
                     <div className="operation-time">
-											{findDay ? (
-												<div>
-													{findDay?.closed
-														? "휴일 : 00:00 ~ 00:00"
-														: "영업중 : " +
-															findDay?.start_hour +
-															"~" +
-															findDay?.end_hour}
-													</div>
-											) : (
-												"휴일 or 영업중 : 00:00 ~ 00:00"
-											)}
+											<div>
+											{findDay?.closed
+												? "휴일 : 00:00 ~ 00:00"
+												: "영업시간 : " +
+													findDay?.start_hour +
+													"~" +
+													findDay?.end_hour}
+											</div>
                       <Dropdown
                         trigger={["hover"]}
                         onVisibleChange={(e) => {
@@ -548,13 +539,12 @@ const InputForm = () => {
               </div>
 
               <div className="brand-mall-image">
-                {/* 가게 안 이미지들 */}
-                <HorizontalCarousel
-                  photo={newOpen?.photo_in_mall}
-                  flag_change={flag_change}
-                  flag={flag}
-                />
-
+								{/* 가게 안 이미지들 */}
+								<HorizontalCarousel
+									photo={newOpen?.photo_in_mall ? newOpen?.photo_in_mall : ["../../asset/image_default_mall.png", "../../asset/image_default_mall.png", "../../asset/image_default_mall.png", "../../asset/image_default_mall.png"]}
+									flag_change={flag_change}
+									flag={flag}
+								/>
                 <div className="row">
                   <div className="menu-coupon">
                     <div
@@ -653,7 +643,7 @@ const InputForm = () => {
             }}
           />
 
-          <div className="brand-menu-detail">{newOpen?.brand_name}의 메뉴</div>
+          <div className="brand-menu-detail">{newOpen?.brand_nam ? newOpen?.brand_nam : '가게명'}의 메뉴</div>
           <div className="brand-menu-description">
             어머, 이건 꼭 먹어봐야해!
           </div>
@@ -675,7 +665,7 @@ const InputForm = () => {
             }}
             ref={carousel_ref}
           >
-            {newOpen?.menu
+            {menuList
               ?.find((menu) => {
                 return menu?.name === select_menu;
               })
@@ -775,7 +765,7 @@ const InputForm = () => {
           />
 
           <div className="brand-menu-detail" style={{ marginBottom: "30px" }}>
-            선유기지 방문 혜택
+            {newOpen?.brand_nam ? newOpen?.brand_nam : '가게명'} 방문 혜택
           </div>
 
           {evnetList.map((event, event_idx) => {
@@ -917,20 +907,15 @@ const InputForm = () => {
                 const businessType = data.target.value;
                 if (businessType === "기타") {
                   $("#business-type-detail-div").css("display", "block");
-                  setNewOpen(
-                    produce((draft: any) => {
-                      draft.business_type = "";
-                    })
-                  );
                 } else {
                   $("#business-type-detail-div").css("display", "none");
-                  setNewOpen(
-                    produce((draft: any) => {
-                      draft.business_type = businessType;
-                    })
-                  );
                 }
-              }}
+								setNewOpen(
+									produce((draft: any) => {
+										draft.business_type = businessType;
+									})
+								);
+							}}
             >
               <option key="">선택</option>
               <option key="밥집">밥집</option>
@@ -1030,7 +1015,7 @@ const InputForm = () => {
           </div>
 
           {/* 가게 설명 */}
-          <div className={"input-title"}>5. 가게 설명</div>
+          <div className={"input-title"}>5. 가게 설명(옵션)</div>
           <div>
             <textarea
               id="description"
@@ -1064,7 +1049,7 @@ const InputForm = () => {
           </div>
 
           {/* 가게 전화번호 */}
-          <div className={"input-title"}>6. 가게 전화번호</div>
+          <div className={"input-title"}>6. 가게 전화번호(옵션)</div>
           <div>
             <input
               id="store_number"
@@ -1214,14 +1199,21 @@ const InputForm = () => {
               backgroundColor: "#FBFBFB",
             }}
           >
+
             {newOpen?.photo_in_mall?.length < 10 || !newOpen?.photo_in_mall ? (
               <label
-                style={{ cursor: "pointer", marginTop: 37.5, marginRight: 10 }}
+                style={{ cursor: "pointer", marginTop: 37.5, }}
               >
                 <input
                   style={{ display: "none" }}
                   type="file"
                   onChange={(e: any) => {
+
+										if(newOpen?.photo_in_mall?.length + e.target.files.length > 10){
+											alert("사진은 10개까지 등록 가능합니다!");
+											return;
+										}
+
                     for (let i = 0; i < e.target.files.length; i++) {
                       uploadPhotoToFB(
                         e.target.files[i],
@@ -1246,6 +1238,7 @@ const InputForm = () => {
               return (
                 <div
                   style={{
+										marginLeft:10,
                     display: "flex",
                     alignItems: "flex-start",
                     whiteSpace: "nowrap",
@@ -1299,83 +1292,93 @@ const InputForm = () => {
           </div>
           <div style={{ marginTop: 5 }}>
             <span className="span-info">
-              체크박스에 클릭 시 대표메뉴로 설정되어 메인에 노출됩니다 (1/3)
+              체크박스에 클릭 시 대표메뉴로 설정되어 메인에 노출됩니다 ({menuList ? menuList?.filter(x => x.main_menu == true).length : 0}/3)
             </span>
           </div>
           <div style={{ marginTop: 7 }}>
             {menuList?.map((item, idx) => {
-              return (
-                <div style={{ marginBottom: 11 }} key={idx}>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      width: "100%",
-                      height: 40,
-                      marginBottom: 5,
-                    }}
-                  >
-                    <div style={{ height: 40, marginRight: 6 }}>
-                      <input
-                        type="checkbox"
-                        style={{
-                          width: 20,
-                          height: 20,
-                          borderRadius: 5,
-                          marginTop: 10,
-                        }}
-                        checked={item.main_menu}
-                        onChange={(e) => {
-                          setMenuList(
-                            produce((draft: any) => {
-                              draft[idx].main_menu = e.target.checked;
-                            })
-                          );
-                        }}
-                      />
-                    </div>
-                    <div style={{ height: 40 }}>
-                      <input
-                        placeholder="메뉴명"
-                        style={{ width: 215, height: 40, marginRight: 5 }}
-                        value={item.name}
-                        onChange={(data) => {
-                          setMenuList(
-                            produce((draft: any) => {
-                              draft[idx].name = data.target.value;
-                            })
-                          );
-                        }}
-                      />
-                      <input
-                        type="number"
-                        placeholder="1,000"
-                        style={{ width: 80, height: 40, marginRight: 6 }}
-                        value={item.price}
-                        onChange={(data) => {
-                          setMenuList(
-                            produce((draft: any) => {
-                              draft[idx].price = data.target.value;
-                            })
-                          );
-                        }}
-                      />
-                      <button
-                        className="normal-button"
-                        style={{ width: 40, height: 40 }}
-                        onClick={() => {
-                          setMenuList(
-                            produce((draft: any) => {
-                              draft.splice(idx, 1);
-                            })
-                          );
-                        }}
-                      >
-                        X
-                      </button>
-                    </div>
-                  </div>
-                  <div
+							if( idx == menuList.length -1){
+								return(
+									<div key={idx}>
+										<div
+											style={{
+												display: "flex",
+												alignItems: "flex-start",
+												width: "100%",
+												height: 40,
+												marginBottom: 5,
+											}}
+										>
+											<div style={{ height: 40, marginRight: 6 }}>
+												<input
+													type="checkbox"
+													style={{
+														width: 20,
+														height: 20,
+														borderRadius: 5,
+														marginTop: 10,
+													}}
+													checked={item.main_menu}
+													onChange={(e) => {
+														if(menuList.filter(x => x.main_menu).length >= 3){
+															alert("메인메뉴는 3개까지 등록 가능합니다.");
+															return;
+														}
+														setMenuList(
+															produce((draft: any) => {
+																draft[idx].main_menu = e.target.checked;
+															})
+														);
+													}}
+												/>
+											</div>
+											<div style={{ height: 40 }}>
+												<input
+													placeholder="메뉴명"
+													style={{ width: 215, height: 40, marginRight: 5 }}
+													value={item.name}
+													onChange={(data) => {
+														setMenuList(
+															produce((draft: any) => {
+																draft[idx].name = data.target.value;
+															})
+														);
+													}}
+												/>
+												<input
+													type="number"
+													placeholder="1,000"
+													style={{ width: 80, height: 40, marginRight: 6 }}
+													value={item.price}
+													onChange={(data) => {
+														setMenuList(
+															produce((draft: any) => {
+																draft[idx].price = data.target.value;
+															})
+														);
+													}}
+												/>
+												<button
+													className="primary-button"
+													style={{ width: 40, height: 40 }}
+													onClick={() => {
+														setMenuList(
+															produce((draft: any) => {
+																draft.push({
+																	name: '',
+																	price: '',
+																	photo: [],
+																	main_menu: false
+																});
+															})
+														);
+													}}
+												>
+													+
+												</button>
+											</div>
+										</div>
+										<div
                     style={{
                       display: "flex",
                       alignItems: "flex-start",
@@ -1393,6 +1396,11 @@ const InputForm = () => {
                         style={{ display: "none" }}
                         type="file"
                         onChange={(e: any) => {
+													if(item.photo.length + e.target.files.length > 3){
+														alert("메뉴당 3개의 이미지만 등록할 수 있습니다.");
+														return;
+													}
+
                           for (let i = 0; i < e.target.files.length; i++) {
                             uploadPhotoToFB(
                               e.target.files[i],
@@ -1459,153 +1467,177 @@ const InputForm = () => {
                       })}
                     </div>
                   </div>
-                </div>
-              );
+									</div>
+								)
+							}else
+							{
+								return (
+									<div style={{ marginBottom: 11 }} key={idx}>
+										<div
+											style={{
+												display: "flex",
+												alignItems: "flex-start",
+												width: "100%",
+												height: 40,
+												marginBottom: 5,
+											}}
+										>
+											<div style={{ height: 40, marginRight: 6 }}>
+												<input
+													type="checkbox"
+													style={{
+														width: 20,
+														height: 20,
+														borderRadius: 5,
+														marginTop: 10,
+													}}
+													checked={item.main_menu}
+													onChange={(e) => {
+														if(menuList.filter(x => x.main_menu).length >= 3){
+															alert("메인메뉴는 3개까지 등록 가능합니다.");
+															return;
+														}
+														setMenuList(
+															produce((draft: any) => {
+																draft[idx].main_menu = e.target.checked;
+															})
+														);
+													}}
+												/>
+											</div>
+											<div style={{ height: 40 }}>
+												<input
+													placeholder="메뉴명"
+													style={{ width: 215, height: 40, marginRight: 5 }}
+													value={item.name}
+													onChange={(data) => {
+														setMenuList(
+															produce((draft: any) => {
+																draft[idx].name = data.target.value;
+															})
+														);
+													}}
+												/>
+												<input
+													type="number"
+													placeholder="1,000"
+													style={{ width: 80, height: 40, marginRight: 6 }}
+													value={item.price}
+													onChange={(data) => {
+														setMenuList(
+															produce((draft: any) => {
+																draft[idx].price = data.target.value;
+															})
+														);
+													}}
+												/>
+												<button
+													className="normal-button"
+													style={{ width: 40, height: 40 }}
+													onClick={() => {
+														setMenuList(
+															produce((draft: any) => {
+																draft.splice(idx, 1);
+															})
+														);
+													}}
+												>
+													X
+												</button>
+											</div>
+										</div>
+										<div
+											style={{
+												display: "flex",
+												alignItems: "flex-start",
+												border: "1px solid #D1D1D1",
+												boxSizing: "border-box",
+												borderRadius: 5,
+												paddingTop: 6,
+												paddingBottom: 6,
+												paddingLeft: 6,
+												paddingRight: 6,
+											}}
+										>
+											<label style={{ cursor: "pointer", marginRight: 15 }}>
+												<input
+													style={{ display: "none" }}
+													type="file"
+													onChange={(e: any) => {
+														if(item.photo.length + e.target.files.length > 3){
+															alert("메뉴당 3개의 이미지만 등록할 수 있습니다.");
+															return;
+														}
+														for (let i = 0; i < e.target.files.length; i++) {
+															uploadPhotoToFB(
+																e.target.files[i],
+																"MenuPhoto/" + e.target.files[i].name,
+																"menu_photo",
+																idx
+															);
+														}
+													}}
+													accept="image/png, image/jpeg"
+													multiple
+												/>
+												<img
+													alt="button_add"
+													src={"/asset/button_photo_add.png"}
+													style={{ width: 45, height: 25 }}
+												></img>
+											</label>
+											<div>
+												{item.photo?.map((photoItem, photoIdx) => {
+													return (
+														<div
+															style={{
+																display: "flex",
+																alignItems: "flex-start",
+																whiteSpace: "nowrap",
+																height: 25,
+																marginTop: 3,
+															}}
+															key={photoIdx}
+														>
+															<a
+																href={photoItem.url}
+																target="_blank"
+																rel="noreferrer"
+																style={{
+																	width: 270,
+																	height: 25,
+																	verticalAlign: "middle",
+																	fontSize: "14px",
+																}}
+																key={idx}
+															>
+																{photoItem.fileName}
+															</a>
+															<div>
+																<button
+																	className="image-delete-button"
+																	style={{
+																		backgroundImage:
+																			"url('/asset/button_image_delete.png')",
+																	}}
+																	onClick={() => {
+																		setMenuList(
+																			produce((draft: any) => {
+																				draft[idx].photo.splice(photoIdx, 1);
+																			})
+																		);
+																	}}
+																/>
+															</div>
+														</div>
+													);
+												})}
+											</div>
+										</div>
+									</div>
+								);
+							}
             })}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                width: "100%",
-                height: 40,
-                marginBottom: 5,
-              }}
-            >
-              <div style={{ height: 40, marginRight: 6 }}>
-                <input
-                  id="menu-main-menu"
-                  type="checkbox"
-                  style={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: 5,
-                    marginTop: 10,
-                  }}
-                />
-              </div>
-              <div style={{ height: 40 }}>
-                <input
-                  id="menu-name"
-                  placeholder="메뉴명"
-                  style={{ width: 215, height: 40, marginRight: 5 }}
-                />
-                <input
-                  id="menu-price"
-                  type="number"
-                  placeholder="1,000"
-                  style={{ width: 80, height: 40, marginRight: 6 }}
-                />
-                <button
-                  className="primary-button"
-                  style={{ width: 40, height: 40 }}
-                  onClick={() => {
-                    const menuName = $("#menu-name");
-                    const menuPrice = $("#menu-price");
-                    const menuMainMenu = $("#menu-main-menu");
-                    const childMenu = {
-                      name: menuName.val(),
-                      price: menuPrice.val(),
-                      photo: newMenuPhoto,
-                      temp_photo: newMenuPhoto,
-                      main_menu: menuMainMenu.is(":checked"),
-                    };
-                    setMenuList(
-                      produce((draft: any) => {
-                        draft.push(childMenu);
-                      })
-                    );
-                    menuName.val("");
-                    menuPrice.val("");
-                    menuMainMenu.prop("checked", false);
-                    setNewMenuPhoto([]);
-                  }}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                border: "1px solid #D1D1D1",
-                boxSizing: "border-box",
-                borderRadius: 5,
-                paddingTop: 6,
-                paddingBottom: 6,
-                paddingLeft: 6,
-                paddingRight: 6,
-              }}
-            >
-              <label style={{ cursor: "pointer", marginRight: 15 }}>
-                <input
-                  style={{ display: "none" }}
-                  type="file"
-                  onChange={(e: any) => {
-                    for (let i = 0; i < e.target.files.length; i++) {
-                      uploadPhotoToFB(
-                        e.target.files[i],
-                        "MenuPhoto/" + e.target.files[i].name,
-                        "newMenu_photo"
-                      );
-                    }
-                  }}
-                  accept="image/png, image/jpeg"
-                  multiple
-                />
-                <img
-                  alt="button_add"
-                  src={"/asset/button_photo_add.png"}
-                  style={{ width: 45, height: 25 }}
-                ></img>
-              </label>
-              <div>
-                {newMenuPhoto?.map((item, idx) => {
-                  return (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        whiteSpace: "nowrap",
-                        height: 25,
-                        marginTop: 3,
-                      }}
-                    >
-                      <a
-                        href={item.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                          width: 270,
-                          height: 25,
-                          verticalAlign: "middle",
-                          fontSize: "14px",
-                        }}
-                        key={idx}
-                      >
-                        {item.fileName}
-                      </a>
-                      <div>
-                        <button
-                          className="image-delete-button"
-                          style={{
-                            backgroundImage:
-                              "url('/asset/button_image_delete.png')",
-                          }}
-                          onClick={() => {
-                            setNewMenuPhoto(
-                              produce((draft: any) => {
-                                draft.splice(idx, 1);
-                              })
-                            );
-                          }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
           </div>
 
           {/* 혜택 등록 */}
@@ -1618,226 +1650,246 @@ const InputForm = () => {
               if (item.date_check) {
                 eventCalendar.css("display", "flex");
               }
-              return (
-                <div style={{ marginBottom: 15 }} key={idx}>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      width: "100%",
-                    }}
-                  >
-                    <textarea
-                      rows={10}
-                      placeholder="<예> 오픈이벤트로 500원 할인&#13;&#10;<예> 가오픈 기간 동안만 음료 1+1 증정"
-                      style={{
-                        resize: "none",
-                        width: 297,
-                        height: "35px",
-                        border: "1px solid #D1D1D1",
-                        borderRadius: 5,
-                        padding: 10,
-                        marginRight: 6,
-                      }}
-                      value={item.content}
-                      onChange={(e) => {
-                        setEventList(
-                          produce((draft: any) => {
-                            draft[idx].content = e.target.value;
-                          })
-                        );
-                      }}
-                    />
-                    <button
-                      className="normal-button"
-                      style={{ width: 40, height: 40, marginTop: 10 }}
-                      onClick={() => {
-                        setEventList(
-                          produce((draft: any) => {
-                            draft.splice(idx, 1);
-                          })
-                        );
-                      }}
-                    >
-                      X
-                    </button>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      marginTop: 5,
-                    }}
-                  >
-                    <input
-                      id={"event-check-" + idx}
-                      type="checkbox"
-                      style={{ width: 20, height: 20, marginRight: 5 }}
-                      checked={item.date_check}
-                      onChange={(e) => {
-                        const eventCalendar = $("#event-calendar-" + idx);
 
-                        if (e.target.checked) {
-                          eventCalendar.css("display", "flex");
-                        } else {
-                          eventCalendar.css("display", "none");
-                        }
-
-                        setEventList(
-                          produce((draft: any) => {
-                            draft[idx].date_check = e.target.checked;
-                          })
-                        );
-                      }}
-                    />
-                    <span style={{ marginTop: 4 }}>
-                      혜택에 기간이 있는 경우
-                    </span>
-                  </div>
-                  <div
-                    id={"event-calendar-" + idx}
-                    style={{
-                      display: "none",
-                      alignItems: "flex-start",
-                      marginTop: 10,
-                      padding: 10,
-                      backgroundColor: "#FFFFFF",
-                      border: "1px solid #D1D1D1",
-                      borderRadius: 5,
-                    }}
-                  >
-                    <img
-                      alt="calendar"
-                      src={"/asset/icon_calendar.png"}
-                      style={{ width: 20, height: 20, marginRight: 10 }}
-                    ></img>
-                    <div
-                      style={{
-                        width: 1,
-                        height: 20,
-                        backgroundColor: "#D1D1D1",
-                        marginRight: 10,
-                      }}
-                    />
-                    <DatePickerComponent
-                      pStartDate={new Date(item.start_date)}
-                      pEndDate={new Date(item.end_date)}
-                      setSearchDateString={(data) =>
-                        setEventStartDate(data, idx)
-                      }
-                      setSelectedEndDateString={(data) =>
-                        setEventEndDate(data, idx)
-                      }
-                      isRangeSearch={true}
-                    />
-                  </div>
-                </div>
-              );
+							if(idx == evnetList.length -1 ){
+								return (
+									<div key={idx}>
+										<div
+											style={{
+												display: "flex",
+												alignItems: "flex-start",
+												width: "100%",
+											}}
+										>
+											<textarea
+												rows={10}
+												placeholder="<예> 오픈이벤트로 500원 할인&#13;&#10;<예> 가오픈 기간 동안만 음료 1+1 증정"
+												style={{
+													resize: "none",
+													width: 297,
+													height: "35px",
+													border: "1px solid #D1D1D1",
+													borderRadius: 5,
+													padding: 10,
+													marginRight: 6,
+												}}
+												value={item.content}
+												onChange={(e) => {
+													setEventList(
+														produce((draft: any) => {
+															draft[idx].content = e.target.value;
+														})
+													);
+												}}
+											/>
+											<button
+												className="primary-button"
+												style={{ width: 40, height: 40, marginTop: 10 }}
+												onClick={() => {
+													setEventList(
+														produce((draft: any) => {
+															draft.push({
+																content: '',
+																date_check: false,
+																start_date: new Date(),
+																end_date: new Date(),
+															});
+														})
+													);
+												}}
+											>
+												+
+											</button>
+										</div>
+										<div
+											style={{
+												display: "flex",
+												alignItems: "flex-start",
+												marginTop: 5,
+											}}
+										>
+											<input
+												id={"event-check-" + idx}
+												type="checkbox"
+												style={{ width: 20, height: 20, marginRight: 5 }}
+												checked={item.date_check}
+												onChange={(e) => {
+													const eventCalendar = $("#event-calendar-" + idx);
+	
+													if (e.target.checked) {
+														eventCalendar.css("display", "flex");
+													} else {
+														eventCalendar.css("display", "none");
+													}
+	
+													setEventList(
+														produce((draft: any) => {
+															draft[idx].date_check = e.target.checked;
+														})
+													);
+												}}
+											/>
+											<span style={{ marginTop: 4 }}>
+												혜택에 기간이 있는 경우
+											</span>
+										</div>
+										<div
+											id={"event-calendar-" + idx}
+											style={{
+												display: "none",
+												alignItems: "flex-start",
+												marginTop: 10,
+												padding: 10,
+												backgroundColor: "#FFFFFF",
+												border: "1px solid #D1D1D1",
+												borderRadius: 5,
+											}}
+										>
+											<img
+												alt="calendar"
+												src={"/asset/icon_calendar.png"}
+												style={{ width: 20, height: 20, marginRight: 10 }}
+											></img>
+											<div
+												style={{
+													width: 1,
+													height: 20,
+													backgroundColor: "#D1D1D1",
+													marginRight: 10,
+												}}
+											/>
+											<DatePickerComponent
+												pStartDate={new Date(item.start_date)}
+												pEndDate={new Date(item.end_date)}
+												setSearchDateString={(data) =>
+													setEventStartDate(data, idx)
+												}
+												setSelectedEndDateString={(data) =>
+													setEventEndDate(data, idx)
+												}
+												isRangeSearch={true}
+											/>
+										</div>
+									</div>
+								)
+							}else{
+								return (
+									<div style={{ marginBottom: 15 }} key={idx}>
+										<div
+											style={{
+												display: "flex",
+												alignItems: "flex-start",
+												width: "100%",
+											}}
+										>
+											<textarea
+												rows={10}
+												placeholder="<예> 오픈이벤트로 500원 할인&#13;&#10;<예> 가오픈 기간 동안만 음료 1+1 증정"
+												style={{
+													resize: "none",
+													width: 297,
+													height: "35px",
+													border: "1px solid #D1D1D1",
+													borderRadius: 5,
+													padding: 10,
+													marginRight: 6,
+												}}
+												value={item.content}
+												onChange={(e) => {
+													setEventList(
+														produce((draft: any) => {
+															draft[idx].content = e.target.value;
+														})
+													);
+												}}
+											/>
+											<button
+												className="normal-button"
+												style={{ width: 40, height: 40, marginTop: 10 }}
+												onClick={() => {
+													setEventList(
+														produce((draft: any) => {
+															draft.splice(idx, 1);
+														})
+													);
+												}}
+											>
+												X
+											</button>
+										</div>
+										<div
+											style={{
+												display: "flex",
+												alignItems: "flex-start",
+												marginTop: 5,
+											}}
+										>
+											<input
+												id={"event-check-" + idx}
+												type="checkbox"
+												style={{ width: 20, height: 20, marginRight: 5 }}
+												checked={item.date_check}
+												onChange={(e) => {
+													const eventCalendar = $("#event-calendar-" + idx);
+	
+													if (e.target.checked) {
+														eventCalendar.css("display", "flex");
+													} else {
+														eventCalendar.css("display", "none");
+													}
+	
+													setEventList(
+														produce((draft: any) => {
+															draft[idx].date_check = e.target.checked;
+														})
+													);
+												}}
+											/>
+											<span style={{ marginTop: 4 }}>
+												혜택에 기간이 있는 경우
+											</span>
+										</div>
+										<div
+											id={"event-calendar-" + idx}
+											style={{
+												display: "none",
+												alignItems: "flex-start",
+												marginTop: 10,
+												padding: 10,
+												backgroundColor: "#FFFFFF",
+												border: "1px solid #D1D1D1",
+												borderRadius: 5,
+											}}
+										>
+											<img
+												alt="calendar"
+												src={"/asset/icon_calendar.png"}
+												style={{ width: 20, height: 20, marginRight: 10 }}
+											></img>
+											<div
+												style={{
+													width: 1,
+													height: 20,
+													backgroundColor: "#D1D1D1",
+													marginRight: 10,
+												}}
+											/>
+											<DatePickerComponent
+												pStartDate={new Date(item.start_date)}
+												pEndDate={new Date(item.end_date)}
+												setSearchDateString={(data) =>
+													setEventStartDate(data, idx)
+												}
+												setSelectedEndDateString={(data) =>
+													setEventEndDate(data, idx)
+												}
+												isRangeSearch={true}
+											/>
+										</div>
+									</div>
+								);
+							}
             })}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                width: "100%",
-              }}
-            >
-              <textarea
-                id="new-event-content"
-                rows={10}
-                placeholder="<예> 오픈이벤트로 500원 할인&#13;&#10;<예> 가오픈 기간 동안만 음료 1+1 증정"
-                style={{
-                  resize: "none",
-                  width: 297,
-                  height: "35px",
-                  border: "1px solid #D1D1D1",
-                  borderRadius: 5,
-                  padding: 10,
-                  marginRight: 6,
-                }}
-              />
-              <button
-                className="primary-button"
-                style={{ width: 40, height: 40, marginTop: 10 }}
-                onClick={() => {
-                  const newEventContent = $("#new-event-content");
-                  const newEventhCheck = $("#new-event-check");
-                  const newEventCalendar = $("#new-event-calendar");
-                  const newEvent = {
-                    content: newEventContent.val(),
-                    date_check: newEventhCheck.is(":checked"),
-                    start_date: startDate,
-                    end_date: endDate,
-                  };
-                  setEventList(
-                    produce((draft: any) => {
-                      draft.push(newEvent);
-                    })
-                  );
-                  newEventContent.val("");
-                  newEventhCheck.prop("checked", false);
-                  newEventCalendar.css("display", "none");
-                  setStartDate(new Date());
-                  setEndDate(new Date());
-                }}
-              >
-                +
-              </button>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                marginTop: 5,
-              }}
-            >
-              <input
-                id="new-event-check"
-                type="checkbox"
-                style={{ width: 20, height: 20, marginRight: 5 }}
-                onChange={(e) => {
-                  const newEventCalendar = $("#new-event-calendar");
-                  if (e.target.checked) {
-                    newEventCalendar.css("display", "flex");
-                  } else {
-                    newEventCalendar.css("display", "none");
-                  }
-                }}
-              />
-              <span style={{ marginTop: 4 }}>혜택에 기간이 있는 경우</span>
-            </div>
-            <div
-              id="new-event-calendar"
-              style={{
-                display: "none",
-                alignItems: "flex-start",
-                marginTop: 10,
-                padding: 10,
-                backgroundColor: "#FFFFFF",
-                border: "1px solid #D1D1D1",
-                borderRadius: 5,
-              }}
-            >
-              <img
-                alt="calendar"
-                src={"/asset/icon_calendar.png"}
-                style={{ width: 20, height: 20, marginRight: 10 }}
-              ></img>
-              <div
-                style={{
-                  width: 1,
-                  height: 20,
-                  backgroundColor: "#D1D1D1",
-                  marginRight: 10,
-                }}
-              />
-              <DatePickerComponent
-                pStartDate={new Date()}
-                pEndDate={new Date()}
-                setSearchDateString={(data) => setStartDate(data)}
-                setSelectedEndDateString={(data) => setEndDate(data)}
-                isRangeSearch={true}
-              />
-            </div>
           </div>
 
           <div className={"input-title"}>11. 정식 오픈일(옵션)</div>
@@ -1852,23 +1904,18 @@ const InputForm = () => {
               borderRadius: 5,
               width: 170,
               height: 20,
+							color: '#D1D1D1'
             }}
           >
             <img
               alt="calendar"
               src={"/asset/icon_calendar.png"}
               style={{ width: 20, height: 20, marginRight: 10 }}
-            ></img>
-            <div
-              style={{
-                width: 1,
-                height: 20,
-                backgroundColor: "#D1D1D1",
-                marginRight: 10,
-              }}
             />
-            {newOpen?.open_date ? (
-              <div>
+						|
+
+						{newOpen?.open_date ? (
+              <div style={{color:"#2D2D2D", marginLeft:5}}>
                 <div></div>
                 <DatePickerComponent
                   pStartDate={new Date(newOpen.open_date)}
@@ -1880,7 +1927,7 @@ const InputForm = () => {
                 />
               </div>
             ) : (
-              <div>
+              <div style={{color:"#2D2D2D", marginLeft:5}}>
                 <DatePickerComponent
                   pStartDate={null}
                   pEndDate={null}
@@ -2008,7 +2055,9 @@ const Styled = styled.div`
   justify-content: center;
   align-items: center;
   min-width: 1440px;
-
+	.card{
+		border: none
+	}
   .row {
     display: flex;
     flex-direction: row;

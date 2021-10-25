@@ -33,26 +33,18 @@ const DatePickerComponent = ({
 
     if (endDate) {
       setSelectedEndDateString(dateToString(endDate));
+    } else {
+      setSelectedEndDateString(null);
     }
 
     // eslint-disable-next-line
   }, [startDate, endDate]);
 
-  const CustomStartInput = ({ value, onClick }) => (
+  const CustomInput = ({ value, onClick }) => (
     <div
       className="example-custom-input"
       onClick={onClick}
       style={{ fontSize: "14px", width: isClearable ? 140 : 110, height: 20 }}
-    >
-      {value}
-    </div>
-  );
-
-  const CustomEndInput = ({ value, onClick }) => (
-    <div
-      className="example-custom-input"
-      onClick={onClick}
-      style={{ fontSize: "14px", width: 110, height: 20 }}
     >
       {value}
     </div>
@@ -74,7 +66,7 @@ const DatePickerComponent = ({
           selectsStart
           isClearable={isClearable}
           placeholderText="클릭해주세요."
-          customInput={<CustomStartInput value={startDate} onClick={null} />}
+          customInput={<CustomInput value={startDate} onClick={null} />}
         />
       </div>
       <div>
@@ -86,14 +78,13 @@ const DatePickerComponent = ({
                 <DatePicker
                   dateFormat="yyyy년 MM월 dd일"
                   selected={endDate}
+                  onChange={(date) => setEndDate(date)}
                   selectsEnd
                   startDate={startDate}
-                  onChange={(date) => setEndDate(date)}
                   minDate={startDate}
+                  isClearable={isClearable}
                   placeholderText="클릭해주세요."
-                  customInput={
-                    <CustomEndInput value={endDate} onClick={undefined} />
-                  }
+                  customInput={<CustomInput value={endDate} onClick={null} />}
                 />
               </div>
             </React.Fragment>
