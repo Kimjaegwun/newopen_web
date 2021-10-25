@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import $ from "jquery";
 import { useMutation, useQuery } from "@apollo/client";
 import { Button, Dropdown, Input } from "antd";
@@ -82,11 +82,26 @@ const Main = () => {
 
   const couponSrc =  ["../../asset/image_coupone_blue.png", "../../asset/image_coupone_brown.png", "../../asset/image_coupone_green.png", "../../asset/image_coupone_purple.png", "../../asset/image_coupone_blue.png"];
 
+  useEffect(() => {
+    window.onscroll = () => {
+      if(window.pageYOffset > 550 && window.pageYOffset < document.body.offsetHeight - 1450){
+        $("#right-banner").css("top", window.pageYOffset + 120);
+      }
+      console.log(window.pageYOffset );
+    }
+  }, []);
+  
   return (
     <>
       <Styled>
         <Header logout={false}/>
-        <div className="column" style={{ marginTop:69, marginBottom: "-45px" }}>
+        
+        <a href="/StoreLogin" id="right-banner" style={{position:'absolute', width:100, height:340, color:'#2d2d', top: 680, right:50,
+                    backgroundImage: "url(../../asset/image_rightbanner_pc.png)",
+                    backgroundSize:'contain',
+                    backgroundRepeat:'no-repeat'
+        }}/>
+        <div className="column" style={{ marginTop:69}}>
           {/* 배너 캐러셀 */}
           {/* <Carousel
             showThumbs={false}
@@ -760,12 +775,12 @@ const Main = () => {
 export default Main;
 
 const Styled = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   min-width: 1440px;
-  padding-bottom: 200px;
 
   .row {
     display: flex;
@@ -806,7 +821,7 @@ const Styled = styled.div`
   .category-list {
     display: flex;
     flex-direction: row;
-    margin-top: 60px;
+    margin-top: 20px;
   }
 
   .category-button {
