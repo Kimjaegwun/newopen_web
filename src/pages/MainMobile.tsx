@@ -142,7 +142,7 @@ const MainMobile = () => {
                 {select_loaction}
                 <img
                   className="arrow-image"
-                  style={{top:22}}
+                  style={{top:11}}
                   src= {open_location ? "../../asset/arrow-up.png" : "../../asset/arrow-down.png"}
                   alt="time"
                   />
@@ -290,7 +290,7 @@ const MainMobile = () => {
                 </div>
 
                 <Input.TextArea
-                  autoSize={{ minRows: 2, maxRows: 5 }}
+                  autoSize={{ minRows: 1, maxRows: 5 }}
                   disabled
                   defaultValue={description}
                   style={{
