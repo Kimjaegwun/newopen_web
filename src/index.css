@@ -163,3 +163,7 @@ div.ReactModal__Overlay.ReactModal__Overlay--after-open{
 .right{
   float: right;
 }
+
+.ReactModal__Body--open {
+  overflow: hidden;
+}

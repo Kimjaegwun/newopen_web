@@ -21,6 +21,7 @@ const Header = ({ logout }: any) => {
           position: "relative",
           width: 1024,
           height: 70,
+          paddingLeft:25,
           marginLeft: "auto",
           marginRight: "auto",
         }}
