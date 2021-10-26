@@ -77,29 +77,33 @@ const InputForm = () => {
       }
 
       const menu = newOpenData.menu;
-      if (menu.length != 0) {
+      if (menu.length !== 0) {
         setMenuList(menu);
-      }else{
-				setMenuList([{
-					name: '',
-					price: '',
-					photo: [],
-					main_menu: false,
-				}]);
-			}
+      } else {
+        setMenuList([
+          {
+            name: "",
+            price: "",
+            photo: [],
+            main_menu: false,
+          },
+        ]);
+      }
 
       const newOpenEvent = newOpenData.new_open_event;
-      if (newOpenEvent.length != 0) {
+      if (newOpenEvent.length !== 0) {
         setEventList(newOpenEvent);
-      }else{
-				setEventList([{
-					content: '',
-					date_check: false,
-					start_date: new Date(),
-					end_date: new Date()
-			}])
-    	}
-		}
+      } else {
+        setEventList([
+          {
+            content: "",
+            date_check: false,
+            start_date: new Date(),
+            end_date: new Date(),
+          },
+        ]);
+      }
+    },
   });
 
   // 영업 시간
@@ -157,6 +161,7 @@ const InputForm = () => {
 
   //오픈일 계산
   useEffect(() => {
+<<<<<<< HEAD
 		if(newOpen.open_date){
 			const now = new Date().getTime();
 			const date_split = String(newOpen.open_date).split("-");
@@ -175,15 +180,35 @@ const InputForm = () => {
 				)
 			);
 		}
+=======
+    if (newOpen.open_date) {
+      const now = new Date().getTime();
+      const date_split = String(newOpen.open_date).split("-");
+      setDiffDay(
+        Math.floor(
+          (new Date(
+            Number(date_split[0]),
+            Number(date_split[1]) - 1,
+            Number(date_split[2]),
+            0,
+            0,
+            0
+          ).getTime() -
+            now) /
+            (1000 * 3600 * 24)
+        )
+      );
+    }
+>>>>>>> 6e68d00d74aa6b4b3052f48f0aed0708bdd7d77d
   }, [newOpen.open_date]);
 
   //오프시간 계산
   useEffect(() => {
-		setFindDay(
-			businessHours?.find((item: any) => {
-				return Number(item?.number) === new Date().getDay();
-			})
-		);
+    setFindDay(
+      businessHours?.find((item: any) => {
+        return Number(item?.number) === new Date().getDay();
+      })
+    );
   }, [businessHours]);
 
   // 주소 팝업창
@@ -203,12 +228,9 @@ const InputForm = () => {
 
   // 메뉴 정보
   const [menuList, setMenuList] = useState([] as any);
-  const [newMenuPhoto, setNewMenuPhoto] = useState([] as any);
 
   // 혜택 정보
   const [evnetList, setEventList] = useState([] as any);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
 
   //DataPicker Callback 함수
   const setEventStartDate = (data, idx) => {
@@ -265,11 +287,11 @@ const InputForm = () => {
     } else if (place === "photo_in_mall") {
       uploadTask.on("state_changed", console.log, console.error, () => {
         uploadTask.snapshot.ref.getDownloadURL().then((url: any) => {
-					setNewOpen(
-						produce((draft: any) => {
-							draft.photo_in_mall.push(url);
-						})
-					);
+          setNewOpen(
+            produce((draft: any) => {
+              draft.photo_in_mall.push(url);
+            })
+          );
         });
       });
     } else if (place === "menu_photo") {
@@ -297,17 +319,17 @@ const InputForm = () => {
     if (item.id === "business-type") {
       const detail = $("#business-type-detail");
       if (componentVal === "기타" && !detail.val()) {
-				alert(item.name +"은 필수입력 항목입니다.")
+        alert(item.name + "은 필수입력 항목입니다.");
         detail.focus();
       }
       if (componentVal === "선택" && !detail.val()) {
-				alert(item.name +"은 필수입력 항목입니다.")
-				component.focus();
-				return false;
-			}
+        alert(item.name + "은 필수입력 항목입니다.");
+        component.focus();
+        return false;
+      }
     }
     if (!component.val()) {
-			alert(item.name +"은 필수입력 항목입니다.")
+      alert(item.name + "은 필수입력 항목입니다.");
       component.focus();
       return false;
     }
@@ -316,17 +338,17 @@ const InputForm = () => {
 
   const submitUpdateNewOpen = async () => {
     if (!newOpen?.logo) {
-			alert("로고는 필수 입력 항목입니다.");
+      alert("로고는 필수 입력 항목입니다.");
       $("html, body").animate({ scrollTop: 300 }, 100);
       return;
     }
 
     const idList = [
-      {id:"business-type", name:"업종"},
-      {id:"brand-name", name:"상호명"},
-      {id:"address", name:"사업장 주소"},
-      {id:"address-detail", name:"사업장 주소 상세"},
-      {id:"phone-number", name:"담당자 전화번호"},
+      { id: "business-type", name: "업종" },
+      { id: "brand-name", name: "상호명" },
+      { id: "address", name: "사업장 주소" },
+      { id: "address-detail", name: "사업장 주소 상세" },
+      { id: "phone-number", name: "담당자 전화번호" },
     ];
     for (let i = 0; i < idList.length; i++) {
       if (!checkValue(idList[i])) {
@@ -336,82 +358,81 @@ const InputForm = () => {
 
     if (!newOpen.photo_in_mall || newOpen.photo_in_mall.length === 0) {
       $("html, body").animate({ scrollTop: 300 }, 100);
-			alert("매장사진은 필수 입력 항목입니다.");
+      alert("매장사진은 필수 입력 항목입니다.");
       return;
     }
 
-		const uploadMenuList = [] as any;
-		for(let i=0; i< menuList.length; i++){
-			const menu = menuList[i];
-			if(i == menuList.length -1) {
+    const uploadMenuList = [] as any;
+    for (let i = 0; i < menuList.length; i++) {
+      const menu = menuList[i];
+      if (i === menuList.length - 1) {
+        if (menu.name || menu.price || menu.photo || menu.main_menu) {
+          if (!menu.name) {
+            alert(i + 1 + "번째 메뉴이름를 입력해주세요.");
+            return;
+          }
+          if (!menu.price) {
+            alert(i + 1 + "번째 메뉴 가격를 입력해주세요.");
+            return;
+          }
+        }
 
-				if(menu.name || menu.price || menu.photo || menu.main_menu){
-					if(!menu.name){
-						alert((i+1) + "번째 메뉴이름를 입력해주세요.");
-						return;
-					}
-					if(!menu.price){
-						alert((i+1) + "번째 메뉴 가격를 입력해주세요.");
-						return;
-					}
-				}
+        if (menuList.length === 1 && !menu.name && !menu.price) {
+          alert("메뉴를 1개이상 입력해주세요.");
+          return;
+        }
 
-				if(menuList.length == 1 && !menu.name && !menu.price){
-					alert("메뉴를 1개이상 입력해주세요.");
-					return;
-				}
+        uploadMenuList.push(menu);
+      } else {
+        if (!menu.name) {
+          alert(i + 1 + "번째 메뉴이름를 입력해주세요.");
+          return;
+        }
+        if (!menu.price) {
+          alert(i + 1 + "번째 메뉴 가격를 입력해주세요.");
+          return;
+        }
+        uploadMenuList.push(menu);
+      }
+    }
 
-				uploadMenuList.push(menu);
-			}else{
-				if(!menu.name){
-					alert((i+1) + "번째 메뉴이름를 입력해주세요.");
-					return;
-				}
-				if(!menu.price){
-					alert((i+1) + "번째 메뉴 가격를 입력해주세요.");
-					return;
-				}
-				uploadMenuList.push(menu);
-			}
-		}
-
-		const uploadEventList = [] as any
-		for(let i=0; i< evnetList.length; i++){
-			const event = evnetList[i];
-			if(i == evnetList.length -1){
-				if(!event.content && event.date_check){
-					alert((i+1) + "번째 혜택의 내용를 입력해주세요.");
-					return;
-				}
-				if(event.date_check){
-					if(!event.start_date){
-						alert((i+1) + "번째 혜택의 시작날짜를 입력해주세요.");
-						return;	
-					}
-					if(!event.end_date){
-						alert((i+1) + "번째 혜택의 종료날짜를 입력해주세요.");
-						return;	
-					}
-				}
-				uploadEventList.push(event);
-			}else{
-				if(!event.content){
-					alert((i+1) + "번째 혜택의 내용를 입력해주세요.");
-					return;
-				}
-				if(event.date_check){
-					if(!event.start_date){
-						alert((i+1) + "번째 혜택의 시작날짜를 입력해주세요.");
-						return;	
-					}
-					if(!event.end_date){
-						alert((i+1) + "번째 혜택의 종료날짜를 입력해주세요.");
-						return;	
-					}
-				}
-				uploadEventList.push(event);
-			}
-		}
+    const uploadEventList = [] as any;
+    for (let i = 0; i < evnetList.length; i++) {
+      const event = evnetList[i];
+      if (i === evnetList.length - 1) {
+        if (!event.content && event.date_check) {
+          alert(i + 1 + "번째 혜택의 내용를 입력해주세요.");
+          return;
+        }
+        if (event.date_check) {
+          if (!event.start_date) {
+            alert(i + 1 + "번째 혜택의 시작날짜를 입력해주세요.");
+            return;
+          }
+          if (!event.end_date) {
+            alert(i + 1 + "번째 혜택의 종료날짜를 입력해주세요.");
+            return;
+          }
+        }
+        uploadEventList.push(event);
+      } else {
+        if (!event.content) {
+          alert(i + 1 + "번째 혜택의 내용를 입력해주세요.");
+          return;
+        }
+        if (event.date_check) {
+          if (!event.start_date) {
+            alert(i + 1 + "번째 혜택의 시작날짜를 입력해주세요.");
+            return;
+          }
+          if (!event.end_date) {
+            alert(i + 1 + "번째 혜택의 종료날짜를 입력해주세요.");
+            return;
+          }
+        }
+        uploadEventList.push(event);
+      }
+    }
 
     const { data: UpdateNewOpen } = await updateNewOpen({
       variables: {
@@ -438,9 +459,9 @@ const InputForm = () => {
 
     if (!result.ok) {
       return;
-    }else{
-			setSaveModal(true);
-		}
+    } else {
+      setSaveModal(true);
+    }
   };
 
   // 캐러셀 ref
@@ -453,8 +474,13 @@ const InputForm = () => {
   const [select_menu, set_select_menu] = useState("");
   const [select_menu_photo, set_select_menu_photo] = useState(0);
 
-
- const couponSrc =  ["../../asset/image_coupone_blue.png", "../../asset/image_coupone_brown.png", "../../asset/image_coupone_green.png", "../../asset/image_coupone_purple.png", "../../asset/image_coupone_blue.png"];
+  const couponSrc = [
+    "../../asset/image_coupone_blue.png",
+    "../../asset/image_coupone_brown.png",
+    "../../asset/image_coupone_green.png",
+    "../../asset/image_coupone_purple.png",
+    "../../asset/image_coupone_blue.png",
+  ];
 
   return (
     <div style={{ backgroundColor: "#F6F6F6", paddingTop: 70 }}>
@@ -481,11 +507,15 @@ const InputForm = () => {
         {/* 브랜드 컨테이너 */}
         <div className="new-open-container">
           <div className="column">
-						{newOpen?.logo ? (
-							<img className="logo" src={newOpen?.logo} alt="logo" />
-						) : (
-							<img className="logo" src="../../asset/image_default_logo.png" alt="logo" />
-						)}
+            {newOpen?.logo ? (
+              <img className="logo" src={newOpen?.logo} alt="logo" />
+            ) : (
+              <img
+                className="logo"
+                src="../../asset/image_default_logo.png"
+                alt="logo"
+              />
+            )}
             <div className="remain-open">정식오픈</div>
             <div
               className="remain-open"
@@ -502,7 +532,9 @@ const InputForm = () => {
           </div>
           <div className="content-container">
             <div className="category-container">
-              <div className="category-name">#{newOpen?.business_type ? newOpen?.business_type : "업종"}</div>
+              <div className="category-name">
+                #{newOpen?.business_type ? newOpen?.business_type : "업종"}
+              </div>
               <div className="like-numb">
                 👀
                 <span style={{ marginLeft: "10px" }}>
@@ -513,30 +545,31 @@ const InputForm = () => {
 
             <div className="brand-container">
               <div className="brand-contents">
-								<div
-									className="brand-name"
-									style={{ textAlign: "left" }}
-								>
-									{newOpen?.brand_name ? newOpen?.brand_name : "가게명"}
-								</div>
-								<a
-									href={`https://map.naver.com/v5/search/${encodeURI(
-									newOpen?.location
-									)}`}
-									target="blank"
-									title="지도"
-								>
-									<div className="brand-position">
-										{newOpen?.address ? newOpen?.address+newOpen?.address_detail : "가게주소"}
-									</div>
-								</a>
+                <div className="brand-name" style={{ textAlign: "left" }}>
+                  {newOpen?.brand_name ? newOpen?.brand_name : "가게명"}
+                </div>
+                <a
+                  href={`https://map.naver.com/v5/search/${encodeURI(
+                    newOpen?.location
+                  )}`}
+                  target="blank"
+                  title="지도"
+                >
+                  <div className="brand-position">
+                    {newOpen?.address
+                      ? newOpen?.address + newOpen?.address_detail
+                      : "가게주소"}
+                  </div>
+                </a>
                 <div
                   className="brand-description"
                   style={{ width: "320px", height: "auto" }}
                 >
-                  {newOpen?.description ? newOpen?.description?.split("\n").map((line, idx) => {
-                    return <div key={idx}>{line}</div>;
-                  }) : "가게 설명"}
+                  {newOpen?.description
+                    ? newOpen?.description?.split("\n").map((line, idx) => {
+                        return <div key={idx}>{line}</div>;
+                      })
+                    : "가게 설명"}
                 </div>
 
                 <div className="brand-time-tel">
@@ -550,14 +583,14 @@ const InputForm = () => {
                       Time
                     </div>
                     <div className="operation-time">
-											<div>
-											{findDay?.closed
-												? "휴일 : 00:00 ~ 00:00"
-												: "영업중 : " +
-													findDay?.start_hour +
-													"~" +
-													findDay?.end_hour}
-											</div>
+                      <div>
+                        {findDay?.closed
+                          ? "휴일 : 00:00 ~ 00:00"
+                          : "영업중 : " +
+                            findDay?.start_hour +
+                            "~" +
+                            findDay?.end_hour}
+                      </div>
                       <Dropdown
                         trigger={["hover"]}
                         onVisibleChange={(e) => {
@@ -613,20 +646,31 @@ const InputForm = () => {
                       className="operation-time"
                       style={{ textDecoration: "underline" }}
                     >
-                      {newOpen?.store_number ? newOpen?.store_number : '00-0000-0000'}
+                      {newOpen?.store_number
+                        ? newOpen?.store_number
+                        : "00-0000-0000"}
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="brand-mall-image">
-								{/* 가게 안 이미지들 */}
-								<HorizontalCarousel
-									brand_name={newOpen?.brand_name}
-									photo={newOpen?.photo_in_mall?.length > 0 ? newOpen?.photo_in_mall : ["../../asset/image_default_mall.png", "../../asset/image_default_mall.png", "../../asset/image_default_mall.png", "../../asset/image_default_mall.png"]}
-									flag_change={flag_change}
-									flag={flag}
-								/>
+                {/* 가게 안 이미지들 */}
+                <HorizontalCarousel
+                  brand_name={newOpen?.brand_name}
+                  photo={
+                    newOpen?.photo_in_mall?.length > 0
+                      ? newOpen?.photo_in_mall
+                      : [
+                          "../../asset/image_default_mall.png",
+                          "../../asset/image_default_mall.png",
+                          "../../asset/image_default_mall.png",
+                          "../../asset/image_default_mall.png",
+                        ]
+                  }
+                  flag_change={flag_change}
+                  flag={flag}
+                />
                 <div className="row">
                   <div className="menu-coupon">
                     <div
@@ -729,7 +773,10 @@ const InputForm = () => {
             }}
           />
 
-          <div className="brand-menu-detail">{newOpen?.brand_name ? newOpen?.brand_name : '가게명'}의 메뉴</div>
+          <div className="brand-menu-detail">
+            {newOpen?.brand_name ? newOpen?.brand_name : '가게명'}의 메뉴
+          </div>
+
           <div className="brand-menu-description">
             어머, 이건 꼭 먹어봐야해!
           </div>
@@ -805,12 +852,12 @@ const InputForm = () => {
 
           <div className="column" style={{ margin: "27px" }}>
             {menuList?.map((menu, menu_idx) => {
-							if(menu_idx != menuList.length -1){
-								return (
-									<div className="menu-row" key={menu_idx}>
-										<div className="menu-font">{menu?.name}</div>
+              if (menu_idx !== menuList.length - 1) {
+                return (
+                  <div className="menu-row" key={menu_idx}>
+                    <div className="menu-font">{menu?.name}</div>
                     {menu?.photo?.length > 0 ? (
-                      <img
+                    <img
                       className="camera"
                       src="../../asset/button_photo_line.png"
                       alt="camera"
@@ -820,7 +867,8 @@ const InputForm = () => {
                         handle_previous();
                         }}
                       />
-                    ) : null}
+                      ) : null}
+                    )
 										<div className="bar"></div>
 										<div className="menu-font">{numb(menu?.price)}원</div>
 									</div>
@@ -848,6 +896,8 @@ const InputForm = () => {
 									);	
 								}
 							}
+
+              return null;
             })}
           </div>
         </StyledModal>
@@ -864,7 +914,7 @@ const InputForm = () => {
             transform: "translate(-50%, -50%)",
             borderRadius: "10px",
             width: "550px",
-						maxHeight:"600px"
+            maxHeight: "600px",
           },
         }}
         isOpen={coupon_modal}
@@ -883,67 +933,73 @@ const InputForm = () => {
           />
 
           <div className="brand-menu-detail" style={{ marginBottom: "30px" }}>
-            {newOpen?.brand_nam ? newOpen?.brand_nam : '가게명'} 방문 혜택
+            {newOpen?.brand_nam ? newOpen?.brand_nam : "가게명"} 방문 혜택
           </div>
 
           {evnetList.map((event, event_idx) => {
-						if(event_idx != evnetList.length - 1){
-							return (
-								<div className="coupon-list" key={event_idx}>
-									<img
-										src={couponSrc[event_idx]}
-										style={{
-											width: "444px",
-											position: "absolute",
-										}}
-										alt="coupon"
-									/>
-									<div className="column">
-										<div className="coupon-number">
-											<div className="coupon-content" style={{ flex: 1 }}>
-												혜택1
-											</div>
-											<div className="coupon-content">
-												{newOpen?.brand_name ? newOpen?.brand_name : "가게명"}
-											</div>
-										</div>
-										<div className="coupon-detail">{event?.content}</div>
-										<div className="coupon-date">
-											{event.date_check ? event?.start_date + '~'  + event?.end_date : '기한 제한 없음'}
-										</div>
-									</div>
-								</div>
-							);	
-						}else{
-							if(event.content || event.date_check){
-								return (
-									<div className="coupon-list" key={event_idx}>
-										<img
-											src={couponSrc[event_idx]}
-											style={{
-												width: "444px",
-												position: "absolute",
-											}}
-											alt="coupon"
-										/>
-										<div className="column">
-											<div className="coupon-number">
-												<div className="coupon-content" style={{ flex: 1 }}>
-													혜택1
-												</div>
-												<div className="coupon-content">
-													{newOpen?.brand_name ? newOpen?.brand_name : "가게명"}
-												</div>
-											</div>
-											<div className="coupon-detail">{event?.content}</div>
-											<div className="coupon-date">
-												{event.date_check ? event?.start_date + '~'  + event?.end_date : '기한 제한 없음'}
-											</div>
-										</div>
-									</div>
-								);
-							}
-						}
+            if (event_idx !== evnetList.length - 1) {
+              return (
+                <div className="coupon-list" key={event_idx}>
+                  <img
+                    src={couponSrc[event_idx]}
+                    style={{
+                      width: "444px",
+                      position: "absolute",
+                    }}
+                    alt="coupon"
+                  />
+                  <div className="column">
+                    <div className="coupon-number">
+                      <div className="coupon-content" style={{ flex: 1 }}>
+                        혜택1
+                      </div>
+                      <div className="coupon-content">
+                        {newOpen?.brand_name ? newOpen?.brand_name : "가게명"}
+                      </div>
+                    </div>
+                    <div className="coupon-detail">{event?.content}</div>
+                    <div className="coupon-date">
+                      {event.date_check
+                        ? event?.start_date + "~" + event?.end_date
+                        : "기한 제한 없음"}
+                    </div>
+                  </div>
+                </div>
+              );
+            } else {
+              if (event.content || event.date_check) {
+                return (
+                  <div className="coupon-list" key={event_idx}>
+                    <img
+                      src={couponSrc[event_idx]}
+                      style={{
+                        width: "444px",
+                        position: "absolute",
+                      }}
+                      alt="coupon"
+                    />
+                    <div className="column">
+                      <div className="coupon-number">
+                        <div className="coupon-content" style={{ flex: 1 }}>
+                          혜택1
+                        </div>
+                        <div className="coupon-content">
+                          {newOpen?.brand_name ? newOpen?.brand_name : "가게명"}
+                        </div>
+                      </div>
+                      <div className="coupon-detail">{event?.content}</div>
+                      <div className="coupon-date">
+                        {event.date_check
+                          ? event?.start_date + "~" + event?.end_date
+                          : "기한 제한 없음"}
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+            }
+
+            return null;
           })}
         </StyledModal>
       </Modal>
@@ -1061,12 +1117,12 @@ const InputForm = () => {
                 } else {
                   $("#business-type-detail-div").css("display", "none");
                 }
-								setNewOpen(
-									produce((draft: any) => {
-										draft.business_type = businessType;
-									})
-								);
-							}}
+                setNewOpen(
+                  produce((draft: any) => {
+                    draft.business_type = businessType;
+                  })
+                );
+              }}
             >
               <option key="">선택</option>
               <option key="밥집">밥집</option>
@@ -1222,11 +1278,12 @@ const InputForm = () => {
             />
           </div>
 
-				{/* 영업시간 */}
-				<div className={"input-title"}>7. 영업시간 (필수)</div>
-					<span className="span-info">
-						요일별 영업시간을 입력해주세요, 입력하지 않은 요일은 ‘휴무'로 노출됩니다
-					</span>
+          {/* 영업시간 */}
+          <div className={"input-title"}>7. 영업시간 (필수)</div>
+          <span className="span-info">
+            요일별 영업시간을 입력해주세요, 입력하지 않은 요일은 ‘휴무'로
+            노출됩니다
+          </span>
           <div
             style={{ marginTop: 7, display: "flex", alignItems: "flex-start" }}
           >
@@ -1350,20 +1407,19 @@ const InputForm = () => {
               backgroundColor: "#FBFBFB",
             }}
           >
-
             {newOpen?.photo_in_mall?.length < 10 || !newOpen?.photo_in_mall ? (
-              <label
-                style={{ cursor: "pointer", marginTop: 37.5, }}
-              >
+              <label style={{ cursor: "pointer", marginTop: 37.5 }}>
                 <input
                   style={{ display: "none" }}
                   type="file"
                   onChange={(e: any) => {
-
-										if(newOpen?.photo_in_mall?.length + e.target.files.length > 10){
-											alert("사진은 10개까지 등록 가능합니다!");
-											return;
-										}
+                    if (
+                      newOpen?.photo_in_mall?.length + e.target.files.length >
+                      10
+                    ) {
+                      alert("사진은 10개까지 등록 가능합니다!");
+                      return;
+                    }
 
                     for (let i = 0; i < e.target.files.length; i++) {
                       uploadPhotoToFB(
@@ -1389,7 +1445,7 @@ const InputForm = () => {
               return (
                 <div
                   style={{
-										marginLeft:10,
+                    marginLeft: 10,
                     display: "flex",
                     alignItems: "flex-start",
                     whiteSpace: "nowrap",
@@ -1443,351 +1499,362 @@ const InputForm = () => {
           </div>
           <div style={{ marginTop: 5 }}>
             <span className="span-info">
-              체크박스에 클릭 시 대표메뉴로 설정되어 메인에 노출됩니다 ({menuList ? menuList?.filter(x => x.main_menu == true).length : 0}/3)
+              체크박스에 클릭 시 대표메뉴로 설정되어 메인에 노출됩니다 (
+              {menuList
+                ? menuList?.filter((x) => x.main_menu === true).length
+                : 0}
+              /3)
             </span>
           </div>
           <div style={{ marginTop: 7 }}>
             {menuList?.map((item, idx) => {
-							if( idx == menuList.length -1){
-								return(
-									<div key={idx}>
-										<div
-											style={{
-												display: "flex",
-												alignItems: "flex-start",
-												width: "100%",
-												height: 40,
-												marginBottom: 5,
-											}}
-										>
-											<div style={{ height: 40, marginRight: 6 }}>
-												<input
-													type="checkbox"
-													style={{
-														width: 20,
-														height: 20,
-														borderRadius: 5,
-														marginTop: 10,
-													}}
-													checked={item.main_menu}
-													onChange={(e) => {
-														if(menuList.filter(x => x.main_menu).length >= 3){
-															alert("메인메뉴는 3개까지 등록 가능합니다.");
-															return;
-														}
-														setMenuList(
-															produce((draft: any) => {
-																draft[idx].main_menu = e.target.checked;
-															})
-														);
-													}}
-												/>
-											</div>
-											<div style={{ height: 40 }}>
-												<input
-													placeholder="메뉴명"
-													style={{ width: 215, height: 40, marginRight: 5 }}
-													value={item.name}
-													onChange={(data) => {
-														setMenuList(
-															produce((draft: any) => {
-																draft[idx].name = data.target.value;
-															})
-														);
-													}}
-												/>
-												<input
-													type="number"
-													placeholder="1,000"
-													style={{ width: 80, height: 40, marginRight: 6 }}
-													value={item.price}
-													onChange={(data) => {
-														setMenuList(
-															produce((draft: any) => {
-																draft[idx].price = data.target.value;
-															})
-														);
-													}}
-												/>
-												<button
-													className="primary-button"
-													style={{ width: 40, height: 40 }}
-													onClick={() => {
-														setMenuList(
-															produce((draft: any) => {
-																draft.push({
-																	name: '',
-																	price: '',
-																	photo: [],
-																	main_menu: false
-																});
-															})
-														);
-													}}
-												>
-													+
-												</button>
-											</div>
-										</div>
-										<div
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      border: "1px solid #D1D1D1",
-                      boxSizing: "border-box",
-                      borderRadius: 5,
-                      paddingTop: 6,
-                      paddingBottom: 6,
-                      paddingLeft: 6,
-                      paddingRight: 6,
-                    }}
-                  >
-                    <label style={{ cursor: "pointer", marginRight: 15 }}>
-                      <input
-                        style={{ display: "none" }}
-                        type="file"
-                        onChange={(e: any) => {
-													if(item.photo.length + e.target.files.length > 3){
-														alert("메뉴당 3개의 이미지만 등록할 수 있습니다.");
-														return;
-													}
-
-                          for (let i = 0; i < e.target.files.length; i++) {
-                            uploadPhotoToFB(
-                              e.target.files[i],
-                              "MenuPhoto/" + e.target.files[i].name,
-                              "menu_photo",
-                              idx
+              if (idx === menuList.length - 1) {
+                return (
+                  <div key={idx}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        width: "100%",
+                        height: 40,
+                        marginBottom: 5,
+                      }}
+                    >
+                      <div style={{ height: 40, marginRight: 6 }}>
+                        <input
+                          type="checkbox"
+                          style={{
+                            width: 20,
+                            height: 20,
+                            borderRadius: 5,
+                            marginTop: 10,
+                          }}
+                          checked={item.main_menu}
+                          onChange={(e) => {
+                            if (
+                              menuList.filter((x) => x.main_menu).length >= 3
+                            ) {
+                              alert("메인메뉴는 3개까지 등록 가능합니다.");
+                              return;
+                            }
+                            setMenuList(
+                              produce((draft: any) => {
+                                draft[idx].main_menu = e.target.checked;
+                              })
                             );
-                          }
-                        }}
-                        accept="image/png, image/jpeg"
-                        multiple
-                      />
-                      <img
-                        alt="button_add"
-                        src={"/asset/button_photo_add.png"}
-                        style={{ width: 45, height: 25 }}
-                      ></img>
-                    </label>
-                    <div>
-                      {item.photo?.map((photoItem, photoIdx) => {
-                        return (
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "flex-start",
-                              whiteSpace: "nowrap",
-                              height: 25,
-                              marginTop: 3,
-                            }}
-                            key={photoIdx}
-                          >
-                            <a
-                              href={photoItem.url}
-                              target="_blank"
-                              rel="noreferrer"
+                          }}
+                        />
+                      </div>
+                      <div style={{ height: 40 }}>
+                        <input
+                          placeholder="메뉴명"
+                          style={{ width: 215, height: 40, marginRight: 5 }}
+                          value={item.name}
+                          onChange={(data) => {
+                            setMenuList(
+                              produce((draft: any) => {
+                                draft[idx].name = data.target.value;
+                              })
+                            );
+                          }}
+                        />
+                        <input
+                          type="number"
+                          placeholder="1,000"
+                          style={{ width: 80, height: 40, marginRight: 6 }}
+                          value={item.price}
+                          onChange={(data) => {
+                            setMenuList(
+                              produce((draft: any) => {
+                                draft[idx].price = data.target.value;
+                              })
+                            );
+                          }}
+                        />
+                        <button
+                          className="primary-button"
+                          style={{ width: 40, height: 40 }}
+                          onClick={() => {
+                            setMenuList(
+                              produce((draft: any) => {
+                                draft.push({
+                                  name: "",
+                                  price: "",
+                                  photo: [],
+                                  main_menu: false,
+                                });
+                              })
+                            );
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        border: "1px solid #D1D1D1",
+                        boxSizing: "border-box",
+                        borderRadius: 5,
+                        paddingTop: 6,
+                        paddingBottom: 6,
+                        paddingLeft: 6,
+                        paddingRight: 6,
+                      }}
+                    >
+                      <label style={{ cursor: "pointer", marginRight: 15 }}>
+                        <input
+                          style={{ display: "none" }}
+                          type="file"
+                          onChange={(e: any) => {
+                            if (item.photo.length + e.target.files.length > 3) {
+                              alert(
+                                "메뉴당 3개의 이미지만 등록할 수 있습니다."
+                              );
+                              return;
+                            }
+
+                            for (let i = 0; i < e.target.files.length; i++) {
+                              uploadPhotoToFB(
+                                e.target.files[i],
+                                "MenuPhoto/" + e.target.files[i].name,
+                                "menu_photo",
+                                idx
+                              );
+                            }
+                          }}
+                          accept="image/png, image/jpeg"
+                          multiple
+                        />
+                        <img
+                          alt="button_add"
+                          src={"/asset/button_photo_add.png"}
+                          style={{ width: 45, height: 25 }}
+                        ></img>
+                      </label>
+                      <div>
+                        {item.photo?.map((photoItem, photoIdx) => {
+                          return (
+                            <div
                               style={{
-                                width: 270,
+                                display: "flex",
+                                alignItems: "flex-start",
+                                whiteSpace: "nowrap",
                                 height: 25,
-                                verticalAlign: "middle",
-                                fontSize: "14px",
+                                marginTop: 3,
                               }}
-                              key={idx}
+                              key={photoIdx}
                             >
-                              {photoItem.fileName}
-                            </a>
-                            <div>
-                              <button
-                                className="image-delete-button"
+                              <a
+                                href={photoItem.url}
+                                target="_blank"
+                                rel="noreferrer"
                                 style={{
-                                  backgroundImage:
-                                    "url('/asset/button_image_delete.png')",
+                                  width: 270,
+                                  height: 25,
+                                  verticalAlign: "middle",
+                                  fontSize: "14px",
                                 }}
-                                onClick={() => {
-                                  setMenuList(
-                                    produce((draft: any) => {
-                                      draft[idx].photo.splice(photoIdx, 1);
-                                    })
-                                  );
-                                }}
-                              />
+                                key={idx}
+                              >
+                                {photoItem.fileName}
+                              </a>
+                              <div>
+                                <button
+                                  className="image-delete-button"
+                                  style={{
+                                    backgroundImage:
+                                      "url('/asset/button_image_delete.png')",
+                                  }}
+                                  onClick={() => {
+                                    setMenuList(
+                                      produce((draft: any) => {
+                                        draft[idx].photo.splice(photoIdx, 1);
+                                      })
+                                    );
+                                  }}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
-									</div>
-								)
-							}else
-							{
-								return (
-									<div style={{ marginBottom: 11 }} key={idx}>
-										<div
-											style={{
-												display: "flex",
-												alignItems: "flex-start",
-												width: "100%",
-												height: 40,
-												marginBottom: 5,
-											}}
-										>
-											<div style={{ height: 40, marginRight: 6 }}>
-												<input
-													type="checkbox"
-													style={{
-														width: 20,
-														height: 20,
-														borderRadius: 5,
-														marginTop: 10,
-													}}
-													checked={item.main_menu}
-													onChange={(e) => {
-														if(menuList.filter(x => x.main_menu).length >= 3){
-															alert("메인메뉴는 3개까지 등록 가능합니다.");
-															return;
-														}
-														setMenuList(
-															produce((draft: any) => {
-																draft[idx].main_menu = e.target.checked;
-															})
-														);
-													}}
-												/>
-											</div>
-											<div style={{ height: 40 }}>
-												<input
-													placeholder="메뉴명"
-													style={{ width: 215, height: 40, marginRight: 5 }}
-													value={item.name}
-													onChange={(data) => {
-														setMenuList(
-															produce((draft: any) => {
-																draft[idx].name = data.target.value;
-															})
-														);
-													}}
-												/>
-												<input
-													type="number"
-													placeholder="1,000"
-													style={{ width: 80, height: 40, marginRight: 6 }}
-													value={item.price}
-													onChange={(data) => {
-														setMenuList(
-															produce((draft: any) => {
-																draft[idx].price = data.target.value;
-															})
-														);
-													}}
-												/>
-												<button
-													className="normal-button"
-													style={{ width: 40, height: 40 }}
-													onClick={() => {
-														setMenuList(
-															produce((draft: any) => {
-																draft.splice(idx, 1);
-															})
-														);
-													}}
-												>
-													X
-												</button>
-											</div>
-										</div>
-										<div
-											style={{
-												display: "flex",
-												alignItems: "flex-start",
-												border: "1px solid #D1D1D1",
-												boxSizing: "border-box",
-												borderRadius: 5,
-												paddingTop: 6,
-												paddingBottom: 6,
-												paddingLeft: 6,
-												paddingRight: 6,
-											}}
-										>
-											<label style={{ cursor: "pointer", marginRight: 15 }}>
-												<input
-													style={{ display: "none" }}
-													type="file"
-													onChange={(e: any) => {
-														if(item.photo.length + e.target.files.length > 3){
-															alert("메뉴당 3개의 이미지만 등록할 수 있습니다.");
-															return;
-														}
-														for (let i = 0; i < e.target.files.length; i++) {
-															uploadPhotoToFB(
-																e.target.files[i],
-																"MenuPhoto/" + e.target.files[i].name,
-																"menu_photo",
-																idx
-															);
-														}
-													}}
-													accept="image/png, image/jpeg"
-													multiple
-												/>
-												<img
-													alt="button_add"
-													src={"/asset/button_photo_add.png"}
-													style={{ width: 45, height: 25 }}
-												></img>
-											</label>
-											<div>
-												{item.photo?.map((photoItem, photoIdx) => {
-													return (
-														<div
-															style={{
-																display: "flex",
-																alignItems: "flex-start",
-																whiteSpace: "nowrap",
-																height: 25,
-																marginTop: 3,
-															}}
-															key={photoIdx}
-														>
-															<a
-																href={photoItem.url}
-																target="_blank"
-																rel="noreferrer"
-																style={{
-																	width: 270,
-																	height: 25,
-																	verticalAlign: "middle",
-																	fontSize: "14px",
-																}}
-																key={idx}
-															>
-																{photoItem.fileName}
-															</a>
-															<div>
-																<button
-																	className="image-delete-button"
-																	style={{
-																		backgroundImage:
-																			"url('/asset/button_image_delete.png')",
-																	}}
-																	onClick={() => {
-																		setMenuList(
-																			produce((draft: any) => {
-																				draft[idx].photo.splice(photoIdx, 1);
-																			})
-																		);
-																	}}
-																/>
-															</div>
-														</div>
-													);
-												})}
-											</div>
-										</div>
-									</div>
-								);
-							}
+                );
+              } else {
+                return (
+                  <div style={{ marginBottom: 11 }} key={idx}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        width: "100%",
+                        height: 40,
+                        marginBottom: 5,
+                      }}
+                    >
+                      <div style={{ height: 40, marginRight: 6 }}>
+                        <input
+                          type="checkbox"
+                          style={{
+                            width: 20,
+                            height: 20,
+                            borderRadius: 5,
+                            marginTop: 10,
+                          }}
+                          checked={item.main_menu}
+                          onChange={(e) => {
+                            if (
+                              menuList.filter((x) => x.main_menu).length >= 3
+                            ) {
+                              alert("메인메뉴는 3개까지 등록 가능합니다.");
+                              return;
+                            }
+                            setMenuList(
+                              produce((draft: any) => {
+                                draft[idx].main_menu = e.target.checked;
+                              })
+                            );
+                          }}
+                        />
+                      </div>
+                      <div style={{ height: 40 }}>
+                        <input
+                          placeholder="메뉴명"
+                          style={{ width: 215, height: 40, marginRight: 5 }}
+                          value={item.name}
+                          onChange={(data) => {
+                            setMenuList(
+                              produce((draft: any) => {
+                                draft[idx].name = data.target.value;
+                              })
+                            );
+                          }}
+                        />
+                        <input
+                          type="number"
+                          placeholder="1,000"
+                          style={{ width: 80, height: 40, marginRight: 6 }}
+                          value={item.price}
+                          onChange={(data) => {
+                            setMenuList(
+                              produce((draft: any) => {
+                                draft[idx].price = data.target.value;
+                              })
+                            );
+                          }}
+                        />
+                        <button
+                          className="normal-button"
+                          style={{ width: 40, height: 40 }}
+                          onClick={() => {
+                            setMenuList(
+                              produce((draft: any) => {
+                                draft.splice(idx, 1);
+                              })
+                            );
+                          }}
+                        >
+                          X
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        border: "1px solid #D1D1D1",
+                        boxSizing: "border-box",
+                        borderRadius: 5,
+                        paddingTop: 6,
+                        paddingBottom: 6,
+                        paddingLeft: 6,
+                        paddingRight: 6,
+                      }}
+                    >
+                      <label style={{ cursor: "pointer", marginRight: 15 }}>
+                        <input
+                          style={{ display: "none" }}
+                          type="file"
+                          onChange={(e: any) => {
+                            if (item.photo.length + e.target.files.length > 3) {
+                              alert(
+                                "메뉴당 3개의 이미지만 등록할 수 있습니다."
+                              );
+                              return;
+                            }
+                            for (let i = 0; i < e.target.files.length; i++) {
+                              uploadPhotoToFB(
+                                e.target.files[i],
+                                "MenuPhoto/" + e.target.files[i].name,
+                                "menu_photo",
+                                idx
+                              );
+                            }
+                          }}
+                          accept="image/png, image/jpeg"
+                          multiple
+                        />
+                        <img
+                          alt="button_add"
+                          src={"/asset/button_photo_add.png"}
+                          style={{ width: 45, height: 25 }}
+                        ></img>
+                      </label>
+                      <div>
+                        {item.photo?.map((photoItem, photoIdx) => {
+                          return (
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "flex-start",
+                                whiteSpace: "nowrap",
+                                height: 25,
+                                marginTop: 3,
+                              }}
+                              key={photoIdx}
+                            >
+                              <a
+                                href={photoItem.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{
+                                  width: 270,
+                                  height: 25,
+                                  verticalAlign: "middle",
+                                  fontSize: "14px",
+                                }}
+                                key={idx}
+                              >
+                                {photoItem.fileName}
+                              </a>
+                              <div>
+                                <button
+                                  className="image-delete-button"
+                                  style={{
+                                    backgroundImage:
+                                      "url('/asset/button_image_delete.png')",
+                                  }}
+                                  onClick={() => {
+                                    setMenuList(
+                                      produce((draft: any) => {
+                                        draft[idx].photo.splice(photoIdx, 1);
+                                      })
+                                    );
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
             })}
           </div>
 
@@ -1802,244 +1869,244 @@ const InputForm = () => {
                 eventCalendar.css("display", "flex");
               }
 
-							if(idx == evnetList.length -1 ){
-								return (
-									<div key={idx}>
-										<div
-											style={{
-												display: "flex",
-												alignItems: "flex-start",
-												width: "100%",
-											}}
-										>
-											<textarea
-												rows={10}
-												placeholder="<예> 오픈이벤트로 500원 할인&#13;&#10;<예> 가오픈 기간 동안만 음료 1+1 증정"
-												style={{
-													resize: "none",
-													width: 297,
-													height: "35px",
-													border: "1px solid #D1D1D1",
-													borderRadius: 5,
-													padding: 10,
-													marginRight: 6,
-												}}
-												value={item.content}
-												onChange={(e) => {
-													setEventList(
-														produce((draft: any) => {
-															draft[idx].content = e.target.value;
-														})
-													);
-												}}
-											/>
-											<button
-												className="primary-button"
-												style={{ width: 40, height: 40, marginTop: 10 }}
-												onClick={() => {
-													setEventList(
-														produce((draft: any) => {
-															draft.push({
-																content: '',
-																date_check: false,
-																start_date: new Date(),
-																end_date: new Date(),
-															});
-														})
-													);
-												}}
-											>
-												+
-											</button>
-										</div>
-										<div
-											style={{
-												display: "flex",
-												alignItems: "flex-start",
-												marginTop: 5,
-											}}
-										>
-											<input
-												id={"event-check-" + idx}
-												type="checkbox"
-												style={{ width: 20, height: 20, marginRight: 5 }}
-												checked={item.date_check}
-												onChange={(e) => {
-													const eventCalendar = $("#event-calendar-" + idx);
-	
-													if (e.target.checked) {
-														eventCalendar.css("display", "flex");
-													} else {
-														eventCalendar.css("display", "none");
-													}
-	
-													setEventList(
-														produce((draft: any) => {
-															draft[idx].date_check = e.target.checked;
-														})
-													);
-												}}
-											/>
-											<span style={{ marginTop: 4 }}>
-												혜택에 기간이 있는 경우
-											</span>
-										</div>
-										<div
-											id={"event-calendar-" + idx}
-											style={{
-												display: "none",
-												alignItems: "flex-start",
-												marginTop: 10,
-												padding: 10,
-												backgroundColor: "#FFFFFF",
-												border: "1px solid #D1D1D1",
-												borderRadius: 5,
-											}}
-										>
-											<img
-												alt="calendar"
-												src={"/asset/icon_calendar.png"}
-												style={{ width: 20, height: 20, marginRight: 10 }}
-											></img>
-											<div
-												style={{
-													width: 1,
-													height: 20,
-													backgroundColor: "#D1D1D1",
-													marginRight: 10,
-												}}
-											/>
-											<DatePickerComponent
-												pStartDate={new Date(item.start_date)}
-												pEndDate={new Date(item.end_date)}
-												setSearchDateString={(data) =>
-													setEventStartDate(data, idx)
-												}
-												setSelectedEndDateString={(data) =>
-													setEventEndDate(data, idx)
-												}
-												isRangeSearch={true}
-											/>
-										</div>
-									</div>
-								)
-							}else{
-								return (
-									<div style={{ marginBottom: 15 }} key={idx}>
-										<div
-											style={{
-												display: "flex",
-												alignItems: "flex-start",
-												width: "100%",
-											}}
-										>
-											<textarea
-												rows={10}
-												placeholder="<예> 오픈이벤트로 500원 할인&#13;&#10;<예> 가오픈 기간 동안만 음료 1+1 증정"
-												style={{
-													resize: "none",
-													width: 297,
-													height: "35px",
-													border: "1px solid #D1D1D1",
-													borderRadius: 5,
-													padding: 10,
-													marginRight: 6,
-												}}
-												value={item.content}
-												onChange={(e) => {
-													setEventList(
-														produce((draft: any) => {
-															draft[idx].content = e.target.value;
-														})
-													);
-												}}
-											/>
-											<button
-												className="normal-button"
-												style={{ width: 40, height: 40, marginTop: 10 }}
-												onClick={() => {
-													setEventList(
-														produce((draft: any) => {
-															draft.splice(idx, 1);
-														})
-													);
-												}}
-											>
-												X
-											</button>
-										</div>
-										<div
-											style={{
-												display: "flex",
-												alignItems: "flex-start",
-												marginTop: 5,
-											}}
-										>
-											<input
-												id={"event-check-" + idx}
-												type="checkbox"
-												style={{ width: 20, height: 20, marginRight: 5 }}
-												checked={item.date_check}
-												onChange={(e) => {
-													const eventCalendar = $("#event-calendar-" + idx);
-	
-													if (e.target.checked) {
-														eventCalendar.css("display", "flex");
-													} else {
-														eventCalendar.css("display", "none");
-													}
-	
-													setEventList(
-														produce((draft: any) => {
-															draft[idx].date_check = e.target.checked;
-														})
-													);
-												}}
-											/>
-											<span style={{ marginTop: 4 }}>
-												혜택에 기간이 있는 경우
-											</span>
-										</div>
-										<div
-											id={"event-calendar-" + idx}
-											style={{
-												display: "none",
-												alignItems: "flex-start",
-												marginTop: 10,
-												padding: 10,
-												backgroundColor: "#FFFFFF",
-												border: "1px solid #D1D1D1",
-												borderRadius: 5,
-											}}
-										>
-											<img
-												alt="calendar"
-												src={"/asset/icon_calendar.png"}
-												style={{ width: 20, height: 20, marginRight: 10 }}
-											></img>
-											<div
-												style={{
-													width: 1,
-													height: 20,
-													backgroundColor: "#D1D1D1",
-													marginRight: 10,
-												}}
-											/>
-											<DatePickerComponent
-												pStartDate={new Date(item.start_date)}
-												pEndDate={new Date(item.end_date)}
-												setSearchDateString={(data) =>
-													setEventStartDate(data, idx)
-												}
-												setSelectedEndDateString={(data) =>
-													setEventEndDate(data, idx)
-												}
-												isRangeSearch={true}
-											/>
-										</div>
-									</div>
-								);
-							}
+              if (idx === evnetList.length - 1) {
+                return (
+                  <div key={idx}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        width: "100%",
+                      }}
+                    >
+                      <textarea
+                        rows={10}
+                        placeholder="<예> 오픈이벤트로 500원 할인&#13;&#10;<예> 가오픈 기간 동안만 음료 1+1 증정"
+                        style={{
+                          resize: "none",
+                          width: 297,
+                          height: "35px",
+                          border: "1px solid #D1D1D1",
+                          borderRadius: 5,
+                          padding: 10,
+                          marginRight: 6,
+                        }}
+                        value={item.content}
+                        onChange={(e) => {
+                          setEventList(
+                            produce((draft: any) => {
+                              draft[idx].content = e.target.value;
+                            })
+                          );
+                        }}
+                      />
+                      <button
+                        className="primary-button"
+                        style={{ width: 40, height: 40, marginTop: 10 }}
+                        onClick={() => {
+                          setEventList(
+                            produce((draft: any) => {
+                              draft.push({
+                                content: "",
+                                date_check: false,
+                                start_date: new Date(),
+                                end_date: new Date(),
+                              });
+                            })
+                          );
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        marginTop: 5,
+                      }}
+                    >
+                      <input
+                        id={"event-check-" + idx}
+                        type="checkbox"
+                        style={{ width: 20, height: 20, marginRight: 5 }}
+                        checked={item.date_check}
+                        onChange={(e) => {
+                          const eventCalendar = $("#event-calendar-" + idx);
+
+                          if (e.target.checked) {
+                            eventCalendar.css("display", "flex");
+                          } else {
+                            eventCalendar.css("display", "none");
+                          }
+
+                          setEventList(
+                            produce((draft: any) => {
+                              draft[idx].date_check = e.target.checked;
+                            })
+                          );
+                        }}
+                      />
+                      <span style={{ marginTop: 4 }}>
+                        혜택에 기간이 있는 경우
+                      </span>
+                    </div>
+                    <div
+                      id={"event-calendar-" + idx}
+                      style={{
+                        display: "none",
+                        alignItems: "flex-start",
+                        marginTop: 10,
+                        padding: 10,
+                        backgroundColor: "#FFFFFF",
+                        border: "1px solid #D1D1D1",
+                        borderRadius: 5,
+                      }}
+                    >
+                      <img
+                        alt="calendar"
+                        src={"/asset/icon_calendar.png"}
+                        style={{ width: 20, height: 20, marginRight: 10 }}
+                      ></img>
+                      <div
+                        style={{
+                          width: 1,
+                          height: 20,
+                          backgroundColor: "#D1D1D1",
+                          marginRight: 10,
+                        }}
+                      />
+                      <DatePickerComponent
+                        pStartDate={new Date(item.start_date)}
+                        pEndDate={new Date(item.end_date)}
+                        setSearchDateString={(data) =>
+                          setEventStartDate(data, idx)
+                        }
+                        setSelectedEndDateString={(data) =>
+                          setEventEndDate(data, idx)
+                        }
+                        isRangeSearch={true}
+                      />
+                    </div>
+                  </div>
+                );
+              } else {
+                return (
+                  <div style={{ marginBottom: 15 }} key={idx}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        width: "100%",
+                      }}
+                    >
+                      <textarea
+                        rows={10}
+                        placeholder="<예> 오픈이벤트로 500원 할인&#13;&#10;<예> 가오픈 기간 동안만 음료 1+1 증정"
+                        style={{
+                          resize: "none",
+                          width: 297,
+                          height: "35px",
+                          border: "1px solid #D1D1D1",
+                          borderRadius: 5,
+                          padding: 10,
+                          marginRight: 6,
+                        }}
+                        value={item.content}
+                        onChange={(e) => {
+                          setEventList(
+                            produce((draft: any) => {
+                              draft[idx].content = e.target.value;
+                            })
+                          );
+                        }}
+                      />
+                      <button
+                        className="normal-button"
+                        style={{ width: 40, height: 40, marginTop: 10 }}
+                        onClick={() => {
+                          setEventList(
+                            produce((draft: any) => {
+                              draft.splice(idx, 1);
+                            })
+                          );
+                        }}
+                      >
+                        X
+                      </button>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        marginTop: 5,
+                      }}
+                    >
+                      <input
+                        id={"event-check-" + idx}
+                        type="checkbox"
+                        style={{ width: 20, height: 20, marginRight: 5 }}
+                        checked={item.date_check}
+                        onChange={(e) => {
+                          const eventCalendar = $("#event-calendar-" + idx);
+
+                          if (e.target.checked) {
+                            eventCalendar.css("display", "flex");
+                          } else {
+                            eventCalendar.css("display", "none");
+                          }
+
+                          setEventList(
+                            produce((draft: any) => {
+                              draft[idx].date_check = e.target.checked;
+                            })
+                          );
+                        }}
+                      />
+                      <span style={{ marginTop: 4 }}>
+                        혜택에 기간이 있는 경우
+                      </span>
+                    </div>
+                    <div
+                      id={"event-calendar-" + idx}
+                      style={{
+                        display: "none",
+                        alignItems: "flex-start",
+                        marginTop: 10,
+                        padding: 10,
+                        backgroundColor: "#FFFFFF",
+                        border: "1px solid #D1D1D1",
+                        borderRadius: 5,
+                      }}
+                    >
+                      <img
+                        alt="calendar"
+                        src={"/asset/icon_calendar.png"}
+                        style={{ width: 20, height: 20, marginRight: 10 }}
+                      ></img>
+                      <div
+                        style={{
+                          width: 1,
+                          height: 20,
+                          backgroundColor: "#D1D1D1",
+                          marginRight: 10,
+                        }}
+                      />
+                      <DatePickerComponent
+                        pStartDate={new Date(item.start_date)}
+                        pEndDate={new Date(item.end_date)}
+                        setSearchDateString={(data) =>
+                          setEventStartDate(data, idx)
+                        }
+                        setSelectedEndDateString={(data) =>
+                          setEventEndDate(data, idx)
+                        }
+                        isRangeSearch={true}
+                      />
+                    </div>
+                  </div>
+                );
+              }
             })}
           </div>
 
@@ -2055,7 +2122,7 @@ const InputForm = () => {
               borderRadius: 5,
               width: 170,
               height: 20,
-							color: '#D1D1D1'
+              color: "#D1D1D1",
             }}
           >
             <img
@@ -2063,10 +2130,9 @@ const InputForm = () => {
               src={"/asset/icon_calendar.png"}
               style={{ width: 20, height: 20, marginRight: 10 }}
             />
-						|
-
-						{newOpen?.open_date ? (
-              <div style={{color:"#2D2D2D", marginLeft:5}}>
+            |
+            {newOpen?.open_date ? (
+              <div style={{ color: "#2D2D2D", marginLeft: 5 }}>
                 <div></div>
                 <DatePickerComponent
                   pStartDate={new Date(newOpen.open_date)}
@@ -2078,7 +2144,7 @@ const InputForm = () => {
                 />
               </div>
             ) : (
-              <div style={{color:"#2D2D2D", marginLeft:5}}>
+              <div style={{ color: "#2D2D2D", marginLeft: 5 }}>
                 <DatePickerComponent
                   pStartDate={null}
                   pEndDate={null}
@@ -2148,51 +2214,95 @@ const InputForm = () => {
           <br />
           만일 수정사항이 있는 경우 담당자 번호로 연락 드리겠습니다.
         </div>
-				<Modal
-        style={{
-          content: {
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-            borderRadius: "10px",
-          },
-        }}
-					isOpen={saveModal}
-					onRequestClose={() => setSaveModal(false)}
-					ariaHideApp={false}
-				>
-					<div style={{ textAlign: "center", padding: 20, justifyContent:'center' }}>
-						<img
-							style={{width:185, height:185}}
-							src="../../asset/image_save_success.png"
-							alt="success"
-						/>
-						<div style={{font:"Roboto", fontWeight:'bold', fontSize:"25px", color:"#3E3F41", marginTop:40}}>
-							{newOpen?.approved ? "저장이 완료되었습니다." : "입점신청이 완료되었습니다!"} 
-						</div>
-						{newOpen?.approved ? (
-							<div style={{font:"Spoqa Han Sans Neo", fontSize:"17px", color:"#3E3F41", marginTop:25}}>
-								만일 수정사항이 있는 경우 담당자 번호로 연락 드리겠습니다.
-							</div>	
-						): (
-							<div style={{font:"Spoqa Han Sans Neo", fontSize:"17px", color:"#3E3F41", marginTop:25}}>
-								최대한 빠르게 내부 검토 후 게시가 시작됩니다.<br/>
-								만일 수정사항이 있는 경우 담당자 번호로 연락 드리겠습니다.
-							</div>	
-						)}
-						<div style={{marginTop:45,}}>
-							<div style={{width:175, marginLeft:'auto', marginRight:'auto', paddingTop:15, paddingBottom:15, backgroundColor:"#2F80ED", borderRadius:5, cursor:'pointer',
-						font:'Spoqa Han Sans Neo', fontWeight:'bold', fontSize:"14px", color:'#FFFFFF' }}
-							onClick={() => setSaveModal(false)}>
-								확인
-							</div>
-						</div>
-
-					</div>
-				</Modal>
+        <Modal
+          style={{
+            content: {
+              top: "50%",
+              left: "50%",
+              right: "auto",
+              bottom: "auto",
+              marginRight: "-50%",
+              transform: "translate(-50%, -50%)",
+              borderRadius: "10px",
+            },
+          }}
+          isOpen={saveModal}
+          onRequestClose={() => setSaveModal(false)}
+          ariaHideApp={false}
+        >
+          <div
+            style={{
+              textAlign: "center",
+              padding: 20,
+              justifyContent: "center",
+            }}
+          >
+            <img
+              style={{ width: 185, height: 185 }}
+              src="../../asset/image_save_success.png"
+              alt="success"
+            />
+            <div
+              style={{
+                font: "Roboto",
+                fontWeight: "bold",
+                fontSize: "25px",
+                color: "#3E3F41",
+                marginTop: 40,
+              }}
+            >
+              {newOpen?.approved
+                ? "저장이 완료되었습니다."
+                : "입점신청이 완료되었습니다!"}
+            </div>
+            {newOpen?.approved ? (
+              <div
+                style={{
+                  font: "Spoqa Han Sans Neo",
+                  fontSize: "17px",
+                  color: "#3E3F41",
+                  marginTop: 25,
+                }}
+              >
+                만일 수정사항이 있는 경우 담당자 번호로 연락 드리겠습니다.
+              </div>
+            ) : (
+              <div
+                style={{
+                  font: "Spoqa Han Sans Neo",
+                  fontSize: "17px",
+                  color: "#3E3F41",
+                  marginTop: 25,
+                }}
+              >
+                최대한 빠르게 내부 검토 후 게시가 시작됩니다.
+                <br />
+                만일 수정사항이 있는 경우 담당자 번호로 연락 드리겠습니다.
+              </div>
+            )}
+            <div style={{ marginTop: 45 }}>
+              <div
+                style={{
+                  width: 175,
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                  paddingTop: 15,
+                  paddingBottom: 15,
+                  backgroundColor: "#2F80ED",
+                  borderRadius: 5,
+                  cursor: "pointer",
+                  font: "Spoqa Han Sans Neo",
+                  fontWeight: "bold",
+                  fontSize: "14px",
+                  color: "#FFFFFF",
+                }}
+                onClick={() => setSaveModal(false)}
+              >
+                확인
+              </div>
+            </div>
+          </div>
+        </Modal>
       </div>
     </div>
   );
@@ -2350,7 +2460,7 @@ const Styled = styled.div`
     font-size: 21px;
     font-weight: bold;
     margin-right: 21px;
-		margin-bottom: 5px;
+    margin-bottom: 5px;
   }
 
   .brand-position {

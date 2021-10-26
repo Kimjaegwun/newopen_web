@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import $ from "jquery";
 import { useMutation, useQuery } from "@apollo/client";
-import { Button, Dropdown, Input } from "antd";
+import { Button, Input } from "antd";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { GET_All_NEW_OPEN, UPDATE_COUPON_TOUCH } from "./mutation.gql";
@@ -13,7 +13,7 @@ import Footer from "./components/Footer";
 import proj4 from "proj4";
 import "../index.css";
 import Header from "./components/Header";
-import domtoimage from 'dom-to-image';
+import domtoimage from "dom-to-image";
 
 Modal.setAppElement();
 
@@ -33,17 +33,25 @@ const Main = () => {
   useQuery(GET_All_NEW_OPEN, {
     notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
-      const sortStore = data.GetAllNewOpen.new_open?.slice().sort(function (a, b) {
-        return b.coupon_touch - a.coupon_touch;
-      });
+      const sortStore = data.GetAllNewOpen.new_open
+        ?.slice()
+        .sort(function (a, b) {
+          return b.coupon_touch - a.coupon_touch;
+        });
       set_stores(sortStore);
     },
   });
 
-  const category_list = ["전체", "밥집", "술집", "카페", "네일&속눈썹", "헤어샵", "기타"];
+  const category_list = [
+    "전체",
+    "밥집",
+    "술집",
+    "카페",
+    "네일&속눈썹",
+    "헤어샵",
+    "기타",
+  ];
   const [select_category, set_select_category] = useState("전체");
-  const [operation_visible, set_operation_visible] = useState(false);
-
 
   //전국 리스트
   const location_list = ["전국", "동대문", "강남", "강북", "문래"];
@@ -68,7 +76,6 @@ const Main = () => {
   };
   const [updateCouponTouch] = useMutation(UPDATE_COUPON_TOUCH);
 
-
   // 선택한 가게
   const [select_store, set_select_store] = useState({} as any);
   const [select_menu, set_select_menu] = useState("");
@@ -80,27 +87,48 @@ const Main = () => {
     carousel_ref.current?.moveTo(0);
   };
 
-  const couponSrc =  ["../../asset/image_coupone_blue.png", "../../asset/image_coupone_brown.png", "../../asset/image_coupone_green.png", "../../asset/image_coupone_purple.png", "../../asset/image_coupone_blue.png"];
+  const couponSrc = [
+    "../../asset/image_coupone_blue.png",
+    "../../asset/image_coupone_brown.png",
+    "../../asset/image_coupone_green.png",
+    "../../asset/image_coupone_purple.png",
+    "../../asset/image_coupone_blue.png",
+  ];
 
   useEffect(() => {
     window.onscroll = () => {
-      if(window.pageYOffset > 550 && window.pageYOffset < document.body.offsetHeight - 1410){
+      if (
+        window.pageYOffset > 550 &&
+        window.pageYOffset < document.body.offsetHeight - 1450
+      ) {
         $("#right-banner").css("top", window.pageYOffset + 120);
       }
-    }
+    };
   }, []);
-  
+
   return (
     <>
       <Styled>
-        <Header logout={false}/>
-        
-        <a href="/StoreLogin" id="right-banner" style={{position:'absolute', width:100, height:340, color:'#2d2d', top: 680, right:50,
-                    backgroundImage: "url(../../asset/image_rightbanner_pc.png)",
-                    backgroundSize:'contain',
-                    backgroundRepeat:'no-repeat'
-        }}/>
-        <div className="column" style={{ marginTop:69}}>
+        <Header logout={false} />
+
+        <a
+          href="/StoreLogin"
+          id="right-banner"
+          style={{
+            position: "absolute",
+            width: 100,
+            height: 340,
+            color: "#2d2d",
+            top: 680,
+            right: 50,
+            backgroundImage: "url(../../asset/image_rightbanner_pc.png)",
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
+          {""}
+        </a>
+        <div className="column" style={{ marginTop: 69 }}>
           {/* 배너 캐러셀 */}
           {/* <Carousel
             showThumbs={false}
@@ -118,42 +146,73 @@ const Main = () => {
           <div
             style={{
               backgroundImage: "url(../../asset/image_mainbanner_pc.png)",
-              backgroundSize:'contain',
+              backgroundSize: "contain",
               width: "1440px",
               height: "500px",
-              textAlign:'center',
-              zIndex:2,
+              textAlign: "center",
+              zIndex: 2,
             }}
           >
-            <div className="center-div"
-             style={{position:'relative', width:230, paddingTop:15, paddingBottom:15, marginTop:340, textAlign:'center', backgroundColor:'#FFFFFF',  border:'3px solid #2F80ED', borderRadius:5,
-                    fontFamily:"Apple SD Gothic Neo", fontWeight:'bold', fontSize:"28px", cursor:'pointer'}}
+            <div
+              className="center-div"
+              style={{
+                position: "relative",
+                width: 230,
+                paddingTop: 15,
+                paddingBottom: 15,
+                marginTop: 340,
+                textAlign: "center",
+                backgroundColor: "#FFFFFF",
+                border: "3px solid #2F80ED",
+                borderRadius: 5,
+                fontFamily: "Apple SD Gothic Neo",
+                fontWeight: "bold",
+                fontSize: "28px",
+                cursor: "pointer",
+              }}
               onClick={() => {
                 set_open_location(!open_location);
-              }}             
+              }}
             >
               {select_loaction}
               <img
                 className="arrow-image"
-                style={{top:22}}
-                src= {open_location ? "../../asset/arrow-up.png" : "../../asset/arrow-down.png"}
+                style={{ top: 22 }}
+                src={
+                  open_location
+                    ? "../../asset/arrow-up.png"
+                    : "../../asset/arrow-down.png"
+                }
                 alt="time"
-                />
+              />
             </div>
             {location_list.map((cate, cate_index) => {
-              return(
+              return (
                 <div
                   className="center-div"
-                  style={{display: open_location ? 'block' : 'none', width:230, paddingTop:10, paddingBottom:10, backgroundColor:"#FFFFFF", borderLeft:'0.5px solid grey', borderRight:'0.5px solid grey',
-                    cursor:'pointer', borderBottom: cate_index == location_list.length-1 ? '0.5px solid grey' : 'none'}}
-                  onClick= {() => {
+                  style={{
+                    display: open_location ? "block" : "none",
+                    width: 230,
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    backgroundColor: "#FFFFFF",
+                    borderLeft: "0.5px solid grey",
+                    borderRight: "0.5px solid grey",
+                    cursor: "pointer",
+                    borderBottom:
+                      cate_index === location_list.length - 1
+                        ? "0.5px solid grey"
+                        : "none",
+                  }}
+                  onClick={() => {
                     set_select_location(cate);
                     set_open_location(false);
                   }}
-                  key={cate}>
-                    {cate}
+                  key={cate}
+                >
+                  {cate}
                 </div>
-              )
+              );
             })}
           </div>
         </div>
@@ -189,22 +248,48 @@ const Main = () => {
         </div>
 
         <div className="sort-list">
-          <div className="right"  style={select_sort=="최신순" ? {fontWeight:'bold', color:"#2D2D2D", cursor:'pointer'} : {fontWeight:'normal', color:'#BABABA', cursor:'pointer'}}
+          <div
+            className="right"
+            style={
+              select_sort === "최신순"
+                ? { fontWeight: "bold", color: "#2D2D2D", cursor: "pointer" }
+                : { fontWeight: "normal", color: "#BABABA", cursor: "pointer" }
+            }
             onClick={() => {
               const sortStores = stores.slice().sort(function (a, b) {
                 return b.createdAt - a.createdAt;
               });
               set_stores(sortStores);
-              set_select_sort("최신순")}}>
+              set_select_sort("최신순");
+            }}
+          >
             최신순
           </div>
-          <div className="right" style={select_sort=="인기순" ? {fontWeight:'bold', color:"#2D2D2D", marginRight:10, cursor:'pointer'} : {fontWeight:'normal', color:'#BABABA', marginRight:10, cursor:'pointer'}}
+          <div
+            className="right"
+            style={
+              select_sort === "인기순"
+                ? {
+                    fontWeight: "bold",
+                    color: "#2D2D2D",
+                    marginRight: 10,
+                    cursor: "pointer",
+                  }
+                : {
+                    fontWeight: "normal",
+                    color: "#BABABA",
+                    marginRight: 10,
+                    cursor: "pointer",
+                  }
+            }
             onClick={() => {
-                const sortStores = stores.slice().sort(function (a, b) {
-                  return b.coupon_touch - a.coupon_touch;
-                });
-                set_stores(sortStores);
-                set_select_sort("인기순")}}>
+              const sortStores = stores.slice().sort(function (a, b) {
+                return b.coupon_touch - a.coupon_touch;
+              });
+              set_stores(sortStores);
+              set_select_sort("인기순");
+            }}
+          >
             인기순
           </div>
         </div>
@@ -216,10 +301,11 @@ const Main = () => {
             } else {
               return item?.business_type === select_category;
             }
-          })?.filter((item:any) => {
-            if(select_loaction ==="전국"){
+          })
+          ?.filter((item: any) => {
+            if (select_loaction === "전국") {
               return item;
-            }else{
+            } else {
               return item.address.includes(select_loaction);
             }
           })
@@ -291,10 +377,7 @@ const Main = () => {
 
                   <div className="brand-container">
                     <div className="brand-contents">
-                      <div
-                        className="brand-name"
-                        style={{ textAlign: "left" }}
-                      >
+                      <div className="brand-name" style={{ textAlign: "left" }}>
                         {brand_name}
                       </div>
                       <a
@@ -331,43 +414,59 @@ const Main = () => {
                             {find_day?.closed
                               ? "휴일 : 00:00 ~ 00:00"
                               : "영업중 : " + find_day?.hour}
-                            <div style={{position:'relative'}}>
+                            <div style={{ position: "relative" }}>
                               <img
-                                  className="time-image"
-                                  style={{ marginLeft: "5px" }}
-                                  src="../../asset/button_more_info_arrow.png"
-                                  alt="time"
-                                  onMouseEnter={() => {
-                                    $("#business-hours-dropdown-" + str_idx).css("display", "flex");
-                                  }}
-                                  onMouseOut={() => {
-                                    $("#business-hours-dropdown-" + str_idx).css("display", "none");
-                                  }}
-                                />     
-                                <div id={"business-hours-dropdown-"+str_idx}
-                                 style={{
-                                  textAlign:'center',
-                                  fontWeight:'normal',
+                                className="time-image"
+                                style={{ marginLeft: "5px" }}
+                                src="../../asset/button_more_info_arrow.png"
+                                alt="time"
+                                onMouseEnter={() => {
+                                  $("#business-hours-dropdown-" + str_idx).css(
+                                    "display",
+                                    "flex"
+                                  );
+                                }}
+                                onMouseOut={() => {
+                                  $("#business-hours-dropdown-" + str_idx).css(
+                                    "display",
+                                    "none"
+                                  );
+                                }}
+                              />
+                              <div
+                                id={"business-hours-dropdown-" + str_idx}
+                                style={{
+                                  textAlign: "center",
+                                  fontWeight: "normal",
                                   position: "absolute",
-                                  width : business_hours.filter(x => x.closed == false).length > 0 ? 150 : 80,
+                                  width:
+                                    business_hours.filter(
+                                      (x) => x.closed === false
+                                    ).length > 0
+                                      ? 150
+                                      : 80,
                                   backgroundColor: "rgba(0, 0, 0, 0.85)",
                                   padding: "14px",
                                   fontSize: "14px",
                                   lineHeight: "19px",
                                   color: "#FFFFFF",
                                   borderRadius: "5px",
-                                  display:'none'}}>
-                                  <div style={{width:"100%", textAlign:'center'}}>
-                                    {business_hours?.map((hour, hour_idx) => {
-                                      return (
-                                        <div key={hour_idx}>
-                                          {hour?.day}요일:{" "}
-                                          {hour?.closed ? "휴무" : hour?.hour}
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                </div>                         
+                                  display: "none",
+                                }}
+                              >
+                                <div
+                                  style={{ width: "100%", textAlign: "center" }}
+                                >
+                                  {business_hours?.map((hour, hour_idx) => {
+                                    return (
+                                      <div key={hour_idx}>
+                                        {hour?.day}요일:{" "}
+                                        {hour?.closed ? "휴무" : hour?.hour}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
                             </div>
                             {/* <Dropdown
                               trigger={["hover"]}
@@ -679,16 +778,16 @@ const Main = () => {
                   <div className="menu-font">{menu?.name}</div>
                   {menu.photo?.length > 0 ? (
                     <img
-                    className="camera"
-                    src="../../asset/button_photo_line.png"
-                    alt="camera"
-                    onClick={() => {
-                      set_select_menu(menu?.name);
-                      set_select_menu_photo(0);
-                      handle_previous();
-                    }}
+                      className="camera"
+                      src="../../asset/button_photo_line.png"
+                      alt="camera"
+                      onClick={() => {
+                        set_select_menu(menu?.name);
+                        set_select_menu_photo(0);
+                        handle_previous();
+                      }}
                     />
-                  ) :null}
+                  ) : null}
                   <div className="bar"></div>
                   <div className="menu-font">{numb(menu?.price)}원</div>
                 </div>
@@ -732,9 +831,16 @@ const Main = () => {
           </div>
           {select_store?.new_open_event?.map((event, event_idx) => {
             return (
-              <div id={"coupon-div-" + event_idx} className="coupon-list"
-                style={{backgroundImage:`url(${couponSrc[event_idx]})`, backgroundRepeat:'no-repeat', backgroundSize:'contain'}}
-                key={event_idx}>
+              <div
+                id={"coupon-div-" + event_idx}
+                className="coupon-list"
+                style={{
+                  backgroundImage: `url(${couponSrc[event_idx]})`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "contain",
+                }}
+                key={event_idx}
+              >
                 <div className="column">
                   <div className="coupon-number">
                     <div className="coupon-content" style={{ flex: 1 }}>
@@ -748,23 +854,30 @@ const Main = () => {
                   <div className="coupon-date">
                     {event?.start_date}일 ~ {event?.end_date}일 까지
                   </div>
-                  <div className="center-div coupon-down"
-                  onClick={() => {
-                    updateCouponTouch({variables:{id: select_store.id}});
+                  <div
+                    className="center-div coupon-down"
+                    onClick={() => {
+                      updateCouponTouch({ variables: { id: select_store.id } });
 
-                    const couponDiv = $("#coupon-div-" + event_idx);
-                    domtoimage.toPng(couponDiv[0])
-                    .then(function (dataUrl) {
-                      const link = document.createElement("a");
-                      link.download = select_store.brand_name + "_coupon_" + event_idx + ".png";
-                      link.href = dataUrl;
-                      document.body.appendChild(link);
-                      link.click();
-                    })
-                    .catch(function (error) {
-                        console.error('oops, something went wrong!', error);
-                    });
-                  }}>
+                      const couponDiv = $("#coupon-div-" + event_idx);
+                      domtoimage
+                        .toPng(couponDiv[0])
+                        .then(function (dataUrl) {
+                          const link = document.createElement("a");
+                          link.download =
+                            select_store.brand_name +
+                            "_coupon_" +
+                            event_idx +
+                            ".png";
+                          link.href = dataUrl;
+                          document.body.appendChild(link);
+                          link.click();
+                        })
+                        .catch(function (error) {
+                          console.error("oops, something went wrong!", error);
+                        });
+                    }}
+                  >
                     쿠폰 다운로드
                   </div>
                 </div>
@@ -859,11 +972,11 @@ const Styled = styled.div`
     border-radius: 47px;
   }
 
-  .sort-list{
+  .sort-list {
     margin-top: 10px;
     width: 1024px;
     height: 20px;
-    font-family: 'Apple SD Gothic Neo';
+    font-family: "Apple SD Gothic Neo";
     font-size: 16px;
     line-height: 20px;
   }
@@ -1098,7 +1211,7 @@ const Styled = styled.div`
     margin-right: 3px;
   }
 
-  .card{
+  .card {
     width: 156px;
     height: 156px;
   }
@@ -1232,13 +1345,13 @@ const StyledModal = styled.div`
     margin-bottom: 25px;
   }
 
-  .coupon-down{
+  .coupon-down {
     z-index: 999;
     width: 170px;
-    background-color: #2D2D2D;
+    background-color: #2d2d2d;
     color: #ffffff;
     font-family: "Spoqa Han Sans Neo";
-    font-size:"14px";
+    font-size: "14px";
     padding-top: 10px;
     padding-bottom: 10px;
     text-align: center;
