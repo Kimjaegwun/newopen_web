@@ -1104,6 +1104,7 @@ const StyledModal = styled.div`
     font-size: 25px;
     font-weight: bold;
     margin-top: 10px;
+    margin-bottom: 10px;
   }
 
   .brand-menu-description {

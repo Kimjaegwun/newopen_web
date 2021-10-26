@@ -709,12 +709,9 @@ const MainMobile = () => {
             style={{ marginLeft: windowDimensions.width - 130 }}
           />
 
-          <div className="brand-menu-detail" style={{ marginBottom: "3px" }}>
+          <div className="brand-menu-detail">
             {select_store?.brand_name} 방문 혜택
           </div>
-          <span className="span-info"  style={{ fontSize:"14px", lineHeight:"25px", color:'#6C757D',}}>
-          사용 방법 : [쿠폰 다운받기] 버튼 클릭
-          </span>
           {select_store?.new_open_event?.map((event, event_idx) => {
             return (
               <div id={"coupon-div-" + event_idx}
@@ -1112,6 +1109,7 @@ const StyledModal = styled.div`
     font-size: 22px;
     font-weight: bold;
     margin-top: 10px;
+    margin-bottom: 10px;
   }
 
   .brand-menu-description {
