@@ -161,7 +161,6 @@ const InputForm = () => {
 
   //오픈일 계산
   useEffect(() => {
-<<<<<<< HEAD
 		if(newOpen.open_date){
 			const now = new Date().getTime();
 			const date_split = String(newOpen.open_date).split("-");
@@ -180,26 +179,6 @@ const InputForm = () => {
 				)
 			);
 		}
-=======
-    if (newOpen.open_date) {
-      const now = new Date().getTime();
-      const date_split = String(newOpen.open_date).split("-");
-      setDiffDay(
-        Math.floor(
-          (new Date(
-            Number(date_split[0]),
-            Number(date_split[1]) - 1,
-            Number(date_split[2]),
-            0,
-            0,
-            0
-          ).getTime() -
-            now) /
-            (1000 * 3600 * 24)
-        )
-      );
-    }
->>>>>>> 6e68d00d74aa6b4b3052f48f0aed0708bdd7d77d
   }, [newOpen.open_date]);
 
   //오프시간 계산
