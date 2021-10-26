@@ -10,8 +10,9 @@ import Modal from "react-modal";
 import HorizontalCarousel from "./components_mobile/HorizontalCarousel";
 import styled from "styled-components";
 import "../index.css";
-import HeaderMobile from "./components_mobile/HeaderMobile";
 import domtoimage from 'dom-to-image';
+import HeaderMobile from "./components_mobile/HeaderMobile";
+import FooterMobile from "./components_mobile/FooterMobile";
 Modal.setAppElement();
 
 const getWindowDimensions = () => {
@@ -527,6 +528,7 @@ const MainMobile = () => {
             </div>
           </a>
         </div>
+        <FooterMobile />
       </Styled>
 
       <Modal
@@ -602,6 +604,11 @@ const MainMobile = () => {
                 );
               })}
           </Carousel>
+
+          <img
+            style={{width:'100%', height:80, opacity:0.6, marginTop:-80, borderBottomLeftRadius:10, borderBottomRightRadius:10}}
+            src="../../asset/image_dimmed.png"
+          />
 
           {/* 사진 속 글 */}
           <div

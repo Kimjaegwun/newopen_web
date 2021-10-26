@@ -62,7 +62,13 @@ const DatePickerComponent = ({
         <DatePicker
           dateFormat="yyyy년 MM월 dd일"
           selected={startDate}
-          onChange={(date) => setStartDate(date)}
+          onChange={(date) => {
+            if( isRangeSearch && date > endDate){
+              alert("시작일은 종료일 이후일 수 없습니다.");
+              return;
+            }
+            setStartDate(date)
+          }}
           selectsStart
           isClearable={isClearable}
           placeholderText="클릭해주세요."

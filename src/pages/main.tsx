@@ -243,7 +243,7 @@ const Main = () => {
             // 오픈 날짜 계산
             const now = new Date().getTime();
             const date_split = String(open_date).split("-");
-            const diff_day = Math.floor(
+            const diff_day = Math.ceil(
               (new Date(
                 Number(date_split[0]),
                 Number(date_split[1]) - 1,
@@ -465,47 +465,51 @@ const Main = () => {
                     </div>
                   </div>
 
-                  <div className="main-menu">
-                    <img
-                      className="main-menu-image"
-                      src="../../asset/rectangle.png"
-                      alt="main-menu"
-                    />
-                    대표메뉴 
-                  </div>
+                  {store.menu?.filter(x => x.main_menu == true)?.length > 0 ?(
+                    <div>
+                      <div className="main-menu">
+                        <img
+                          className="main-menu-image"
+                          src="../../asset/rectangle.png"
+                          alt="main-menu"
+                        />
+                        대표메뉴 
+                      </div>
 
-                  <div className="row">
-                    {menu?.map((menu_item, menu_idx) => {
-                      if (menu_item?.main_menu) {
-                        return (
-                          <div className="menu-container"
-                            onClick={() => {
-                              set_menu_modal(true);
-                              flag_change();
-                              set_select_store(store);
-                              set_select_menu(menu_item?.name);
-                            }}
-                          key={menu_idx}>
-                            <img
-                              className="menu-image"
-                              src={menu_item?.photo[0]?.url}
-                              alt="menu"
-                            />
-                            <div className="menu-name">
-                              <div className="menu-name-detail">
-                                {menu_item?.name}
+                      <div className="row">
+                        {menu?.map((menu_item, menu_idx) => {
+                          if (menu_item?.main_menu) {
+                            return (
+                              <div className="menu-container"
+                                onClick={() => {
+                                  set_menu_modal(true);
+                                  flag_change();
+                                  set_select_store(store);
+                                  set_select_menu(menu_item?.name);
+                                }}
+                              key={menu_idx}>
+                                <img
+                                  className="menu-image"
+                                  src={menu_item?.photo[0]?.url}
+                                  alt="menu"
+                                />
+                                <div className="menu-name">
+                                  <div className="menu-name-detail">
+                                    {menu_item?.name}
+                                  </div>
+                                  <div className="menu-price">
+                                    {numb(menu_item?.price)}원
+                                  </div>
+                                </div>
                               </div>
-                              <div className="menu-price">
-                                {numb(menu_item?.price)}원
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      } else {
-                        return null;
-                      }
-                    })}
-                  </div>
+                            );
+                          } else {
+                            return null;
+                          }
+                        })}
+                      </div>
+                    </div>
+                  ) : null }
                 </div>
               </div>
             );
@@ -635,6 +639,11 @@ const Main = () => {
                 );
               })}
           </Carousel>
+
+          <img
+            style={{width:'100%', height:140, opacity:0.6, marginTop:-140, borderBottomLeftRadius:10, borderBottomRightRadius:10}}
+            src="../../asset/image_dimmed.png"
+          />
 
           <div className="menu-name" style={{ color: "#FFFFFF" }}>
             {

@@ -161,7 +161,7 @@ const InputForm = () => {
 			const now = new Date().getTime();
 			const date_split = String(newOpen.open_date).split("-");
 			setDiffDay(
-				Math.floor(
+				Math.ceil(
 					(new Date(
 						Number(date_split[0]),
 						Number(date_split[1]) - 1,
@@ -658,40 +658,44 @@ const InputForm = () => {
               </div>
             </div>
 
-            <div className="main-menu">
-              <img
-                className="main-menu-image"
-                src="../../asset/rectangle.png"
-                alt="main-menu"
-              />
-              대표메뉴
-            </div>
+            {menuList?.filter(x => x.main_menu == true)?.length > 0 ?(
+              <div>
+                <div className="main-menu">
+                  <img
+                    className="main-menu-image"
+                    src="../../asset/rectangle.png"
+                    alt="main-menu"
+                  />
+                  대표메뉴
+                </div>
 
-            <div className="row">
-              {menuList?.map((menu_item, menu_idx) => {
-                if (menu_item?.main_menu) {
-                  return (
-                    <div className="menu-container" key={menu_idx}>
-                      <img
-                        className="menu-image"
-                        src={menu_item?.photo[0]?.url}
-                        alt="menu"
-                      />
-                      <div className="menu-name">
-                        <div className="menu-name-detail">
-                          {menu_item?.name}
+                <div className="row">
+                  {menuList?.map((menu_item, menu_idx) => {
+                    if (menu_item?.main_menu) {
+                      return (
+                        <div className="menu-container" key={menu_idx}>
+                          <img
+                            className="menu-image"
+                            src={menu_item?.photo[0]?.url}
+                            alt="menu"
+                          />
+                          <div className="menu-name">
+                            <div className="menu-name-detail">
+                              {menu_item?.name}
+                            </div>
+                            <div className="menu-price">
+                              {numb(menu_item?.price)}원
+                            </div>
+                          </div>
                         </div>
-                        <div className="menu-price">
-                          {numb(menu_item?.price)}원
-                        </div>
-                      </div>
-                    </div>
-                  );
-                } else {
-                  return null;
-                }
-              })}
+                      );
+                    } else {
+                      return null;
+                    }
+                  })}
+                </div>
             </div>
+            ): null}
           </div>
         </div>
       </Styled>
@@ -725,7 +729,7 @@ const InputForm = () => {
             }}
           />
 
-          <div className="brand-menu-detail">{newOpen?.brand_nam ? newOpen?.brand_nam : '가게명'}의 메뉴</div>
+          <div className="brand-menu-detail">{newOpen?.brand_name ? newOpen?.brand_name : '가게명'}의 메뉴</div>
           <div className="brand-menu-description">
             어머, 이건 꼭 먹어봐야해!
           </div>
@@ -767,6 +771,11 @@ const InputForm = () => {
               })}
           </Carousel>
 
+          <img
+            style={{width:'100%', height:140, opacity:0.6, marginTop:-140, borderBottomLeftRadius:10, borderBottomRightRadius:10}}
+            src="../../asset/image_dimmed.png"
+          />
+
           <div className="menu-name" style={{ color: "#FFFFFF" }}>
             {
               menuList?.find((menu) => {
@@ -800,16 +809,18 @@ const InputForm = () => {
 								return (
 									<div className="menu-row" key={menu_idx}>
 										<div className="menu-font">{menu?.name}</div>
-										<img
-											className="camera"
-											src="../../asset/button_photo_line.png"
-											alt="camera"
-											onClick={() => {
-												set_select_menu(menu?.name);
-												set_select_menu_photo(0);
-												handle_previous();
-											}}
-										/>
+                    {menu?.photo?.length > 0 ? (
+                      <img
+                      className="camera"
+                      src="../../asset/button_photo_line.png"
+                      alt="camera"
+                      onClick={() => {
+                        set_select_menu(menu?.name);
+                        set_select_menu_photo(0);
+                        handle_previous();
+                        }}
+                      />
+                    ) : null}
 										<div className="bar"></div>
 										<div className="menu-font">{numb(menu?.price)}원</div>
 									</div>
@@ -819,16 +830,18 @@ const InputForm = () => {
 									return (
 										<div className="menu-row" key={menu_idx}>
 											<div className="menu-font">{menu?.name}</div>
-											<img
-												className="camera"
-												src="../../asset/button_photo_line.png"
-												alt="camera"
-												onClick={() => {
-													set_select_menu(menu?.name);
-													set_select_menu_photo(0);
-													handle_previous();
-												}}
-											/>
+                      {menu?.photo?.length > 0 ? (
+                        <img
+                        className="camera"
+                        src="../../asset/button_photo_line.png"
+                        alt="camera"
+                        onClick={() => {
+                          set_select_menu(menu?.name);
+                          set_select_menu_photo(0);
+                          handle_previous();
+                          }}
+                        />
+                      ) : null}
 											<div className="bar"></div>
 											<div className="menu-font">{numb(menu?.price)}원</div>
 										</div>
