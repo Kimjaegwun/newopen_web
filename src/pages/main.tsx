@@ -84,7 +84,7 @@ const Main = () => {
 
   useEffect(() => {
     window.onscroll = () => {
-      if(window.pageYOffset > 550 && window.pageYOffset < document.body.offsetHeight - 1450){
+      if(window.pageYOffset > 550 && window.pageYOffset < document.body.offsetHeight - 1410){
         $("#right-banner").css("top", window.pageYOffset + 120);
       }
     }
