@@ -785,7 +785,7 @@ const MainMobile = () => {
             style={{ marginLeft: windowDimensions.width - 130 }}
           />
 
-          <div className="brand-menu-detail" style={{ marginBottom: "3px" }}>
+          <div className="brand-menu-detail">
             {select_store?.brand_name} 방문 혜택
           </div>
           <span
@@ -1208,6 +1208,7 @@ const StyledModal = styled.div`
     font-size: 22px;
     font-weight: bold;
     margin-top: 10px;
+    margin-bottom: 10px;
   }
 
   .brand-menu-description {
