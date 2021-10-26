@@ -13,7 +13,6 @@ import Footer from "./components/Footer";
 import proj4 from "proj4";
 import "../index.css";
 import Header from "./components/Header";
-import domtoimage from "dom-to-image";
 
 Modal.setAppElement();
 
@@ -22,7 +21,21 @@ proj4.defs(
   "+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees"
 );
 
+const getWindowDimensions = () => {
+  const { innerWidth: width, innerHeight: height } = window;
+  return {
+    width,
+    height,
+  };
+};
+
 const Main = () => {
+
+  //화면 크기 계산
+  const [windowDimensions, setWindowDimensions] = useState(
+    getWindowDimensions()
+  );
+
   const [flag, set_flag] = useState(false);
   const flag_change = () => {
     set_flag(!flag);
@@ -75,6 +88,13 @@ const Main = () => {
     flag_change();
   };
   const [updateCouponTouch] = useMutation(UPDATE_COUPON_TOUCH);
+
+  //스캔 모달
+  const [scan_modal, set_scan_modal] = useState(false);
+  const close_scan_modal = () => {
+    set_scan_modal(false);
+  };
+  const [select_event, set_select_event] = useState({} as any);
 
   // 선택한 가게
   const [select_store, set_select_store] = useState({} as any);
@@ -830,6 +850,12 @@ const Main = () => {
           <div className="brand-menu-detail">
             {select_store?.brand_name} 방문 혜택
           </div>
+          <span
+            className="span-info"
+            style={{ fontSize: "13px", lineHeight: "25px", color: "#6C757D", marginBottom:10 }}
+          >
+            사용 방법 : [쿠폰 캡쳐하기] 버튼 클릭 &gt; 화면을 캡쳐
+          </span>
           {select_store?.new_open_event?.map((event, event_idx) => {
             return (
               <div
@@ -860,26 +886,12 @@ const Main = () => {
                     onClick={() => {
                       updateCouponTouch({ variables: { id: select_store.id } });
 
-                      const couponDiv = $("#coupon-div-" + event_idx);
-                      domtoimage
-                        .toPng(couponDiv[0])
-                        .then(function (dataUrl) {
-                          const link = document.createElement("a");
-                          link.download =
-                            select_store.brand_name +
-                            "_coupon_" +
-                            event_idx +
-                            ".png";
-                          link.href = dataUrl;
-                          document.body.appendChild(link);
-                          link.click();
-                        })
-                        .catch(function (error) {
-                          console.error("oops, something went wrong!", error);
-                        });
+                      set_scan_modal(true);
+                      set_select_event({...event, coupon_url: couponSrc[event_idx]});
+                      
                     }}
                   >
-                    쿠폰 다운로드
+                    쿠폰 캡쳐하기
                   </div>
                 </div>
               </div>
@@ -887,6 +899,68 @@ const Main = () => {
           })}
         </StyledModal>
       </Modal>
+
+      <Modal
+        style={{
+          content: {
+            top: "-1%",
+            left: "-1%",
+            bottom: "0%",
+            marginRight: "0%",
+            transform: "translate(0%, 0%)",
+            width: '100%',
+            background: "rgb(0,0,0,0.8)",
+          },
+        }}
+        isOpen={scan_modal}
+        onRequestClose={close_scan_modal}
+        ariaHideApp={false}
+      >
+        <StyledModal style={{maxHeight:'100%'}}>
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              alignItems: "center",
+              display: "flex",
+            }}
+            onClick={() => {
+              set_scan_modal(false);
+            }}
+          >
+            <div
+              className="coupon-list"
+              style={{
+                backgroundImage: `url(${select_event.coupon_url})`,
+                backgroundRepeat: "no-repeat",
+                marginTop:'15%',
+                marginBottom:'15%',
+                width: 550,
+                backgroundSize: "cover",
+                borderRadius: "10px",
+                marginLeft: "auto",
+                marginRight: "auto"
+              }}
+            >
+              <div className="column">
+                <div className="coupon-number" style={{ marginTop: "10px" }}>
+                  <div className="coupon-content" style={{ flex: 1 }}>
+                    혜택
+                  </div>
+                  <div className="coupon-content">
+                    {select_store?.brand_name}
+                  </div>
+                </div>
+                <div className="coupon-detail">{select_event?.content}</div>
+                <div className="coupon-date" style={{ marginBottom: "40px" }}>
+                  {select_event?.start_date} ~ {select_event?.end_date}
+                </div>
+              </div>
+            </div>
+          </div>
+        </StyledModal>
+      </Modal>
+
     </>
   );
 };

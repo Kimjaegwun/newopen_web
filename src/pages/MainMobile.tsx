@@ -10,7 +10,6 @@ import Modal from "react-modal";
 import HorizontalCarousel from "./components_mobile/HorizontalCarousel";
 import styled from "styled-components";
 import "../index.css";
-import domtoimage from 'dom-to-image';
 import HeaderMobile from "./components_mobile/HeaderMobile";
 import FooterMobile from "./components_mobile/FooterMobile";
 Modal.setAppElement();
@@ -100,7 +99,7 @@ const MainMobile = () => {
   const close_scan_modal = () => {
     set_scan_modal(false);
   };
-  const [select_coupon] = useState({} as any);
+  const [select_event, set_select_event] = useState({} as any);
 
   // 선택한 가게
   const [select_store, set_select_store] = useState({} as any);
@@ -634,7 +633,7 @@ const MainMobile = () => {
               set_menu_modal(false);
               flag_change();
             }}
-            style={{ marginLeft: windowDimensions.width - 130 }}
+            style={{right:10}}
           />
 
           <div className="brand-menu-detail">
@@ -790,7 +789,7 @@ const MainMobile = () => {
               set_coupon_modal(false);
               flag_change();
             }}
-            style={{ marginLeft: windowDimensions.width - 130 }}
+            style={{right:10}}
           />
 
           <div className="brand-menu-detail">
@@ -798,9 +797,9 @@ const MainMobile = () => {
           </div>
           <span
             className="span-info"
-            style={{ fontSize: "14px", lineHeight: "25px", color: "#6C757D" }}
+            style={{ fontSize: "13px", lineHeight: "25px", color: "#6C757D", marginBottom:10 }}
           >
-            사용 방법 : [쿠폰 다운받기] 버튼 클릭
+            사용 방법 : [쿠폰 캡쳐하기] 버튼 클릭 &gt; 화면을 캡쳐
           </span>
           {select_store?.new_open_event?.map((event, event_idx) => {
             return (
@@ -836,26 +835,11 @@ const MainMobile = () => {
                     onClick={() => {
                       updateCouponTouch({ variables: { id: select_store.id } });
 
-                      const couponDiv = $("#coupon-div-" + event_idx);
-                      domtoimage
-                        .toPng(couponDiv[0])
-                        .then(function (dataUrl) {
-                          const link = document.createElement("a");
-                          link.download =
-                            select_store.brand_name +
-                            "_coupon_" +
-                            event_idx +
-                            ".png";
-                          link.href = dataUrl;
-                          document.body.appendChild(link);
-                          link.click();
-                        })
-                        .catch(function (error) {
-                          console.error("oops, something went wrong!", error);
-                        });
+                      set_scan_modal(true);
+                      set_select_event({...event, coupon_url: couponSrc[event_idx]});
                     }}
                   >
-                    쿠폰 다운로드
+                    쿠폰 캡쳐하기
                   </div>
                 </div>
               </div>
@@ -872,16 +856,15 @@ const MainMobile = () => {
             bottom: "0%",
             marginRight: "0%",
             transform: "translate(0%, 0%)",
-            borderRadius: "10px",
             width: windowDimensions.width,
-            background: "rgb(0,0,0,0.9)",
+            background: "rgb(0,0,0,0.2)",
           },
         }}
         isOpen={scan_modal}
         onRequestClose={close_scan_modal}
         ariaHideApp={false}
       >
-        <StyledModal>
+        <StyledModal style={{maxHeight:'100%'}}>
           <div
             style={{
               width: windowDimensions.width,
@@ -893,10 +876,11 @@ const MainMobile = () => {
               set_scan_modal(false);
             }}
           >
-            <section
+            <div
               className="coupon-list"
               style={{
-                backgroundImage: "url(../../asset/image_coupone_blue.png)",
+                backgroundImage: `url(${select_event.coupon_url})`,
+                backgroundRepeat: "no-repeat",
                 width: windowDimensions.width - 50,
                 backgroundSize: "cover",
                 borderRadius: "10px",
@@ -912,12 +896,12 @@ const MainMobile = () => {
                     {select_store?.brand_name}
                   </div>
                 </div>
-                <div className="coupon-detail">{select_coupon?.content}</div>
+                <div className="coupon-detail">{select_event?.content}</div>
                 <div className="coupon-date" style={{ marginBottom: "40px" }}>
-                  {select_coupon?.start_date} ~ {select_coupon?.end_date}
+                  {select_event?.start_date} ~ {select_event?.end_date}
                 </div>
               </div>
-            </section>
+            </div>
           </div>
         </StyledModal>
       </Modal>
@@ -1205,7 +1189,6 @@ const StyledModal = styled.div`
   flex-direction: column;
   align-items: center;
   max-height: 90%;
-  padding-bottom: 40px;
 
   .column {
     display: flex;
