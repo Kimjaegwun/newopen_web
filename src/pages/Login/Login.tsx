@@ -73,18 +73,16 @@ const Login = () => {
     input.css("border", "1px solid #D1D1D1");
     needSpan.css("display", "none");
 
-		
     const loginId = $("#login-id").val();
     const loginPw = $("#login-pw").val();
 
-		if( loginId != '' && loginPw!= ''){
-			$("#login-button").css('background-color','#2F80ED');
-			$("#login-button").css('color','#FFFFFF');
-		}else{
-			$("#login-button").css('background-color','#D1D1D1');
-			$("#login-button").css('color','#3E3F41');
-		}
-		
+    if (loginId !== "" && loginPw !== "") {
+      $("#login-button").css("background-color", "#2F80ED");
+      $("#login-button").css("color", "#FFFFFF");
+    } else {
+      $("#login-button").css("background-color", "#D1D1D1");
+      $("#login-button").css("color", "#3E3F41");
+    }
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -191,7 +189,7 @@ const Login = () => {
             아이디 혹은 비밀번호가 잘못 입력되었습니다.
           </span>
           <button
-						id="login-button"
+            id="login-button"
             className="grey-button"
             style={{ width: 335, cursor: "pointer" }}
             onClick={() => onFinish()}
@@ -199,11 +197,14 @@ const Login = () => {
             로그인 하기
           </button>
         </div>
-        <div className="row" style={{ marginTop: 20, justifyContent:'center' }}>
+        <div
+          className="row"
+          style={{ marginTop: 20, justifyContent: "center" }}
+        >
           <a
             href="/StoreSignUp"
             style={{
-						  marginTop:2,
+              marginTop: 2,
               textDecoration: "none",
               fontSize: "13px",
               lineHeight: "15px",
@@ -216,7 +217,7 @@ const Login = () => {
           <div
             onClick={() => setFindModal(true)}
             style={{
-			  marginTop:2,
+              marginTop: 2,
               textDecoration: "none",
               fontSize: "13px",
               lineHeight: "15px",
@@ -246,17 +247,29 @@ const Login = () => {
         onRequestClose={() => setFindModal(false)}
         ariaHideApp={false}
       >
-        <div style={{ textAlign: "center"}}>
-					<div style={{position:'absolute', top:10, right:10,}}>
-						<div style={{width:22, height:22, marginLeft:'auto', marginRight:'auto', borderRadius:5, cursor:'pointer',
-							font:'Spoqa Han Sans Neo', fontWeight:'bold', fontSize:"20px", color:'#2D2D2D' }}
-							onClick={() => setFindModal(false)}>
-								X
-						</div>
-					</div>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ position: "absolute", top: 10, right: 10 }}>
+            <div
+              style={{
+                width: 22,
+                height: 22,
+                marginLeft: "auto",
+                marginRight: "auto",
+                borderRadius: 5,
+                cursor: "pointer",
+                font: "Spoqa Han Sans Neo",
+                fontWeight: "bold",
+                fontSize: "20px",
+                color: "#2D2D2D",
+              }}
+              onClick={() => setFindModal(false)}
+            >
+              X
+            </div>
+          </div>
           <div
             style={{
-							marginTop:30,
+              marginTop: 30,
               fontSize: "20px",
               color: "#ff2e4c",
               fontWeight: "bold",
@@ -265,7 +278,7 @@ const Login = () => {
           >
             - NewOpen 매니저 -
           </div>
-          <div style={{ fontSize: "18px", fontWeight: "bold", marginTop:50 }}>
+          <div style={{ fontSize: "18px", fontWeight: "bold", marginTop: 50 }}>
             이준(Jun.lee@tierjay.com 010-5755-2801)
           </div>
           <div
@@ -277,17 +290,32 @@ const Login = () => {
           >
             최석현(SukHyun.choi@tierjay.com 010-2258-1675)
           </div>
-          <div style={{ fontSize: "18px", marginTop:50 }}>
-            해당 이메일 & 번호로 아이디를 문의 주시면<br/>
-						비밀번호를 최대한빠른시간내에 찾아드리겠습니다.
+          <div style={{ fontSize: "18px", marginTop: 50 }}>
+            해당 이메일 & 번호로 아이디를 문의 주시면
+            <br />
+            비밀번호를 최대한빠른시간내에 찾아드리겠습니다.
           </div>
-					<div style={{marginTop:20,}}>
-						<div style={{width:175, marginLeft:'auto', marginRight:'auto', paddingTop:15, paddingBottom:15, backgroundColor:"#2F80ED", borderRadius:5, cursor:'pointer',
-							font:'Spoqa Han Sans Neo', fontWeight:'bold', fontSize:"14px", color:'#FFFFFF' }}
-							onClick={() => setFindModal(false)}>
-								닫기
-						</div>
-					</div>
+          <div style={{ marginTop: 20 }}>
+            <div
+              style={{
+                width: 175,
+                marginLeft: "auto",
+                marginRight: "auto",
+                paddingTop: 15,
+                paddingBottom: 15,
+                backgroundColor: "#2F80ED",
+                borderRadius: 5,
+                cursor: "pointer",
+                font: "Spoqa Han Sans Neo",
+                fontWeight: "bold",
+                fontSize: "14px",
+                color: "#FFFFFF",
+              }}
+              onClick={() => setFindModal(false)}
+            >
+              닫기
+            </div>
+          </div>
         </div>
       </Modal>
     </div>

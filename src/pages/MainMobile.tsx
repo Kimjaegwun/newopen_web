@@ -11,7 +11,7 @@ import HorizontalCarousel from "./components_mobile/HorizontalCarousel";
 import styled from "styled-components";
 import "../index.css";
 import HeaderMobile from "./components_mobile/HeaderMobile";
-import domtoimage from 'dom-to-image';
+import domtoimage from "dom-to-image";
 Modal.setAppElement();
 
 const getWindowDimensions = () => {
@@ -38,14 +38,22 @@ const MainMobile = () => {
   }, []);
 
   // 카테고리
-  const category_list = ["전체", "밥집", "술집", "카페", "네일&속눈썹", "헤어샵", "기타"];
+  const category_list = [
+    "전체",
+    "밥집",
+    "술집",
+    "카페",
+    "네일&속눈썹",
+    "헤어샵",
+    "기타",
+  ];
   const [select_category, set_select_category] = useState("전체");
 
   //전국 리스트
   const location_list = ["전국", "동대문", "강남", "강북", "문래"];
   const [select_loaction, set_select_location] = useState("전국");
   const [open_location, set_open_location] = useState(false);
-  
+
   //브랜드 정렬
   const [select_sort, set_select_sort] = useState("인기순");
 
@@ -70,9 +78,11 @@ const MainMobile = () => {
   useQuery(GET_All_NEW_OPEN, {
     notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
-      const sortStore = data.GetAllNewOpen.new_open?.slice().sort(function (a, b) {
-        return b.coupon_touch - a.coupon_touch;
-      });
+      const sortStore = data.GetAllNewOpen.new_open
+        ?.slice()
+        .sort(function (a, b) {
+          return b.coupon_touch - a.coupon_touch;
+        });
       set_stores(sortStore);
     },
   });
@@ -89,7 +99,7 @@ const MainMobile = () => {
   const close_scan_modal = () => {
     set_scan_modal(false);
   };
-  const [select_coupon, set_select_coupon] = useState({} as any);
+  const [select_coupon] = useState({} as any);
 
   // 선택한 가게
   const [select_store, set_select_store] = useState({} as any);
@@ -102,12 +112,18 @@ const MainMobile = () => {
     carousel_ref.current?.moveTo(0);
   };
 
-  const couponSrc =  ["../../asset/image_coupone_blue.png", "../../asset/image_coupone_brown.png", "../../asset/image_coupone_green.png", "../../asset/image_coupone_purple.png", "../../asset/image_coupone_blue.png"];
+  const couponSrc = [
+    "../../asset/image_coupone_blue.png",
+    "../../asset/image_coupone_brown.png",
+    "../../asset/image_coupone_green.png",
+    "../../asset/image_coupone_purple.png",
+    "../../asset/image_coupone_blue.png",
+  ];
 
   return (
     <>
       <Styled>
-        <HeaderMobile/>
+        <HeaderMobile />
 
         {/* 배너 캐러셀 */}
         {/* <Carousel
@@ -127,42 +143,73 @@ const MainMobile = () => {
           style={{
             height: 300,
             backgroundImage: "url(../../asset/image_mainbanner_mobile.png)",
-            backgroundSize:'cover',
-            backgroundRepeat:'no-repeat',
-            zIndex:2,
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            zIndex: 2,
           }}
+        >
+          <div
+            className="center-div"
+            style={{
+              position: "relative",
+              width: 230,
+              paddingTop: 5,
+              paddingBottom: 5,
+              marginTop: 220,
+              textAlign: "center",
+              backgroundColor: "#FFFFFF",
+              border: "3px solid #2F80ED",
+              borderRadius: 5,
+              fontFamily: "Apple SD Gothic Neo",
+              fontWeight: "bold",
+              fontSize: "23px",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              set_open_location(!open_location);
+            }}
           >
-          <div className="center-div"
-              style={{position:'relative', width:230, paddingTop:5, paddingBottom:5, marginTop:220, textAlign:'center', backgroundColor:'#FFFFFF',  border:'3px solid #2F80ED', borderRadius:5,
-                      fontFamily:"Apple SD Gothic Neo", fontWeight:'bold', fontSize:"23px", cursor:'pointer'}}
-                onClick={() => {
-                  set_open_location(!open_location);
-                }}             
-              >
-                {select_loaction}
-                <img
-                  className="arrow-image"
-                  style={{top:11}}
-                  src= {open_location ? "../../asset/arrow-up.png" : "../../asset/arrow-down.png"}
-                  alt="time"
-                  />
-              </div>
-              {location_list.map((cate, cate_index) => {
-                return(
-                  <div
-                    className="center-div"
-                    style={{display: open_location ? 'block' : 'none', width:230, paddingTop:10, paddingBottom:10, backgroundColor:"#FFFFFF", borderLeft:'0.5px solid grey', borderRight:'0.5px solid grey',
-                      cursor:'pointer', borderBottom: cate_index == location_list.length-1 ? '0.5px solid grey' : 'none'}}
-                    onClick= {() => {
-                      set_select_location(cate);
-                      set_open_location(false);
-                    }}
-                    key={cate}>
-                      {cate}
-                  </div>
-                )
-              })}
+            {select_loaction}
+            <img
+              className="arrow-image"
+              style={{ top: 11 }}
+              src={
+                open_location
+                  ? "../../asset/arrow-up.png"
+                  : "../../asset/arrow-down.png"
+              }
+              alt="time"
+            />
           </div>
+          {location_list.map((cate, cate_index) => {
+            return (
+              <div
+                className="center-div"
+                style={{
+                  display: open_location ? "block" : "none",
+                  width: 230,
+                  paddingTop: 10,
+                  paddingBottom: 10,
+                  backgroundColor: "#FFFFFF",
+                  borderLeft: "0.5px solid grey",
+                  borderRight: "0.5px solid grey",
+                  cursor: "pointer",
+                  borderBottom:
+                    cate_index === location_list.length - 1
+                      ? "0.5px solid grey"
+                      : "none",
+                }}
+                onClick={() => {
+                  set_select_location(cate);
+                  set_open_location(false);
+                }}
+                key={cate}
+              >
+                {cate}
+              </div>
+            );
+          })}
+        </div>
 
         <div
           className="category"
@@ -174,7 +221,8 @@ const MainMobile = () => {
             className="category-container"
             style={{
               width: 96 * category_list.length,
-            }}>
+            }}
+          >
             {category_list.map((cate, cate_idx) => {
               if (cate === select_category) {
                 return (
@@ -189,14 +237,14 @@ const MainMobile = () => {
                   </div>
                 );
               } else {
-               return (
-                 <div
-                   className="category-button"
-                   key={cate_idx}
-                   onClick={() => {
-                     set_select_category(cate);
-                   }}
-                 >
+                return (
+                  <div
+                    className="category-button"
+                    key={cate_idx}
+                    onClick={() => {
+                      set_select_category(cate);
+                    }}
+                  >
                     {cate}
                   </div>
                 );
@@ -205,27 +253,53 @@ const MainMobile = () => {
           </div>
         </div>
 
-        <div className="sort-list" style={{paddingRight:20}}>
-          <div className="right"  style={select_sort=="최신순" ? { fontWeight:'bold', color:"#2D2D2D", cursor:'pointer'} : {fontWeight:'normal', color:'#BABABA', cursor:'pointer'}}
+        <div className="sort-list" style={{ paddingRight: 20 }}>
+          <div
+            className="right"
+            style={
+              select_sort === "최신순"
+                ? { fontWeight: "bold", color: "#2D2D2D", cursor: "pointer" }
+                : { fontWeight: "normal", color: "#BABABA", cursor: "pointer" }
+            }
             onClick={() => {
               const sortStores = stores.slice().sort(function (a, b) {
                 return b.createdAt - a.createdAt;
               });
               set_stores(sortStores);
-              set_select_sort("최신순")}}>
+              set_select_sort("최신순");
+            }}
+          >
             최신순
           </div>
-          <div className="right" style={select_sort=="인기순" ? {fontWeight:'bold', color:"#2D2D2D", marginRight:10, cursor:'pointer'} : {fontWeight:'normal', color:'#BABABA', marginRight:10, cursor:'pointer'}}
+          <div
+            className="right"
+            style={
+              select_sort === "인기순"
+                ? {
+                    fontWeight: "bold",
+                    color: "#2D2D2D",
+                    marginRight: 10,
+                    cursor: "pointer",
+                  }
+                : {
+                    fontWeight: "normal",
+                    color: "#BABABA",
+                    marginRight: 10,
+                    cursor: "pointer",
+                  }
+            }
             onClick={() => {
-                const sortStores = stores.slice().sort(function (a, b) {
-                  return b.coupon_touch - a.coupon_touch;
-                });
-                set_stores(sortStores);
-                set_select_sort("인기순")}}>
+              const sortStores = stores.slice().sort(function (a, b) {
+                return b.coupon_touch - a.coupon_touch;
+              });
+              set_stores(sortStores);
+              set_select_sort("인기순");
+            }}
+          >
             인기순
           </div>
         </div>
-        
+
         {stores
           ?.filter((item: any) => {
             if (select_category === "전체") {
@@ -233,10 +307,11 @@ const MainMobile = () => {
             } else {
               return item?.business_type === select_category;
             }
-          })?.filter((item:any) => {
-            if(select_loaction ==="전국"){
+          })
+          ?.filter((item: any) => {
+            if (select_loaction === "전국") {
               return item;
-            }else{
+            } else {
               return item.address.includes(select_loaction);
             }
           })
@@ -282,9 +357,7 @@ const MainMobile = () => {
                       target="blank"
                       title="지도"
                     >
-                      <div className="brand-location">
-                        {address}&gt;
-                      </div>
+                      <div className="brand-location">{address}&gt;</div>
                     </a>
                   </div>
                 </div>
@@ -307,7 +380,7 @@ const MainMobile = () => {
 
                 <div className="operation-time-container">
                   <img
-                  alt="icon-time"
+                    alt="icon-time"
                     src="../../asset/a-icon-time-normal.png"
                     style={{ height: "18px", width: "18px" }}
                   />
@@ -387,11 +460,11 @@ const MainMobile = () => {
 
                 {/* 가게 안 이미지들 */}
                 <div style={{}}>
-                <HorizontalCarousel
-                  photo={photo_in_mall}
-                  flag_change={flag_change}
-                  flag={flag}
-                />
+                  <HorizontalCarousel
+                    photo={photo_in_mall}
+                    flag_change={flag_change}
+                    flag={flag}
+                  />
                 </div>
 
                 <div className="menu-coupon-container">
@@ -425,7 +498,7 @@ const MainMobile = () => {
                     </div>
                   </div>
                 </div>
-                {store.menu?.filter(x => x.main_menu == true)?.length > 0 ?(
+                {store.menu?.filter((x) => x.main_menu === true)?.length > 0 ? (
                   <div>
                     <div className="main-menu">
                       <img
@@ -433,34 +506,37 @@ const MainMobile = () => {
                         src="../../asset/rectangle.png"
                         alt="main-menu"
                       />
-                      대표메뉴 
+                      대표메뉴
                     </div>
                     <div className="row main-menu-container" style={{}}>
-                      {store.menu?.filter(x => x.main_menu == true).map((menu_item, menu_idx) => {
+                      {store.menu
+                        ?.filter((x) => x.main_menu === true)
+                        .map((menu_item, menu_idx) => {
                           return (
-                            <div className="menu-container"
-                            onClick={() => {
-                              set_menu_modal(true);
-                              flag_change();
-                              set_select_store(store);
-                              set_select_menu(menu_item?.name);
-                            }}
-                          key={menu_idx}>
-                            <img
-                              className="menu-image"
-                              src={menu_item?.photo[0]?.url}
-                              alt="menu"
-                            />
-                            <div className="menu-name">
-                              <div className="menu-name-detail">
-                                {menu_item?.name}
-                              </div>
-                              <div className="menu-price">
-                                {numb(menu_item?.price)}원
+                            <div
+                              className="menu-container"
+                              onClick={() => {
+                                set_menu_modal(true);
+                                flag_change();
+                                set_select_store(store);
+                                set_select_menu(menu_item?.name);
+                              }}
+                              key={menu_idx}
+                            >
+                              <img
+                                className="menu-image"
+                                src={menu_item?.photo[0]?.url}
+                                alt="menu"
+                              />
+                              <div className="menu-name">
+                                <div className="menu-name-detail">
+                                  {menu_item?.name}
+                                </div>
+                                <div className="menu-price">
+                                  {numb(menu_item?.price)}원
+                                </div>
                               </div>
                             </div>
-                          </div>
-
                           );
                         })}
                     </div>
@@ -540,7 +616,7 @@ const MainMobile = () => {
             transform: "translate(-50%, -50%)",
             borderRadius: "10px",
             width: windowDimensions.width - 100,
-            maxHeight: '90%',
+            maxHeight: "90%",
           },
         }}
         isOpen={menu_modal}
@@ -690,7 +766,7 @@ const MainMobile = () => {
             transform: "translate(-50%, -50%)",
             borderRadius: "10px",
             width: windowDimensions.width - 100,
-            maxHeight: '90%',
+            maxHeight: "90%",
           },
         }}
         isOpen={coupon_modal}
@@ -712,15 +788,28 @@ const MainMobile = () => {
           <div className="brand-menu-detail" style={{ marginBottom: "3px" }}>
             {select_store?.brand_name} 방문 혜택
           </div>
-          <span className="span-info"  style={{ fontSize:"14px", lineHeight:"25px", color:'#6C757D',}}>
-          사용 방법 : [쿠폰 다운받기] 버튼 클릭
+          <span
+            className="span-info"
+            style={{ fontSize: "14px", lineHeight: "25px", color: "#6C757D" }}
+          >
+            사용 방법 : [쿠폰 다운받기] 버튼 클릭
           </span>
           {select_store?.new_open_event?.map((event, event_idx) => {
             return (
-              <div id={"coupon-div-" + event_idx}
-                style={{width:"100%", height:'auto', backgroundImage:`url(${couponSrc[event_idx]})`, backgroundRepeat:'no-repeat', backgroundSize:'cover',
-                    borderRadius:"10px", padding:10, marginBottom:10}}
-                key={event_idx}>
+              <div
+                id={"coupon-div-" + event_idx}
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  backgroundImage: `url(${couponSrc[event_idx]})`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "cover",
+                  borderRadius: "10px",
+                  padding: 10,
+                  marginBottom: 10,
+                }}
+                key={event_idx}
+              >
                 <div className="column">
                   <div className="coupon-number">
                     <div className="coupon-content" style={{ flex: 1 }}>
@@ -734,23 +823,30 @@ const MainMobile = () => {
                   <div className="coupon-date">
                     {event?.start_date}일 ~ {event?.end_date}일 까지
                   </div>
-                  <div className="center-div coupon-down"
-                  onClick={() => {
-                    updateCouponTouch({variables:{id: select_store.id}});
+                  <div
+                    className="center-div coupon-down"
+                    onClick={() => {
+                      updateCouponTouch({ variables: { id: select_store.id } });
 
-                    const couponDiv = $("#coupon-div-" + event_idx);
-                    domtoimage.toPng(couponDiv[0])
-                    .then(function (dataUrl) {
-                      const link = document.createElement("a");
-                      link.download = select_store.brand_name + "_coupon_" + event_idx + ".png";
-                      link.href = dataUrl;
-                      document.body.appendChild(link);
-                      link.click();
-                    })
-                    .catch(function (error) {
-                        console.error('oops, something went wrong!', error);
-                    });
-                  }}>
+                      const couponDiv = $("#coupon-div-" + event_idx);
+                      domtoimage
+                        .toPng(couponDiv[0])
+                        .then(function (dataUrl) {
+                          const link = document.createElement("a");
+                          link.download =
+                            select_store.brand_name +
+                            "_coupon_" +
+                            event_idx +
+                            ".png";
+                          link.href = dataUrl;
+                          document.body.appendChild(link);
+                          link.click();
+                        })
+                        .catch(function (error) {
+                          console.error("oops, something went wrong!", error);
+                        });
+                    }}
+                  >
                     쿠폰 다운로드
                   </div>
                 </div>
@@ -905,8 +1001,8 @@ const Styled = styled.div`
     -webkit-tap-highlight-color: transparent;
   }
 
-  .sort-list{
-    font-family: 'Apple SD Gothic Neo';
+  .sort-list {
+    font-family: "Apple SD Gothic Neo";
     font-size: 14px;
     line-height: 17px;
   }
@@ -1049,7 +1145,7 @@ const Styled = styled.div`
   }
 
   .main-menu-container {
-    width:100%;
+    width: 100%;
     overflow: hidden;
     overflow-x: scroll;
     margin-top: 10px;
@@ -1199,13 +1295,13 @@ const StyledModal = styled.div`
     margin-bottom: 25px;
   }
 
-  .coupon-down{
+  .coupon-down {
     z-index: 999;
     width: 170px;
-    background-color: #2D2D2D;
+    background-color: #2d2d2d;
     color: #ffffff;
     font-family: "Spoqa Han Sans Neo";
-    font-size:"14px";
+    font-size: "14px";
     padding-top: 10px;
     padding-bottom: 10px;
     text-align: center;
