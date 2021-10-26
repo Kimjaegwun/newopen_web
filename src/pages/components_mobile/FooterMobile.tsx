@@ -220,7 +220,7 @@ const FooterMobile = () => {
             fontWeight: "bold",
           }}
         >
-          <a href="http://pf.kakao.com/_zxgRcK/chat" target="_blank" title="다독 카톡플친" style={{color:"#6C757D",fontSize:"14px"}}>@daadok</a>
+          <a rel="noopener noreferrer" href="http://pf.kakao.com/_zxgRcK/chat" target="_blank" title="다독 카톡플친" style={{color:"#6C757D",fontSize:"14px"}}>@daadok</a>
         </div>
       </div>
 

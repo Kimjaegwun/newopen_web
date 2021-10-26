@@ -684,6 +684,7 @@ const MainMobile = () => {
           <img
             style={{width:'100%', height:80, opacity:0.6, marginTop:-80, borderBottomLeftRadius:10, borderBottomRightRadius:10}}
             src="../../asset/image_dimmed.png"
+            alt="메뉴 이미지"
           />
 
           {/* 사진 속 글 */}

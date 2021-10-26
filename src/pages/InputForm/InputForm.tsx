@@ -681,7 +681,7 @@ const InputForm = () => {
               </div>
             </div>
 
-            {menuList?.filter(x => x.main_menu == true)?.length > 0 ?(
+            {menuList?.filter(x => x.main_menu === true)?.length > 0 ?(
               <div>
                 <div className="main-menu">
                   <img
@@ -800,6 +800,7 @@ const InputForm = () => {
           <img
             style={{width:'100%', height:140, opacity:0.6, marginTop:-140, borderBottomLeftRadius:10, borderBottomRightRadius:10}}
             src="../../asset/image_dimmed.png"
+            alt="메뉴 이미지"
           />
 
           <div className="menu-name" style={{ color: "#FFFFFF" }}>
