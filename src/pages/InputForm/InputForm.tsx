@@ -1265,8 +1265,7 @@ const InputForm = () => {
             노출됩니다
           </span>
           <div
-            style={{ marginTop: 7, display: "flex", alignItems: "flex-start" }}
-          >
+            style={{ marginTop: 7, display: "flex", alignItems: "flex-start" }}>
             {businessHours.map((item, idx) => {
               return (
                 <div
